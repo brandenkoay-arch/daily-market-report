@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>HZ Capital — July 17, 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     background:#0d0d0d;color:#e0e0e0;line-height:1.5;font-size:14px}
+
+/* STICKY HEADER */
+.sticky-header{position:sticky;top:0;z-index:100;background:#111;
+  border-bottom:1px solid #222;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+.site-title{font-size:13px;font-weight:700;color:#fff}
+.site-sub{font-size:11px;color:#666;margin-top:1px}
+.regime-pill{font-size:11px;font-weight:700;padding:4px 10px;
+  border-radius:20px;color:#000;white-space:nowrap}
+
+/* SECTIONS */
+.section{padding:12px 12px 4px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;
+  text-transform:uppercase;color:#555;margin-bottom:8px}
+
+/* ALERTS */
+.alert-card{background:#1a0800;border:1px solid #ff6d00;border-radius:10px;
+  padding:12px 14px;margin-bottom:8px}
+.alert-type{font-size:10px;font-weight:700;color:#ff6d00;letter-spacing:0.5px;text-transform:uppercase}
+.alert-ticker{font-size:15px;font-weight:800;color:#ff9d4a;margin:2px 0}
+.alert-msg{font-size:12px;color:#ccc;line-height:1.5}
+
+/* MACRO */
+details.macro-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;
+  overflow:hidden;margin-bottom:8px}
+details.macro-card > summary{list-style:none;cursor:pointer;padding:13px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+details.macro-card > summary::-webkit-details-marker{display:none}
+details.macro-card > summary::marker{display:none}
+details.macro-card[open] .chevron{transform:rotate(180deg)}
+.macro-title{font-size:14px;font-weight:700;color:#fff}
+.macro-body{padding:12px 14px 14px;font-size:13px;color:#bbb;
+  line-height:1.75;border-top:1px solid #222}
+
+/* SECTOR OVERVIEW */
+.sector-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;overflow:hidden}
+.sector-row{display:flex;align-items:flex-start;gap:10px;
+  padding:9px 14px;border-bottom:1px solid #1e1e1e}
+.sector-row:last-child{border-bottom:none}
+.sector-name{font-size:11px;font-weight:700;color:#777;
+  text-transform:uppercase;letter-spacing:0.3px;
+  min-width:110px;flex-shrink:0;padding-top:2px}
+.sector-chips{display:flex;gap:5px;flex-wrap:wrap}
+.stk-chip{background:#252525;border-radius:4px;padding:2px 8px;
+  font-size:11px;color:#82b1ff;font-weight:700}
+.stk-chip.buy{color:#00c853}
+.stk-chip.watch{color:#ffd600}
+.stk-chip.avoid{color:#ff6d6d}
+
+/* FILTER BAR */
+.filter-bar{position:sticky;top:53px;z-index:99;background:#111;
+  border-bottom:1px solid #1e1e1e;padding:8px 12px;
+  display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  margin-top:12px}
+.filter-bar::-webkit-scrollbar{display:none}
+.filt{background:#1e1e1e;border:1px solid #2a2a2a;color:#888;
+  padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  white-space:nowrap;cursor:pointer;transition:all 0.15s;user-select:none}
+.filt.active{background:#82b1ff;color:#000;border-color:#82b1ff}
+
+/* STOCK CARDS */
+details.stock-card{background:#1a1a1a;border-radius:12px;margin-bottom:9px;
+  overflow:hidden;border:1px solid #222}
+details.stock-card[open]{border-color:#333}
+details.stock-card > summary{list-style:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;padding:13px 14px}
+details.stock-card > summary::-webkit-details-marker{display:none}
+details.stock-card > summary::marker{display:none}
+details.stock-card[open] .chevron{transform:rotate(180deg)}
+
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rank-num{font-size:15px;font-weight:800;color:#444;min-width:22px}
+.tk{font-size:17px;font-weight:800;color:#82b1ff}
+.co-name{font-size:12px;color:#888;flex:1;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.chevron{font-size:10px;color:#555;transition:transform 0.2s;flex-shrink:0}
+
+.badge-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.b-buy{background:#00c853;color:#000}
+.b-watch{background:#ffd600;color:#000}
+.b-wait{background:#ff9d4a;color:#000}
+.b-avoid{background:#d50000;color:#fff}
+.b-dash{background:#2a2a2a;color:#666}
+
+/* TODAY AT A GLANCE */
+.glance-card{background:linear-gradient(135deg,#141a26,#101418);border:1px solid #2a3550;
+  border-radius:12px;padding:14px;margin-bottom:8px}
+.glance-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.glance-stat{background:#1a2230;border-radius:8px;padding:7px 12px;flex:1;min-width:90px}
+.glance-label{font-size:9px;color:#5a6a8a;text-transform:uppercase;letter-spacing:0.5px}
+.glance-val{font-size:14px;font-weight:800;color:#e8eeff;margin-top:2px}
+.glance-line{font-size:12px;color:#9ab;line-height:1.6}
+.glance-line b{color:#82b1ff}
+.delta-chip{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;
+  padding:1px 7px;margin:1px 3px 1px 0}
+.d-new{background:rgba(0,200,83,0.15);color:#00c853;border:1px solid rgba(0,200,83,0.35)}
+.d-drop{background:rgba(213,0,0,0.12);color:#ff6d6d;border:1px solid rgba(213,0,0,0.3)}
+.setup-line{font-size:11px;color:#4dd0a5;padding-top:4px}
+
+/* TRACK RECORD */
+.track-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:12px 14px}
+.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:4px}
+.track-cell{background:#1e1e1e;border-radius:8px;padding:8px 10px}
+.track-h{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.track-v{font-size:15px;font-weight:800;margin-top:2px}
+.tr-pos{color:#00c853}.tr-neg{color:#ff6d6d}.tr-neu{color:#bbb}
+.track-note{font-size:11px;color:#555;margin-top:8px;line-height:1.5}
+.b-high{background:rgba(130,177,255,0.15);color:#82b1ff;border:1px solid rgba(130,177,255,0.3)}
+.b-medium{background:rgba(255,214,0,0.1);color:#ffd600;border:1px solid rgba(255,214,0,0.25)}
+.b-low{background:rgba(255,109,0,0.1);color:#ff6d00;border:1px solid rgba(255,109,0,0.25)}
+
+.score-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.chip{background:#252525;border-radius:4px;padding:2px 7px;font-size:11px;color:#666}
+.chip b{color:#bbb}
+.rationale{font-size:12px;color:#666;line-height:1.5;padding-top:6px;border-top:1px solid #222}
+
+/* CARD BODY */
+.card-body{border-top:1px solid #222}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+  padding:10px 12px;background:#141414}
+.meta-item{background:#1e1e1e;border-radius:6px;padding:6px 8px}
+.meta-label{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.meta-val{font-size:13px;font-weight:700;color:#ddd;margin-top:1px}
+.case-section{padding:12px 14px}
+.case-section+.case-section{border-top:1px solid #1e1e1e}
+.case-label{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
+.case-bull .case-label{color:#00c853}
+.case-bear .case-label{color:#ff6d6d}
+.case-text{font-size:13px;line-height:1.75;color:#bbb}
+.risk-line{font-size:12px;color:#ff9d4a;padding:6px 14px 0}
+
+/* EARNINGS */
+.earnings-box{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:10px 14px}
+.earnings-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid #1e1e1e;font-size:13px}
+.earnings-row:last-child{border-bottom:none}
+.no-items{color:#555;font-size:13px;padding:8px 0}
+
+/* FOOTER */
+.footer{text-align:center;font-size:11px;color:#333;padding:20px 14px 40px}
+
+/* DESKTOP */
+@media(min-width:700px){
+  body{max-width:900px;margin:0 auto}
+  .filter-bar{top:57px}
+  .meta-grid{grid-template-columns:repeat(6,1fr)}
+}
+@media(min-width:1100px){body{max-width:1100px}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div>
+    <div class="site-title">HZ Capital</div>
+    <div class="site-sub">July 17, 2026</div>
+  </div>
+  <div class="regime-pill" style="background:#00c853">CONFIRMED UPTREND</div>
+</div>
+
+
+<div class="section">
+  <div class="section-title">⚡ Today in 30 Seconds</div>
+  <div class="glance-card">
+    <div class="glance-row">
+      <div class="glance-stat"><div class="glance-label">Regime</div><div class="glance-val" style="color:#00c853">CONFIRMED UPTREND</div></div>
+      <div class="glance-stat"><div class="glance-label">Buy Setups</div><div class="glance-val">0</div></div>
+      <div class="glance-stat"><div class="glance-label">Wait (Earnings)</div><div class="glance-val">1</div></div>
+      <div class="glance-stat"><div class="glance-label">Alerts</div><div class="glance-val">0</div></div>
+    </div>
+    <div class="glance-line">🏆 #1 pick: <b>WST</b> <span class="badge b-wait">WAIT — EARNINGS</span> 1.26% below pivot $367.66 — breakout imminent</div><div class="glance-line">Δ vs 2026-07-16: no list changes</div><div class="glance-line">📅 Event radar: <b>FOMC rate decision</b> in 12d · <b>Jobs report (NFP)</b> in 21d · <b>CPI release</b> in 26d</div>
+  </div>
+</div>
+
+
+<div class="section">
+  <div class="section-title">📊 Macro Analysis</div>
+  <details class="macro-card" open>
+    <summary>
+      <span class="macro-title">🌍 CONFIRMED UPTREND</span>
+      <span class="chevron">▼</span>
+    </summary>
+    <div class="macro-body">1. WHAT CHANGED SINCE YESTERDAY: The single most important development is the 4.28% increase in the VIX, as indicated by the current market data, surpassing yesterday&#x27;s rise and reaching 16.34. This volatility surge is also reflected in the headline &quot;[CNBC, 0.0h ago] S&amp;P 500 falls as chip stocks weigh on market again: Live updates,&quot; which highlights the ongoing pressure on the market, particularly from the semiconductor sector.<br><br>2. MARKET REGIME ASSESSMENT: Despite the current volatility, the market remains in a CONFIRMED UPTREND regime, with the SPY and QQQ still above their 200-day moving averages. However, the recent underperformance of growth stocks, such as those in the Technology and Semiconductors sectors, warrants close monitoring. The tape is showing signs of rotation, with defensive sectors like Healthcare and Consumer Staples outperforming.<br><br>3. SECTOR LEADERSHIP: The sector leadership has rotated in the last 24 hours, with Healthcare (XLV) and Consumer Staples (XLP) emerging as leaders, posting 1-day gains of 2.11% and 2.31%, respectively. In contrast, the Technology (XLK) and Semiconductors (SOXX) sectors continue to underperform, with 1-day declines of 2.42% and 4.49%, respectively.<br><br>4. NEWS-DRIVEN RISKS &amp; CATALYSTS: The top news-driven risks and catalysts include (1) the potential impact of the FOMC rate decision on 2026-07-29, which could influence market sentiment and interest rates; (2) the earnings report of Netflix, as mentioned in the headline &quot;[CNBC, 0.5h ago] Here&#x27;s what to expect when Netflix reports earnings after the bell,&quot; which could affect the broader technology sector; and (3) the mortgage rates jump, as reported in &quot;[MarketWatch, 0.6h ago] Mortgage rates jump to the highest level of 2026,&quot; which may influence consumer spending and economic growth.<br><br>5. GROWTH STOCK ENVIRONMENT: The current environment for growth stocks is challenging, given the recent underperformance of the Technology and Semiconductors sectors. The increase in volatility, as measured by the VIX, also suggests a more cautious approach. However, the market&#x27;s overall uptrend regime and the rotation into defensive sectors may provide opportunities for growth stock investors to reassess their portfolios and focus on more resilient names.<br><br>6. POSTURE RECOMMENDATION: Based on the current market conditions, I recommend a NEUTRAL posture, with a 60% equity allocation. This is a slight reduction from yesterday&#x27;s allocation, given the increased volatility and sector rotation. The focus should be on navigating the current market uncertainty while maintaining exposure to growth opportunities. This posture differs from yesterday&#x27;s, as we are taking a slightly more cautious approach in response to the changing market dynamics.</div>
+  </details>
+</div>
+
+<div class="section">
+  <div class="section-title">🏭 Industry Overview</div>
+  <div class="sector-card">
+<div class="sector-row">
+  <div class="sector-name">Healthcare <span style="font-size:10px;color:#666">· <span style="color:#00c853">1D +2.1%</span> · <span style="color:#00c853">1W +0.5%</span> · <span style="color:#00c853">▲7</span></span></div>
+  <div class="sector-chips"><span class="stk-chip ">WST</span></div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology <span style="font-size:10px;color:#666">· <span style="color:#ff6d6d">1D -2.4%</span> · <span style="color:#ff6d6d">1W -4.6%</span> · <span style="color:#ff6d6d">▼2</span></span></div>
+  <div class="sector-chips"><span class="stk-chip watch">ANET</span></div>
+</div></div>
+  
+  <details class="macro-card" style="margin-top:8px">
+    <summary><span class="macro-title" style="font-size:13px">📊 Sector rotation leaderboard (1-week momentum)</span><span class="chevron">▼</span></summary>
+    <div style="border-top:1px solid #222">
+<div class="sector-row">
+  <div class="sector-name">Energy</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.9%</span> · <span style="color:#00c853">1W +3.5%</span> ·
+    1M 3.69%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Communication Svcs</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.3%</span> · <span style="color:#00c853">1W +1.9%</span> ·
+    1M 1.51%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Real Estate<span style="color:#00c853"> ▲1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.6%</span> · <span style="color:#00c853">1W +1.8%</span> ·
+    1M 1.22%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Financials<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.1%</span> · <span style="color:#00c853">1W +1.6%</span> ·
+    1M 4.51%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Staples<span style="color:#00c853"> ▲1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +2.3%</span> · <span style="color:#00c853">1W +1.5%</span> ·
+    1M 0.47%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare<span style="color:#00c853"> ▲7</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +2.1%</span> · <span style="color:#00c853">1W +0.5%</span> ·
+    1M 6.15%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Disc<span style="color:#00c853"> ▲1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.4%</span> · <span style="color:#00c853">1W +0.2%</span> ·
+    1M -0.62%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Materials<span style="color:#ff6d6d"> ▼3</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.4%</span> · <span style="color:#ff6d6d">1W -0.4%</span> ·
+    1M -3.5%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Utilities<span style="color:#ff6d6d"> ▼2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.1%</span> · <span style="color:#ff6d6d">1W -0.5%</span> ·
+    1M 0.9%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Industrials<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.5%</span> · <span style="color:#ff6d6d">1W -1.5%</span> ·
+    1M -0.11%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Small Cap Growth<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.1%</span> · <span style="color:#ff6d6d">1W -1.6%</span> ·
+    1M -0.78%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">ARK Innovation</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -3.1%</span> · <span style="color:#ff6d6d">1W -3.8%</span> ·
+    1M -2.43%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology<span style="color:#ff6d6d"> ▼2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -2.4%</span> · <span style="color:#ff6d6d">1W -4.6%</span> ·
+    1M -4.85%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Semiconductors</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -4.5%</span> · <span style="color:#ff6d6d">1W -8.8%</span> ·
+    1M -10.3%</div>
+</div></div>
+  </details>
+</div>
+
+
+<div class="filter-bar">
+  <button class="filt active" onclick="filterCards('all',this)">All (2)</button>
+  <button class="filt" onclick="filterCards('buy',this)">🟢 Buy Now (0)</button>
+  <button class="filt" onclick="filterCards('wait',this)">⏳ Wait (1)</button>
+  <button class="filt" onclick="filterCards('watch',this)">🟡 Watch (1)</button>
+  <button class="filt" onclick="filterCards('avoid',this)">🔴 Avoid (0)</button>
+  <button class="filt" onclick="filterCards('high',this)">⭐ High Conv. (0)</button>
+</div>
+<div class="section" style="padding-top:10px">
+  <div class="section-title"><span id="stock-count">2 stocks</span> — tap to expand</div>
+  
+<details class="stock-card"
+  data-action="WAIT — EARNINGS"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#1</span>
+      <span class="tk">WST</span>
+      <span class="co-name">West Pharmaceutical Services, I</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-wait">WAIT — EARNINGS</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>36.9/40</b></span>
+  <span class="chip">Fund <b>24.3/40</b></span>
+  <span class='chip'>Score <b>61.2/80</b></span>
+</div>
+    <div class="setup-line">📐 1.26% below pivot $367.66 — breakout imminent</div>
+    <div class="rationale">Rule-based score (AI ranking unavailable)</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$362.78</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">91.0</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">46.9%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">21.0%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-1.3%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Healthcare</div></div>
+</div>
+    <div class="risk-line">⚠ Review manually</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**RESEARCH NOTE: West Pharmaceutical Services, Inc. (WST)**<br><br>1. **BUSINESS QUALITY**<br>	* West Pharmaceutical Services designs, manufactures, and sells containment and delivery systems for injectable drugs and healthcare products.<br>	* Operates in two segments: Proprietary Products and Contract-Manufactured Products.<br>	* Offers a range of products, including stoppers, seals, syringe and cartridge components, and administration systems.<br>	* Benefits from strong demand for high-value pharmaceutical products and growing adoption of injectable therapies.<br><br>2. **EARNINGS QUALITY**<br>	* EPS growth trend: 46.9% YoY growth, indicating strong earnings momentum.<br>	* Quality of earnings: supported by high operating margin (21.7%) and return on equity (19.1%).<br>	* No significant one-time items or concerns regarding earnings quality.<br><br>3. **REVENUE ACCELERATION**<br>	* Revenue growth: 21.0% YoY, driven by strong demand for pharmaceutical products and growing adoption of injectable therapies.<br>	* Key drivers: increasing demand for high-value pharmaceutical products, growth in emerging markets, and expansion of product portfolio.<br><br>4. **COMPETITIVE MOAT**<br>	* Network effects: benefits from long-term relationships with pharmaceutical customers and strong brand reputation.<br>	* Switching costs: high, due to customized products and integrated systems.<br>	* Patents and intellectual property: protects proprietary products and manufacturing processes.<br>	* Scale: large market share and global presence, enabling economies of scale and competitive pricing.<br><br>5. **INDUSTRY TAILWINDS**<br>	* Growing demand for injectable therapies, driven by increasing prevalence of chronic diseases and growing adoption of biologic treatments.<br>	* Recent news: Fractyl Health&#x27;s (GUTS) encouraging Revita study results, which may drive growth in GLP-1-induced weight loss treatments and benefit WST&#x27;s business.<br>	* Strong growth in healthcare and pharmaceutical sectors, with companies like HealthEquity (HQY) and Avantor (AVTR) reporting solid results and expanding partnerships.<br><br>6. **MANAGEMENT EXECUTION**<br>	* Track record: strong revenue and earnings growth, with consistent margin expansion.<br>	* Capital allocation: invests in research and development, expanding product portfolio and improving manufacturing efficiency.<br>	* Guidance history: consistently meets or exceeds guidance, indicating strong visibility and execution.<br><br>7. **VALUATION**<br>	* Forward P/E: 37.74, slightly above peer group average.<br>	* PEG ratio: 3.44, indicating premium valuation.<br>	* Price/Sales: 7.96, reflecting strong revenue growth and high profitability.<br><br>8. **KEY RISKS**<br>	* Capacity and concentration risks, as highlighted in recent news (Zacks, 24.6h ago), which may impact WST&#x27;s ability to meet growing demand.<br>	* Data security risks, as mentioned in recent news (Zacks, 2.1h ago), which may affect WST&#x27;s customers and partners, such as HealthEquity (HQY).<br>	* Intense competition in the medical instruments and supplies industry, with companies like AngioDynamics (ANGO) reporting strong results and expanding product portfolios.<br><br>9. **RESEARCH VERDICT**<br>	* Bull case: WST is a high-quality growth stock with strong earnings momentum, driven by growing demand for pharmaceutical products and expanding product portfolio.<br>	* Conviction: MEDIUM, due to premium valuation and potential risks related to capacity and concentration.<br>	* Overall, WST is a strong candidate for a Minervini-style growth portfolio, with a solid business model and strong growth prospects.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &#x27;Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99331, Requested 2463. Please try again in 25m50.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&#x27;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="WATCH"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#2</span>
+      <span class="tk">ANET</span>
+      <span class="co-name">Arista Networks, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-watch">WATCH</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>15.0/40</b></span>
+  <span class="chip">Fund <b>31.5/40</b></span>
+  <span class='chip'>Score <b>46.5/80</b></span>
+</div>
+    <div class="setup-line">📐 12.39% below pivot $189.82 — no trigger yet</div>
+    <div class="rationale">Rule-based score (AI ranking unavailable)</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$166.22</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">78.4</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">33.8%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">35.1%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-12.4%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Technology</div></div>
+</div>
+    <div class="risk-line">⚠ Review manually</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**RESEARCH NOTE**<br><br>**1. BUSINESS QUALITY**<br>* Arista Networks, Inc. (ANET) develops, markets, and sells data-driven, client to cloud networking solutions for AI, data center, campus, and routing environments.<br>* The company&#x27;s cloud networking solutions consist of Extensible Operating System (EOS), a publish-subscribe state-sharing networking operating system offered in combination with a set of network applications.<br>* Key products include data center, cloud and AI networking, cognitive adjacencies, and cognitive network software and services.<br><br>**2. EARNINGS QUALITY**<br>* EPS growth (YoY): 33.8%, indicating strong earnings acceleration.<br>* Revenue growth: 35.1%, driven by increasing demand for AI-focused networking gear.<br>* High operating margin: 42.7% and profit margin: 38.3%, suggesting strong earnings quality.<br><br>**3. REVENUE ACCELERATION**<br>* Revenue growth is speeding up, driven by surging AI demand.<br>* Recent news highlights record demand for ANET&#x27;s AI-focused networking gear, with the company raising its full-year revenue forecast to about $11.50 billion.<br>* Key drivers include increasing adoption of AI and cloud computing, driving demand for high-performance networking solutions.<br><br>**4. COMPETITIVE MOAT**<br>* Arista&#x27;s EOS operating system provides a competitive advantage, with a publish-subscribe state-sharing architecture that enables high-performance and scalability.<br>* The company&#x27;s cognitive network software and services provide additional differentiation and stickiness.<br>* High insider ownership (17.3%) and institution ownership (72.9%) suggest a strong alignment of interests and a stable shareholder base.<br><br>**5. INDUSTRY TAILWINDS**<br>* The AI and cloud computing markets are experiencing strong growth, driving demand for high-performance networking solutions.<br>* Recent news highlights the company&#x27;s introduction of its 7060XE7 Series, a new portfolio of 1.6-terabit networking platforms designed for AI and cloud workloads (Insider Monkey, 30.2h ago).<br>* Additionally, the company&#x27;s surging AI demand has led to a boost in its 2024 revenue outlook, despite supply chain constraints (Simply Wall St, 32.5h ago).<br><br>**6. MANAGEMENT EXECUTION**<br>* The company has a strong track record of revenue growth and earnings acceleration.<br>* Recent guidance increases and positive earnings surprises suggest effective management execution.<br>* The company&#x27;s capital allocation strategy, including investments in R&amp;D and strategic acquisitions, appears focused on driving long-term growth.<br><br>**7. VALUATION**<br>* Forward P/E: 37.24, above the industry average, but justified by strong earnings growth and competitive advantages.<br>* PEG Ratio: 2.33, indicating a premium valuation, but reasonable given the company&#x27;s high growth rate.<br>* Price/Sales: 21.55, above the industry average, but supported by strong revenue growth and high margins.<br><br>**8. KEY RISKS**<br>* Supply chain constraints, as highlighted by the company&#x27;s recent warning, could impact revenue growth and profitability (Simply Wall St, 32.5h ago).<br>* The company&#x27;s high demand for AI-focused networking gear, while positive, also poses a risk if the company is unable to keep up with production, as noted by Trefis (16.0h ago).<br>* Competition from established players, such as Cisco, could also pose a risk, although Arista&#x27;s strong competitive moat and high growth rate mitigate this risk.<br><br>**9. RESEARCH VERDICT**<br>The bull case for ANET is driven by strong earnings acceleration, revenue growth, and competitive advantages in the high-growth AI and cloud computing markets. With a strong management team and a stable shareholder base, the company is well-positioned for long-term success. Conviction: HIGH.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &#x27;Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99329, Requested 2503. Please try again in 26m22.848s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&#x27;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+  </div>
+</details>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 Upcoming Earnings</div>
+  <div class="earnings-box">
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">👁 GOOGL</span>
+  <span style="color:#aaa">2026-07-23</span>
+  <span style="color:#ff6d6d;font-size:12px">6d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">👁 DECK</span>
+  <span style="color:#aaa">2026-07-24</span>
+  <span style="color:#ff6d6d;font-size:12px">7d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">👁 KLAC</span>
+  <span style="color:#aaa">2026-07-29</span>
+  <span style="color:#ffd600;font-size:12px">12d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">👁 LRCX</span>
+  <span style="color:#aaa">2026-07-30</span>
+  <span style="color:#ffd600;font-size:12px">13d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">👁 META</span>
+  <span style="color:#aaa">2026-07-30</span>
+  <span style="color:#ffd600;font-size:12px">13d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">👁 MSFT</span>
+  <span style="color:#aaa">2026-07-30</span>
+  <span style="color:#ffd600;font-size:12px">13d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">👁 AMZN</span>
+  <span style="color:#aaa">2026-07-31</span>
+  <span style="color:#ffd600;font-size:12px">14d</span>
+</div></div>
+</div>
+
+
+<div class="footer">
+  HZ Capital Trading Intelligence &nbsp;·&nbsp;
+  2026-07-17 00:43 &nbsp;·&nbsp;
+  Personal use only. Not financial advice.
+</div>
+
+<script>
+function filterCards(f, btn) {
+  document.querySelectorAll('.filt').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('details.stock-card').forEach(function(c) {
+    var show = true;
+    if      (f === 'buy')   show = c.dataset.action === 'BUY NOW';
+    else if (f === 'wait')  show = c.dataset.action.indexOf('WAIT') === 0;
+    else if (f === 'watch') show = c.dataset.action === 'WATCH';
+    else if (f === 'avoid') show = c.dataset.action === 'AVOID';
+    else if (f === 'high')  show = c.dataset.conviction === 'HIGH';
+    c.classList.toggle('hidden', !show);
+  });
+  var v = document.querySelectorAll('details.stock-card:not(.hidden)').length;
+  document.getElementById('stock-count').textContent = v + ' stocks';
+}
+</script>
+</body>
+</html>
