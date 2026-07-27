@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>HZ Capital — July 28, 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     background:#0d0d0d;color:#e0e0e0;line-height:1.5;font-size:14px}
+
+/* STICKY HEADER */
+.sticky-header{position:sticky;top:0;z-index:100;background:#111;
+  border-bottom:1px solid #222;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+.site-title{font-size:13px;font-weight:700;color:#fff}
+.site-sub{font-size:11px;color:#666;margin-top:1px}
+.regime-pill{font-size:11px;font-weight:700;padding:4px 10px;
+  border-radius:20px;color:#000;white-space:nowrap}
+
+/* SECTIONS */
+.section{padding:12px 12px 4px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;
+  text-transform:uppercase;color:#555;margin-bottom:8px}
+
+/* ALERTS */
+.alert-card{background:#1a0800;border:1px solid #ff6d00;border-radius:10px;
+  padding:12px 14px;margin-bottom:8px}
+.alert-type{font-size:10px;font-weight:700;color:#ff6d00;letter-spacing:0.5px;text-transform:uppercase}
+.alert-ticker{font-size:15px;font-weight:800;color:#ff9d4a;margin:2px 0}
+.alert-msg{font-size:12px;color:#ccc;line-height:1.5}
+
+/* MACRO */
+details.macro-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;
+  overflow:hidden;margin-bottom:8px}
+details.macro-card > summary{list-style:none;cursor:pointer;padding:13px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+details.macro-card > summary::-webkit-details-marker{display:none}
+details.macro-card > summary::marker{display:none}
+details.macro-card[open] .chevron{transform:rotate(180deg)}
+.macro-title{font-size:14px;font-weight:700;color:#fff}
+.macro-body{padding:12px 14px 14px;font-size:13px;color:#bbb;
+  line-height:1.75;border-top:1px solid #222}
+
+/* SECTOR OVERVIEW */
+.sector-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;overflow:hidden}
+.sector-row{display:flex;align-items:flex-start;gap:10px;
+  padding:9px 14px;border-bottom:1px solid #1e1e1e}
+.sector-row:last-child{border-bottom:none}
+.sector-name{font-size:11px;font-weight:700;color:#777;
+  text-transform:uppercase;letter-spacing:0.3px;
+  min-width:110px;flex-shrink:0;padding-top:2px}
+.sector-chips{display:flex;gap:5px;flex-wrap:wrap}
+.stk-chip{background:#252525;border-radius:4px;padding:2px 8px;
+  font-size:11px;color:#82b1ff;font-weight:700}
+.stk-chip.buy{color:#00c853}
+.stk-chip.watch{color:#ffd600}
+.stk-chip.avoid{color:#ff6d6d}
+
+/* FILTER BAR */
+.filter-bar{position:sticky;top:53px;z-index:99;background:#111;
+  border-bottom:1px solid #1e1e1e;padding:8px 12px;
+  display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  margin-top:12px}
+.filter-bar::-webkit-scrollbar{display:none}
+.filt{background:#1e1e1e;border:1px solid #2a2a2a;color:#888;
+  padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  white-space:nowrap;cursor:pointer;transition:all 0.15s;user-select:none}
+.filt.active{background:#82b1ff;color:#000;border-color:#82b1ff}
+
+/* STOCK CARDS */
+details.stock-card{background:#1a1a1a;border-radius:12px;margin-bottom:9px;
+  overflow:hidden;border:1px solid #222}
+details.stock-card[open]{border-color:#333}
+details.stock-card > summary{list-style:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;padding:13px 14px}
+details.stock-card > summary::-webkit-details-marker{display:none}
+details.stock-card > summary::marker{display:none}
+details.stock-card[open] .chevron{transform:rotate(180deg)}
+
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rank-num{font-size:15px;font-weight:800;color:#444;min-width:22px}
+.tk{font-size:17px;font-weight:800;color:#82b1ff}
+.co-name{font-size:12px;color:#888;flex:1;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.chevron{font-size:10px;color:#555;transition:transform 0.2s;flex-shrink:0}
+
+.badge-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.b-buy{background:#00c853;color:#000}
+.b-watch{background:#ffd600;color:#000}
+.b-wait{background:#ff9d4a;color:#000}
+.b-avoid{background:#d50000;color:#fff}
+.b-dash{background:#2a2a2a;color:#666}
+
+/* TODAY AT A GLANCE */
+.glance-card{background:linear-gradient(135deg,#141a26,#101418);border:1px solid #2a3550;
+  border-radius:12px;padding:14px;margin-bottom:8px}
+.glance-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.glance-stat{background:#1a2230;border-radius:8px;padding:7px 12px;flex:1;min-width:90px}
+.glance-label{font-size:9px;color:#5a6a8a;text-transform:uppercase;letter-spacing:0.5px}
+.glance-val{font-size:14px;font-weight:800;color:#e8eeff;margin-top:2px}
+.glance-line{font-size:12px;color:#9ab;line-height:1.6}
+.glance-line b{color:#82b1ff}
+.delta-chip{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;
+  padding:1px 7px;margin:1px 3px 1px 0}
+.d-new{background:rgba(0,200,83,0.15);color:#00c853;border:1px solid rgba(0,200,83,0.35)}
+.d-drop{background:rgba(213,0,0,0.12);color:#ff6d6d;border:1px solid rgba(213,0,0,0.3)}
+.setup-line{font-size:11px;color:#4dd0a5;padding-top:4px}
+
+/* TRACK RECORD */
+.track-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:12px 14px}
+.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:4px}
+.track-cell{background:#1e1e1e;border-radius:8px;padding:8px 10px}
+.track-h{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.track-v{font-size:15px;font-weight:800;margin-top:2px}
+.tr-pos{color:#00c853}.tr-neg{color:#ff6d6d}.tr-neu{color:#bbb}
+.track-note{font-size:11px;color:#555;margin-top:8px;line-height:1.5}
+.b-high{background:rgba(130,177,255,0.15);color:#82b1ff;border:1px solid rgba(130,177,255,0.3)}
+.b-medium{background:rgba(255,214,0,0.1);color:#ffd600;border:1px solid rgba(255,214,0,0.25)}
+.b-low{background:rgba(255,109,0,0.1);color:#ff6d00;border:1px solid rgba(255,109,0,0.25)}
+
+.score-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.chip{background:#252525;border-radius:4px;padding:2px 7px;font-size:11px;color:#666}
+.chip b{color:#bbb}
+.rationale{font-size:12px;color:#666;line-height:1.5;padding-top:6px;border-top:1px solid #222}
+
+/* CARD BODY */
+.card-body{border-top:1px solid #222}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+  padding:10px 12px;background:#141414}
+.meta-item{background:#1e1e1e;border-radius:6px;padding:6px 8px}
+.meta-label{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.meta-val{font-size:13px;font-weight:700;color:#ddd;margin-top:1px}
+.case-section{padding:12px 14px}
+.case-section+.case-section{border-top:1px solid #1e1e1e}
+.case-label{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
+.case-bull .case-label{color:#00c853}
+.case-bear .case-label{color:#ff6d6d}
+.case-text{font-size:13px;line-height:1.75;color:#bbb}
+.risk-line{font-size:12px;color:#ff9d4a;padding:6px 14px 0}
+
+/* EARNINGS */
+.earnings-box{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:10px 14px}
+.earnings-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid #1e1e1e;font-size:13px}
+.earnings-row:last-child{border-bottom:none}
+.no-items{color:#555;font-size:13px;padding:8px 0}
+
+/* FOOTER */
+.footer{text-align:center;font-size:11px;color:#333;padding:20px 14px 40px}
+
+/* DESKTOP */
+@media(min-width:700px){
+  body{max-width:900px;margin:0 auto}
+  .filter-bar{top:57px}
+  .meta-grid{grid-template-columns:repeat(6,1fr)}
+}
+@media(min-width:1100px){body{max-width:1100px}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div>
+    <div class="site-title">HZ Capital</div>
+    <div class="site-sub">July 28, 2026</div>
+  </div>
+  <div class="regime-pill" style="background:#d50000">MARKET IN DOWNTREND</div>
+</div>
+
+
+<div class="section">
+  <div class="section-title">⚡ Today in 30 Seconds</div>
+  <div class="glance-card">
+    <div class="glance-row">
+      <div class="glance-stat"><div class="glance-label">Regime</div><div class="glance-val" style="color:#d50000">MARKET IN DOWNTREND</div></div>
+      <div class="glance-stat"><div class="glance-label">Buy Setups</div><div class="glance-val">0</div></div>
+      <div class="glance-stat"><div class="glance-label">Wait</div><div class="glance-val">1</div></div>
+      <div class="glance-stat"><div class="glance-label">Watch</div><div class="glance-val">1</div></div>
+    </div>
+    <div class="glance-line">🏆 #1 pick: <b>NTRS</b> <span class="badge b-wait">WAIT — REGIME</span> reclaimed EMA20 today, holding above</div><div class="glance-line">Δ vs 2026-07-27: no list changes</div><div class="glance-line">📅 Event radar: <b>FOMC rate decision</b> in 1d · <b>Jobs report (NFP)</b> in 10d · <b>CPI release</b> in 15d</div>
+  </div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">📊 Macro Analysis</div>
+  <details class="macro-card" open>
+    <summary>
+      <span class="macro-title">🌍 MARKET IN DOWNTREND</span>
+      <span class="chevron">▼</span>
+    </summary>
+    <div class="macro-body">1. WHAT CHANGED SINCE YESTERDAY: The most significant development is the sharp decline in the QQQ, down by -1.87% today, and the significant jump in the VIX to 19.57, representing a 4.65% increase. This shift is particularly notable in the context of the ongoing downtrend, indicating heightened volatility and risk aversion, as also reflected in the -8.3% drop in Semiconductors (SOXX) today.<br><br>2. MARKET REGIME ASSESSMENT: The market remains in a downtrend, with today&#x27;s moves in the QQQ and the VIX underscoring the cautious stance investors should adopt. The SPY&#x27;s slight decline and the failure of major indexes to regain their 50-day moving averages suggest that the near-term outlook remains challenged. The market&#x27;s behavior today, with sector rotation favoring defensive areas like Healthcare and Consumer Staples, further supports this assessment.<br><br>3. SECTOR LEADERSHIP: Today saw a notable rotation into defensive sectors, with Healthcare (XLV) up 1.47%, Financials (XLF) up 1.63%, Consumer Staples (XLP) up 2.4%, and Real Estate (XLRE) up 1.98%. In contrast, Technology (XLK) and particularly Semiconductors (SOXX) suffered significant declines, indicating a risk-off sentiment prevailing in the market.<br><br>4. NEWS-DRIVEN RISKS &amp; CATALYSTS: <br>- The upcoming FOMC rate decision on 2026-07-29 is a significant risk event, as it will provide clarity on the monetary policy stance and potentially impact market volatility.<br>- The report on cyclospora outbreaks potentially being worsened by consolidated food supply, as mentioned in a CNBC headline, could have implications for consumer staples and food companies.<br>- The announcement by CME to launch single stock futures, enabling 23-hour trading for stocks like SpaceX and Micron, as covered by CNBC, could increase market accessibility but also volatility for these names.<br><br>5. GROWTH STOCK ENVIRONMENT: Given the current downtrend and the heightened volatility, it&#x27;s not an ideal time to be fully invested in growth stocks. The significant declines in growth-oriented sectors and the rise in the VIX indicate a risk-off environment, suggesting caution.<br><br>6. POSTURE RECOMMENDATION: NEUTRAL, with a suggested 60% equity allocation. This posture is more defensive than yesterday, reflecting the increased volatility and the downturn in key growth sectors. The significant drop in the QQQ and the surge in the VIX, combined with the upcoming FOMC decision, warrant a cautious approach.</div>
+  </details>
+</div>
+
+<div class="section">
+  <div class="section-title">🏭 Industry Overview</div>
+  <div class="sector-card">
+<div class="sector-row">
+  <div class="sector-name">Financial Services <span style="font-size:10px;color:#666">· <span style="color:#00c853">1D +1.6%</span> · <span style="color:#00c853">1W +1.2%</span> · <span style="color:#00c853">▲1</span></span></div>
+  <div class="sector-chips"><span class="stk-chip ">NTRS</span><span class="stk-chip watch">IBKR</span></div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology <span style="font-size:10px;color:#666">· <span style="color:#ff6d6d">1D -3.1%</span> · <span style="color:#ff6d6d">1W -1.6%</span> · <span style="color:#ff6d6d">▼1</span></span></div>
+  <div class="sector-chips"><span class="stk-chip avoid">ANET</span></div>
+</div></div>
+  
+  <details class="macro-card" style="margin-top:8px">
+    <summary><span class="macro-title" style="font-size:13px">📊 Sector rotation leaderboard (1-week momentum)</span><span class="chevron">▼</span></summary>
+    <div style="border-top:1px solid #222">
+<div class="sector-row">
+  <div class="sector-name">Healthcare<span style="color:#00c853"> ▲4</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.5%</span> · <span style="color:#00c853">1W +2.9%</span> ·
+    1M 5.26%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Materials<span style="color:#00c853"> ▲2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.7%</span> · <span style="color:#00c853">1W +2.3%</span> ·
+    1M -1.31%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Utilities<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.8%</span> · <span style="color:#00c853">1W +2.0%</span> ·
+    1M -0.02%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Industrials<span style="color:#00c853"> ▲3</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.4%</span> · <span style="color:#00c853">1W +1.7%</span> ·
+    1M -1.57%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Energy<span style="color:#ff6d6d"> ▼2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.9%</span> · <span style="color:#00c853">1W +1.6%</span> ·
+    1M 8.78%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Real Estate</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +2.0%</span> · <span style="color:#00c853">1W +1.4%</span> ·
+    1M 2.8%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Financials<span style="color:#00c853"> ▲1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.6%</span> · <span style="color:#00c853">1W +1.2%</span> ·
+    1M 6.16%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Staples<span style="color:#00c853"> ▲2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +2.4%</span> · <span style="color:#00c853">1W +0.4%</span> ·
+    1M 1.51%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Small Cap Growth<span style="color:#00c853"> ▲2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.9%</span> · <span style="color:#ff6d6d">1W -0.9%</span> ·
+    1M -5.45%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -3.1%</span> · <span style="color:#ff6d6d">1W -1.6%</span> ·
+    1M -6.28%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Communication Svcs<span style="color:#00c853"> ▲1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +2.8%</span> · <span style="color:#ff6d6d">1W -2.3%</span> ·
+    1M 2.56%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Semiconductors<span style="color:#ff6d6d"> ▼11</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -8.3%</span> · <span style="color:#ff6d6d">1W -3.6%</span> ·
+    1M -19.15%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Disc<span style="color:#00c853"> ▲1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.6%</span> · <span style="color:#ff6d6d">1W -3.6%</span> ·
+    1M -2.52%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">ARK Innovation<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -3.1%</span> · <span style="color:#ff6d6d">1W -4.5%</span> ·
+    1M -6.49%</div>
+</div></div>
+  </details>
+</div>
+
+
+<div class="filter-bar">
+  <button class="filt active" onclick="filterCards('all',this)">All (3)</button>
+  <button class="filt" onclick="filterCards('buy',this)">🟢 Buy Now (0)</button>
+  <button class="filt" onclick="filterCards('wait',this)">⏳ Wait (1)</button>
+  <button class="filt" onclick="filterCards('watch',this)">🟡 Watch (1)</button>
+  <button class="filt" onclick="filterCards('avoid',this)">🔴 Avoid (1)</button>
+  <button class="filt" onclick="filterCards('high',this)">⭐ High Conv. (1)</button>
+</div>
+<div class="section" style="padding-top:10px">
+  <div class="section-title"><span id="stock-count">3 stocks</span> — tap to expand</div>
+  
+<details class="stock-card"
+  data-action="WAIT — REGIME"
+  data-conviction="HIGH">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#1</span>
+      <span class="tk">NTRS</span>
+      <span class="co-name">Northern Trust Corporation</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-wait">WAIT — REGIME</span>
+      <span class="badge b-high">HIGH</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>28.4/40</b></span>
+  <span class="chip">Fund <b>33.3/40</b></span>
+  <span class='chip'>Score <b>61.7/80</b></span>
+</div>
+    <div class="setup-line">📐 reclaimed EMA20 today, holding above</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 9.1% · ATR 124% of 50d · vol 109% of 50d</div>
+    <div class="rationale">Northern Trust Corporation has the highest total score and a strong technical setup, having reclaimed its EMA20. Its diversified financial services and wealth management offerings provide a solid foundation. However, the current market regime is a downtrend, which may impact its performance.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$180.76</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">77.8</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">98.6%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">36.4%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-5.7%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Financial Services</div></div>
+</div>
+    <div class="risk-line">⚠ Unsustainable EPS growth</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**RESEARCH NOTE**<br><br>1. **BUSINESS QUALITY**<br>	* Northern Trust Corporation provides a range of financial services, including wealth management, asset servicing, asset management, and banking solutions.<br>	* The company operates in two segments: Asset Servicing and Wealth Management.<br>	* Key services include custody, fund administration, investment operations outsourcing, and securities lending.<br>	* The company serves a diverse client base, including corporate and public retirement funds, foundations, endowments, and other institutional investors.<br><br>2. **EARNINGS QUALITY**<br>	* Recent EPS growth: 98.6% YoY, indicating strong earnings acceleration.<br>	* The company has reported robust revenue growth, with a 36.4% increase in revenue.<br>	* Net interest income and net income have also increased, with net interest income rising to $675.5 million and net income to $792.2 million in Q2 2026.<br><br>3. **REVENUE ACCELERATION**<br>	* Revenue growth is accelerating, with a 36.4% increase in revenue.<br>	* Key drivers of revenue growth include strong asset growth and the company&#x27;s AI strategy, as discussed by CEO O&#x27;Grady on the Q2 2026 earnings call.<br><br>4. **COMPETITIVE MOAT**<br>	* Northern Trust has a strong brand and a long history of providing high-quality financial services.<br>	* The company&#x27;s diversified client base and range of services provide a competitive advantage.<br>	* The company&#x27;s investment in AI and other technologies is likely to further strengthen its competitive position.<br><br>5. **INDUSTRY TAILWINDS**<br>	* The fixed-income ETF boom is driving growth in the asset management industry, as investors seek to use bonds to generate income and manage risk (TheStreet, 83.4h ago).<br>	* The trend towards using bonds as a cash-flow schedule, rather than a broad income sleeve, is also likely to benefit Northern Trust&#x27;s asset servicing business (TheStreet, 83.4h ago).<br>	* Recent market volatility, driven by rising oil prices and geopolitical tension, may lead to increased demand for wealth management and asset servicing services (24/7 Wall St, 100.1h ago).<br><br>6. **MANAGEMENT EXECUTION**<br>	* CEO O&#x27;Grady has a strong track record of executing on the company&#x27;s strategy, including investing in AI and other technologies.<br>	* The company&#x27;s recent earnings call highlighted strong asset growth and a significant pre-tax gain (GuruFocus.com, 115.0h ago).<br>	* The company&#x27;s guidance history and capital allocation decisions will be important to monitor going forward.<br><br>7. **VALUATION**<br>	* The company&#x27;s forward P/E ratio is 14.3, which is reasonable given the company&#x27;s strong earnings growth and competitive position.<br>	* The PEG ratio is 1.2, indicating that the company&#x27;s growth is fairly valued.<br>	* The price/sales ratio is 2.44, which is slightly elevated, but may be justified by the company&#x27;s strong revenue growth.<br><br>8. **KEY RISKS**<br>	* Recent market volatility, driven by rising oil prices and geopolitical tension, may lead to a decline in asset values and a decrease in demand for wealth management and asset servicing services (24/7 Wall St, 100.1h ago).<br>	* The company&#x27;s investment in AI and other technologies may not yield the expected returns, which could negatively impact earnings growth (Motley Fool, 111.3h ago).<br>	* The company&#x27;s dependence on institutional clients may make it vulnerable to changes in market conditions and investor behavior (Simply Wall St, 106.9h ago).<br><br>9. **RESEARCH VERDICT**<br>	* Northern Trust Corporation is a high-quality company with a strong competitive position and a track record of executing on its strategy.<br>	* The company&#x27;s recent earnings growth and revenue acceleration are impressive, and the industry tailwinds are likely to continue to drive growth.<br>	* However, the company is not without risks, and the recent market volatility and dependence on institutional clients are key concerns.<br>	* Conviction: MEDIUM</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">**ACCOUNTING RED FLAGS**<br><br>1. The research note highlights a 98.6% YoY increase in EPS, which is unusually high. This rapid growth may be due to one-time gains or accounting adjustments rather than sustainable business performance. Without a detailed breakdown of the earnings components, it&#x27;s difficult to determine the quality of this growth.<br>2. The note mentions a significant pre-tax gain, but it&#x27;s unclear what this gain is related to and whether it&#x27;s a recurring or non-recurring item.<br>3. The company&#x27;s revenue growth is accelerating, but the note doesn&#x27;t provide enough information on the drivers of this growth. Is it due to organic growth, acquisitions, or other factors?<br><br>**THESIS KILLERS**<br><br>1. A significant decline in asset values due to market volatility could immediately invalidate the bull case. With rising oil prices and geopolitical tension, the risk of a market downturn is high.<br>2. If the company&#x27;s investment in AI and other technologies fails to yield the expected returns, it could negatively impact earnings growth and undermine the competitive moat.<br><br>**ASSUMPTION STRESS TEST**<br><br>1. The research note assumes that the fixed-income ETF boom will continue to drive growth in the asset management industry. However, this trend may be subject to reversal if interest rates rise or market conditions change.<br>2. The note assumes that the company&#x27;s diversified client base and range of services will continue to provide a competitive advantage. However, if the company&#x27;s institutional clients were to withdraw their assets or reduce their demand for services, this advantage could be eroded.<br>3. The note assumes that CEO O&#x27;Grady&#x27;s track record of executing on the company&#x27;s strategy will continue. However, if the company&#x27;s guidance history and capital allocation decisions are not accurate, this could undermine confidence in the management team.<br><br>**VALUATION RISK**<br><br>1. The company&#x27;s forward P/E ratio of 14.3 may be reasonable given the strong earnings growth, but it&#x27;s still above the industry average. If the company&#x27;s earnings growth slows or the industry experiences a downturn, the valuation could become stretched.<br>2. The PEG ratio of 1.2 suggests that the company&#x27;s growth is fairly valued, but this ratio can be sensitive to changes in earnings estimates. If the company&#x27;s earnings growth slows, the PEG ratio could increase, making the valuation less attractive.<br>3. The price/sales ratio of 2.44 is slightly elevated, which may be justified by the company&#x27;s strong revenue growth. However, if the company&#x27;s revenue growth slows or the industry experiences a downturn, this ratio could become unsustainable.<br><br>**COMPETITIVE THREATS**<br><br>1. The note mentions that the company&#x27;s investment in AI and other technologies is likely to further strengthen its competitive position. However, if competitors were to invest in similar technologies, the company&#x27;s advantage could be eroded.<br>2. The note doesn&#x27;t discuss potential new entrants in the asset management industry, which could disrupt the company&#x27;s business model and competitive position.<br><br>**MACRO SENSITIVITY**<br><br>1. The company&#x27;s business is sensitive to market volatility, and rising oil prices and geopolitical tension could lead to a decline in asset values and a decrease in demand for wealth management and asset servicing services.<br>2. The note mentions that the company&#x27;s dependence on institutional clients may make it vulnerable to changes in market conditions and investor behavior. If institutional clients were to withdraw their assets or reduce their demand for services, the company&#x27;s revenue and earnings could be negatively impacted.<br><br>**INSTITUTIONAL RISK**<br><br>1. The note mentions that the company&#x27;s insider ownership is only 0.9%, which may indicate a lack of alignment between management and shareholders.<br>2. The short ratio of 3.26 days to cover suggests that there may be some short interest in the stock, which could lead to volatility if the company&#x27;s earnings or guidance disappoint.<br><br>**CHALLENGE VERDICT**<br><br>Based on the analysis, I would rate the overall risk as **RED (avoid)**. The company&#x27;s rapid earnings growth and revenue acceleration are impressive, but the valuation is stretched, and the business is sensitive to market volatility. The company&#x27;s dependence on institutional clients and the potential for competitors to invest in similar technologies also pose risks to the bull case. Additionally, the lack of transparency around the company&#x27;s earnings components and the significant pre-tax gain raises concerns about the quality of the earnings growth. Overall, while the company has a strong brand and a long history of providing high-quality financial services, the risks outweigh the potential rewards, and I would avoid the stock at current valuations.</div>
+    </div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="WATCH"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#2</span>
+      <span class="tk">IBKR</span>
+      <span class="co-name">Interactive Brokers Group, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-watch">WATCH</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>15.4/40</b></span>
+  <span class="chip">Fund <b>27.7/40</b></span>
+  <span class='chip'>Score <b>43.1/80</b></span>
+</div>
+    <div class="setup-line">📐 7.34% below pivot $97.84 — no trigger yet</div><div class="setup-line" style="color:#ffd600">🧲 VCP 2/3 · 10d range 10.9% · ATR 100% of 50d · vol 81% of 50d</div>
+    <div class="rationale">Interactive Brokers Group, Inc. has a solid business quality and earnings momentum, but its technical setup is not as strong as NTRS, being 7.34% below its pivot. The downtrend market regime also poses a risk.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$90.55</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">81.4</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">35.3%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">22.3%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-7.5%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Financial Services</div></div>
+</div>
+    <div class="risk-line">⚠ Accounting red flags</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**1. BUSINESS QUALITY**<br>* Interactive Brokers Group, Inc. (IBKR) operates as an automated electronic broker, providing execution, clearance, and settlement of trades in various financial instruments.<br>* The company offers a range of services, including custody, prime brokerage, securities, and margin lending, as well as trading platforms and APIs.<br>* IBKR&#x27;s automated global trading technology provides a competitive advantage, allowing for efficient and scalable operations.<br><br>**2. EARNINGS QUALITY**<br>* IBKR has demonstrated strong earnings growth, with a 35.3% year-over-year increase in EPS.<br>* The company has consistently posted high pre-tax margins, with a 77% margin in the recent quarter.<br>* There are no notable one-time items affecting earnings quality, with a focus on sustainable growth.<br><br>**3. REVENUE ACCELERATION**<br>* IBKR&#x27;s revenue growth is accelerating, with a 22.3% year-over-year increase.<br>* Key drivers include increased trading activity, higher interest income, and expansion of global products.<br>* The company&#x27;s scalable business model and automated technology support continued revenue growth.<br><br>**4. COMPETITIVE MOAT**<br>* IBKR&#x27;s competitive moat is based on its:<br>	+ Automated global trading technology, providing efficient and low-cost operations.<br>	+ Diversified range of services and products, reducing dependence on a single revenue stream.<br>	+ Strong brand reputation and customer base, with over 90% institutional ownership.<br><br>**5. INDUSTRY TAILWINDS**<br>* The brokerage industry is experiencing growth due to increased trading activity and market volatility, as seen in recent news items (e.g., &quot;Interactive Brokers earnings and Charles Schwab earnings both beat estimates for the second quarter on Tuesday, as volatile markets drove higher trading volume.&quot; - Investor&#x27;s Business Daily).<br>* IBKR&#x27;s expansion into cryptocurrencies and other digital assets also positions the company for potential growth in emerging markets (e.g., &quot;Is Record Q2 Earnings And Crypto Expansion Altering The Investment Case For Interactive Brokers Group (IBKR)?&quot; - Simply Wall St.).<br><br>**6. MANAGEMENT EXECUTION**<br>* IBKR&#x27;s management has a strong track record of executing on growth initiatives and expanding the company&#x27;s product offerings.<br>* The company&#x27;s focus on automation and technology has enabled efficient scaling and supported high margins.<br>* Guidance history is positive, with recent Q2 earnings beating analyst expectations.<br><br>**7. VALUATION**<br>* IBKR&#x27;s forward P/E of 28.39 and PEG ratio of 1.76 indicate a premium valuation relative to growth rate.<br>* The price/sales ratio of 22.49 is high, but supported by the company&#x27;s strong margins and growth prospects.<br>* Valuation multiples are justified by the company&#x27;s competitive advantage, growth prospects, and industry tailwinds.<br><br>**8. KEY RISKS**<br>* Regulatory risks, such as changes to trading regulations or fees, could impact IBKR&#x27;s business model (e.g., potential increased costs or reduced revenue).<br>* Increased competition from rivals, such as Charles Schwab, could pressure IBKR&#x27;s margins and growth rate (e.g., &quot;Interactive Brokers Has Posted a Pre-Tax Margin Above 70% for 7 Straight Quarters. Why Rivals Struggle to Copy It&quot; - Motley Fool).<br>* Recent news items have highlighted the potential for IBKR&#x27;s stock to be overvalued, with a 6% overvaluation estimate (e.g., &quot;Interactive Brokers Group (IBKR) Could Be 6% Overvalued Following Record Q2&quot; - Simply Wall St.).<br><br>**9. RESEARCH VERDICT**<br>IBKR is a high-quality growth company with a strong competitive moat, driven by its automated global trading technology and diversified range of services. The company&#x27;s earnings growth, revenue acceleration, and industry tailwinds support a bullish thesis. However, regulatory risks, competition, and potential overvaluation are key risks to consider. Conviction level: HIGH.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">I&#x27;ll go through the research note and highlight potential issues and challenges.<br><br>**1. ACCOUNTING RED FLAGS:**<br>The note mentions a 35.3% year-over-year increase in EPS, but it doesn&#x27;t provide any details on the drivers of this growth. I&#x27;d like to see a breakdown of the components of EPS growth to understand if it&#x27;s sustainable. Additionally, the current ratio of 1.096 is relatively low, which could indicate potential liquidity issues.<br><br>**2. THESIS KILLERS:**<br>A single event that could invalidate the bull case is a significant decline in trading activity, which could lead to a drop in revenue and earnings. For example, if market volatility decreases, trading volumes could decline, negatively impacting IBKR&#x27;s business.<br><br>**3. ASSUMPTION STRESS TEST:**<br>The research note assumes that IBKR&#x27;s automated global trading technology will continue to provide a competitive advantage. However, what if a competitor, such as Charles Schwab, successfully develops a similar technology, reducing IBKR&#x27;s moat? The note also assumes that the company&#x27;s expansion into cryptocurrencies and digital assets will drive growth, but what if this market doesn&#x27;t develop as expected?<br><br>**4. VALUATION RISK:**<br>The forward P/E of 28.39 and PEG ratio of 1.76 indicate a premium valuation relative to growth rate. The price/sales ratio of 22.49 is high, which could make the stock vulnerable to a valuation correction. If the company&#x27;s growth rate slows down or if the industry experiences a downturn, the stock could become uninvestable.<br><br>**5. COMPETITIVE THREATS:**<br>The note mentions that IBKR&#x27;s competitors, such as Charles Schwab, could pressure the company&#x27;s margins and growth rate. The recent news article &quot;Interactive Brokers Has Posted a Pre-Tax Margin Above 70% for 7 Straight Quarters. Why Rivals Struggle to Copy It&quot; suggests that IBKR&#x27;s competitors are struggling to replicate its success, but it&#x27;s possible that they could eventually catch up.<br><br>**6. MACRO SENSITIVITY:**<br>The note doesn&#x27;t discuss IBKR&#x27;s sensitivity to macroeconomic factors, such as interest rates, recession, or market volatility. However, the recent news article &quot;Interactive Brokers, Charles Schwab Slide Despite Earnings Surge&quot; suggests that the company&#x27;s stock price is vulnerable to market fluctuations.<br><br>**7. INSTITUTIONAL RISK:**<br>The note mentions that insider ownership is 2.7%, which is relatively low. This could indicate that insiders are not confident in the company&#x27;s prospects or that they are selling their shares. The short ratio of 2.02 days to cover is relatively low, which could suggest that shorts are not a significant concern, but it&#x27;s still worth monitoring.<br><br>**8. CHALLENGE VERDICT:**<br>Overall, I&#x27;d rate the risk level as YELLOW (proceed with caution). While IBKR has demonstrated strong earnings growth and a competitive moat, the valuation is premium, and there are potential risks from competitors, macroeconomic factors, and institutional investors.<br><br>Specific challenges and concerns:<br><br>* The current ratio is relatively low, which could indicate potential liquidity issues.<br>* The company&#x27;s growth rate is assumed to continue, but it&#x27;s possible that competitors could catch up or that the market could experience a downturn.<br>* The valuation is premium, which could make the stock vulnerable to a correction.<br>* Insider ownership is relatively low, which could indicate a lack of confidence from insiders.<br>* The company&#x27;s sensitivity to macroeconomic factors, such as interest rates and market volatility, is not fully discussed in the note.<br><br>To mitigate these risks, I&#x27;d recommend monitoring the company&#x27;s financials, competitors, and macroeconomic factors closely and being prepared to adjust the investment thesis if necessary.</div>
+    </div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="AVOID"
+  data-conviction="LOW">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#3</span>
+      <span class="tk">ANET</span>
+      <span class="co-name">Arista Networks, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-avoid">AVOID</span>
+      <span class="badge b-low">LOW</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>14.0/40</b></span>
+  <span class="chip">Fund <b>31.6/40</b></span>
+  <span class='chip'>Score <b>45.6/80</b></span>
+</div>
+    <div class="setup-line">📐 11.57% below pivot $189.82 — no trigger yet</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 19.3% · ATR 109% of 50d · vol 73% of 50d</div>
+    <div class="rationale">Arista Networks, Inc. has a lower total score and is further away from its pivot, being 11.57% below. The technology sector may be more vulnerable in a downtrend market, and accounting red flags pose an additional risk.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$167.98</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">71.6</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">33.8%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">35.1%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-11.5%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Technology</div></div>
+</div>
+    <div class="risk-line">⚠ High operating margin sustainability</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**Research Note: Arista Networks, Inc. (ANET)**<br><br>1. **BUSINESS QUALITY**<br>	* Arista Networks develops, markets, and sells data-driven, client to cloud networking solutions for various environments.<br>	* The company&#x27;s cloud networking solutions include the Extensible Operating System (EOS) and a set of network applications.<br>	* Arista offers a range of products and services, including data center, cloud and AI networking, cognitive adjacencies, and cognitive network software and services.<br>	* The company serves a diverse range of industries, with a strong focus on enterprise and cloud customers.<br><br>2. **EARNINGS QUALITY**<br>	* EPS growth trend: 33.8% YoY growth, indicating strong earnings momentum.<br>	* Quality of earnings: High operating margin (42.7%) and profit margin (38.3%) suggest strong profitability.<br>	* One-time items: No significant one-time items noted in recent financial reports.<br><br>3. **REVENUE ACCELERATION**<br>	* Revenue growth: 35.1% growth rate, indicating accelerating revenue momentum.<br>	* Key drivers: Growing demand for cloud and AI networking solutions, expansion into new markets and industries.<br>	* Recent news: Intel&#x27;s Q2 earnings surpassing estimates on solid top-line growth, driven by Xeon server CPUs, AI PCs, and Intel 18A output, may indicate a positive trend for Arista&#x27;s business.<br><br>4. **COMPETITIVE MOAT**<br>	* Network effects: Arista&#x27;s EOS and network applications create a stickiness among customers, making it difficult for competitors to win market share.<br>	* Switching costs: High switching costs for customers due to the complexity and customization of Arista&#x27;s solutions.<br>	* Scale: Arista&#x27;s large market share and strong financials provide a competitive advantage.<br><br>5. **INDUSTRY TAILWINDS**<br>	* Growing demand for AI-driven enterprise spending, as highlighted by the Zacks Analyst Blog, creates growth opportunities for Arista.<br>	* Recent news: Verizon&#x27;s Q2 earnings beating estimates on strong margins and outlook lifted, may indicate a positive trend for the industry, as telecom companies are investing in AI and cloud infrastructure.<br>	* Cisco&#x27;s big run and its place in portfolios, as discussed by Trefis, may also indicate a growing interest in networking solutions, benefiting Arista.<br><br>6. **MANAGEMENT EXECUTION**<br>	* Track record: Strong financial performance, with high revenue growth and expanding margins.<br>	* Capital allocation: Arista has a history of investing in research and development, driving innovation and growth.<br>	* Guidance history: Arista has consistently provided strong guidance, indicating confidence in its business prospects.<br><br>7. **VALUATION**<br>	* Forward P/E: 37.62, indicating a premium valuation.<br>	* PEG ratio: 2.22, suggesting that the stock may be overvalued relative to its growth rate.<br>	* Price/Sales: 21.80, indicating a premium valuation.<br><br>8. **KEY RISKS**<br>	* Recent news: Nokia&#x27;s efforts to balance telecom headwinds with fast-growing AI networking, cloud infrastructure, and enterprise demand, may indicate increasing competition for Arista.<br>	* The Zacks article highlighting the effectiveness of overly optimistic recommendations of Wall Street analysts, may suggest that the stock&#x27;s valuation is influenced by analyst sentiment, rather than fundamental performance.<br>	* Surging oil prices, as mentioned in the article about high ROE stocks, may create market volatility, affecting Arista&#x27;s stock price.<br><br>9. **RESEARCH VERDICT**<br>The bull case for Arista Networks is based on its strong earnings momentum, accelerating revenue growth, and competitive moat. With a growing demand for AI-driven enterprise spending and a positive industry trend, Arista is well-positioned for long-term growth. However, the stock&#x27;s premium valuation and potential competition from Nokia and other players, create uncertainty. Conviction: MEDIUM.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">After reviewing the research note on Arista Networks (ANET), I&#x27;ve identified several potential holes in the thesis:<br><br>1. **ACCOUNTING RED FLAGS**: The note mentions a high operating margin (42.7%) and profit margin (38.3%), but it doesn&#x27;t provide any information on potential accounting red flags such as receivables growth, inventory build, or accruals ratio. According to the additional raw data, the current ratio is 2.829, which is relatively healthy, but it would be essential to investigate further to ensure there are no underlying issues.<br>2. **THESIS KILLERS**: A single event that could invalidate the entire bull case is if Nokia&#x27;s (NOK) efforts to balance telecom headwinds with fast-growing AI networking, cloud infrastructure, and enterprise demand start to pay off, potentially threatening Arista&#x27;s market share. This is highlighted in the recent news article &quot;Is NOK Stock Worth Buying as AI Growth Offsets Telecom Challenges?&quot; (66.3h ago, Zacks).<br>3. **ASSUMPTION STRESS TEST**: The research note assumes that Arista&#x27;s strong earnings momentum and accelerating revenue growth will continue. However, this assumption may be wrong if the company&#x27;s growth is heavily dependent on a few large customers or if the demand for AI-driven enterprise spending slows down. The note mentions that the average brokerage recommendation (ABR) for Arista Networks is equivalent to a Buy, but this may be overly optimistic, as highlighted in the article &quot;Brokers Suggest Investing in Arista Networks (ANET): Read This Before Placing a Bet&quot; (2.5h ago, Zacks).<br>4. **VALUATION RISK**: The stock&#x27;s forward P/E is 37.62, indicating a premium valuation. The PEG ratio is 2.22, suggesting that the stock may be overvalued relative to its growth rate. If the company&#x27;s growth slows down or if the market becomes more risk-averse, the stock&#x27;s valuation could become unsustainable. The note mentions that the stock is -11.5% off its 52-week high, but this may not be enough to offset the potential valuation risk.<br>5. **COMPETITIVE THREATS**: The note mentions Nokia&#x27;s efforts to balance telecom headwinds with fast-growing AI networking, cloud infrastructure, and enterprise demand, but it doesn&#x27;t provide a detailed analysis of the competitive landscape. Other competitors, such as Cisco, may also pose a threat to Arista&#x27;s market share. The article &quot;What Cisco&#x27;s Big Run Actually Adds To Your Portfolio&quot; (2.3h ago, Trefis) highlights Cisco&#x27;s strong performance, which could be a concern for Arista.<br>6. **MACRO SENSITIVITY**: The note mentions that surging oil prices may create market volatility, affecting Arista&#x27;s stock price. However, it doesn&#x27;t provide a detailed analysis of the company&#x27;s exposure to macroeconomic risks, such as interest rate hikes, recession, or sector rotation.<br>7. **INSTITUTIONAL RISK**: The note doesn&#x27;t provide any information on institutional ownership or insider activity. According to the additional raw data, insider ownership is 17.3%, which is relatively high, but it would be essential to investigate further to ensure that there are no signs of distribution or smart money leaving the stock.<br><br>Overall, I would rate the risk as **RED (avoid)**. While the company&#x27;s strong earnings momentum and accelerating revenue growth are positives, the premium valuation, potential competition from Nokia and other players, and lack of detailed analysis on macroeconomic risks and institutional ownership are significant concerns. The note&#x27;s conviction is medium, but I believe that the risks outweigh the potential rewards, and investors should exercise caution when considering Arista Networks.<br><br>Specifically, I would like to see more detailed analysis on the following:<br><br>* Accruals ratio and receivables growth to ensure there are no accounting red flags<br>* Competitive landscape, including a detailed analysis of Nokia&#x27;s and Cisco&#x27;s efforts in AI networking, cloud infrastructure, and enterprise demand<br>* Macro-economic risks, including interest rate hikes, recession, or sector rotation<br>* Institutional ownership and insider activity to ensure that there are no signs of distribution or smart money leaving the stock<br><br>Until these concerns are addressed, I would recommend avoiding Arista Networks due to the high risk profile.</div>
+    </div>
+  </div>
+</details>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 Upcoming Earnings</div>
+  <div class="earnings-box">
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• KLAC</span>
+  <span style="color:#aaa">2026-07-29</span>
+  <span style="color:#ff6d6d;font-size:12px">1d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• LRCX</span>
+  <span style="color:#aaa">2026-07-30</span>
+  <span style="color:#ff6d6d;font-size:12px">2d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• META</span>
+  <span style="color:#aaa">2026-07-30</span>
+  <span style="color:#ff6d6d;font-size:12px">2d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• MSFT</span>
+  <span style="color:#aaa">2026-07-30</span>
+  <span style="color:#ff6d6d;font-size:12px">2d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• AMZN</span>
+  <span style="color:#aaa">2026-07-31</span>
+  <span style="color:#ff6d6d;font-size:12px">3d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• ANET</span>
+  <span style="color:#aaa">2026-08-05</span>
+  <span style="color:#ffd600;font-size:12px">8d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• DDOG</span>
+  <span style="color:#aaa">2026-08-06</span>
+  <span style="color:#ffd600;font-size:12px">9d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• ELF</span>
+  <span style="color:#aaa">2026-08-06</span>
+  <span style="color:#ffd600;font-size:12px">9d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• CELH</span>
+  <span style="color:#aaa">2026-08-10</span>
+  <span style="color:#ffd600;font-size:12px">13d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• ONON</span>
+  <span style="color:#aaa">2026-08-11</span>
+  <span style="color:#ffd600;font-size:12px">14d</span>
+</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📈 Pick Track Record</div>
+  <div class="track-card">
+    <div class="track-grid">
+<div class="track-cell"><div class="track-h">1 Week Fwd · 4 picks</div>
+<div class="track-v tr-neg">-0.43% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 50.0% · avg -1.64%</div></div>
+<div class="track-cell"><div class="track-h">1 Month Fwd</div>
+<div class="track-v tr-neu">building…</div></div></div>
+    <div class="track-note">Top 5 daily picks tracked forward vs SPY ·
+    9 day(s) of history · builds daily</div>
+  </div>
+</div>
+
+<div class="footer">
+  HZ Capital Trading Intelligence &nbsp;·&nbsp;
+  2026-07-28 00:03 &nbsp;·&nbsp;
+  Market analysis only — positions &amp; instructions are delivered privately via Telegram. Not financial advice.
+</div>
+
+<script>
+function filterCards(f, btn) {
+  document.querySelectorAll('.filt').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('details.stock-card').forEach(function(c) {
+    var show = true;
+    if      (f === 'buy')   show = c.dataset.action === 'BUY NOW';
+    else if (f === 'wait')  show = c.dataset.action.indexOf('WAIT') === 0;
+    else if (f === 'watch') show = c.dataset.action === 'WATCH';
+    else if (f === 'avoid') show = c.dataset.action === 'AVOID';
+    else if (f === 'high')  show = c.dataset.conviction === 'HIGH';
+    c.classList.toggle('hidden', !show);
+  });
+  var v = document.querySelectorAll('details.stock-card:not(.hidden)').length;
+  document.getElementById('stock-count').textContent = v + ' stocks';
+}
+</script>
+</body>
+</html>
