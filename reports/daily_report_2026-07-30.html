@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>HZ Capital — July 30, 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     background:#0d0d0d;color:#e0e0e0;line-height:1.5;font-size:14px}
+
+/* STICKY HEADER */
+.sticky-header{position:sticky;top:0;z-index:100;background:#111;
+  border-bottom:1px solid #222;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+.site-title{font-size:13px;font-weight:700;color:#fff}
+.site-sub{font-size:11px;color:#666;margin-top:1px}
+.regime-pill{font-size:11px;font-weight:700;padding:4px 10px;
+  border-radius:20px;color:#000;white-space:nowrap}
+
+/* SECTIONS */
+.section{padding:12px 12px 4px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;
+  text-transform:uppercase;color:#555;margin-bottom:8px}
+
+/* ALERTS */
+.alert-card{background:#1a0800;border:1px solid #ff6d00;border-radius:10px;
+  padding:12px 14px;margin-bottom:8px}
+.alert-type{font-size:10px;font-weight:700;color:#ff6d00;letter-spacing:0.5px;text-transform:uppercase}
+.alert-ticker{font-size:15px;font-weight:800;color:#ff9d4a;margin:2px 0}
+.alert-msg{font-size:12px;color:#ccc;line-height:1.5}
+
+/* MACRO */
+details.macro-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;
+  overflow:clip;margin-bottom:8px}   /* clip, NOT hidden — hidden breaks sticky */
+details.macro-card > summary{list-style:none;cursor:pointer;padding:13px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+details.macro-card > summary::-webkit-details-marker{display:none}
+details.macro-card > summary::marker{display:none}
+details.macro-card[open] .chevron{transform:rotate(180deg)}
+.macro-title{font-size:14px;font-weight:700;color:#fff}
+.macro-body{padding:12px 14px 14px;font-size:13px;color:#bbb;
+  line-height:1.75;border-top:1px solid #222}
+
+/* SECTOR OVERVIEW */
+.sector-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;overflow:hidden}
+.sector-row{display:flex;align-items:flex-start;gap:10px;
+  padding:9px 14px;border-bottom:1px solid #1e1e1e}
+.sector-row:last-child{border-bottom:none}
+.sector-name{font-size:11px;font-weight:700;color:#777;
+  text-transform:uppercase;letter-spacing:0.3px;
+  min-width:110px;flex-shrink:0;padding-top:2px}
+.sector-chips{display:flex;gap:5px;flex-wrap:wrap}
+.stk-chip{background:#252525;border-radius:4px;padding:2px 8px;
+  font-size:11px;color:#82b1ff;font-weight:700}
+.stk-chip.buy{color:#00c853}
+.stk-chip.watch{color:#ffd600}
+.stk-chip.avoid{color:#ff6d6d}
+
+/* FILTER BAR */
+.filter-bar{position:sticky;top:53px;z-index:99;background:#111;
+  border-bottom:1px solid #1e1e1e;padding:8px 12px;
+  display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  margin-top:12px}
+.filter-bar::-webkit-scrollbar{display:none}
+.filt{background:#1e1e1e;border:1px solid #2a2a2a;color:#888;
+  padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  white-space:nowrap;cursor:pointer;transition:all 0.15s;user-select:none}
+.filt.active{background:#82b1ff;color:#000;border-color:#82b1ff}
+
+/* STOCK CARDS */
+details.stock-card{background:#1a1a1a;border-radius:12px;margin-bottom:9px;
+  overflow:clip;border:1px solid #222}   /* clip, NOT hidden — hidden breaks sticky */
+details.stock-card[open]{border-color:#333}
+details.stock-card > summary{list-style:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;padding:13px 14px}
+details.stock-card > summary::-webkit-details-marker{display:none}
+details.stock-card > summary::marker{display:none}
+details.stock-card[open] .chevron{transform:rotate(180deg)}
+
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rank-num{font-size:15px;font-weight:800;color:#444;min-width:22px}
+.tk{font-size:17px;font-weight:800;color:#82b1ff}
+.co-name{font-size:12px;color:#888;flex:1;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.chevron{font-size:10px;color:#555;transition:transform 0.2s;flex-shrink:0}
+
+.badge-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.b-buy{background:#00c853;color:#000}
+.b-watch{background:#ffd600;color:#000}
+.b-wait{background:#ff9d4a;color:#000}
+.b-avoid{background:#d50000;color:#fff}
+.b-dash{background:#2a2a2a;color:#666}
+
+/* TODAY AT A GLANCE */
+.glance-card{background:linear-gradient(135deg,#141a26,#101418);border:1px solid #2a3550;
+  border-radius:12px;padding:14px;margin-bottom:8px}
+.glance-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.glance-stat{background:#1a2230;border-radius:8px;padding:7px 12px;flex:1;min-width:90px}
+.glance-label{font-size:9px;color:#5a6a8a;text-transform:uppercase;letter-spacing:0.5px}
+.glance-val{font-size:14px;font-weight:800;color:#e8eeff;margin-top:2px}
+.glance-line{font-size:12px;color:#9ab;line-height:1.6}
+.glance-line b{color:#82b1ff}
+.delta-chip{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;
+  padding:1px 7px;margin:1px 3px 1px 0}
+.d-new{background:rgba(0,200,83,0.15);color:#00c853;border:1px solid rgba(0,200,83,0.35)}
+.d-drop{background:rgba(213,0,0,0.12);color:#ff6d6d;border:1px solid rgba(213,0,0,0.3)}
+.setup-line{font-size:11px;color:#4dd0a5;padding-top:4px}
+
+/* TRACK RECORD */
+.track-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:12px 14px}
+.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:4px}
+.track-cell{background:#1e1e1e;border-radius:8px;padding:8px 10px}
+.track-h{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.track-v{font-size:15px;font-weight:800;margin-top:2px}
+.tr-pos{color:#00c853}.tr-neg{color:#ff6d6d}.tr-neu{color:#bbb}
+.track-note{font-size:11px;color:#555;margin-top:8px;line-height:1.5}
+.b-high{background:rgba(130,177,255,0.15);color:#82b1ff;border:1px solid rgba(130,177,255,0.3)}
+.b-medium{background:rgba(255,214,0,0.1);color:#ffd600;border:1px solid rgba(255,214,0,0.25)}
+.b-low{background:rgba(255,109,0,0.1);color:#ff6d00;border:1px solid rgba(255,109,0,0.25)}
+
+.score-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.chip{background:#252525;border-radius:4px;padding:2px 7px;font-size:11px;color:#666}
+.chip b{color:#bbb}
+.rationale{font-size:12px;color:#666;line-height:1.5;padding-top:6px;border-top:1px solid #222}
+
+/* CARD BODY */
+.card-body{border-top:1px solid #222}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+  padding:10px 12px;background:#141414}
+.meta-item{background:#1e1e1e;border-radius:6px;padding:6px 8px}
+.meta-label{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.meta-val{font-size:13px;font-weight:700;color:#ddd;margin-top:1px}
+.case-section{padding:12px 14px}
+.case-section+.case-section{border-top:1px solid #1e1e1e}
+.case-label{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
+.case-bull .case-label{color:#00c853}
+.case-bear .case-label{color:#ff6d6d}
+.case-text{font-size:13px;line-height:1.75;color:#bbb}
+.risk-line{font-size:12px;color:#ff9d4a;padding:6px 14px 0}
+
+/* EARNINGS */
+.earnings-box{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:10px 14px}
+.earnings-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid #1e1e1e;font-size:13px}
+.earnings-row:last-child{border-bottom:none}
+.no-items{color:#555;font-size:13px;padding:8px 0}
+
+/* FOOTER */
+.footer{text-align:center;font-size:11px;color:#333;padding:20px 14px 40px}
+
+/* ── EXPAND / COLLAPSE ERGONOMICS ──────────────────────────────────────
+   Long research notes used to be collapsible only from the very top, so
+   you had to scroll back up to close one. Three fixes:
+   1. the card's own header sticks below the toolbars while it is open,
+      so the collapse control is always one tap away while reading;
+   2. a matching collapse bar sits at the END of every long section;
+   3. a floating "collapse all" appears whenever anything is open.        */
+details.stock-card[open] > summary{position:sticky;top:98px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55);padding:9px 14px}
+/* While open the pinned header must stay SMALL — the teaser rows (scores,
+   setup, rationale) are redundant once the full body is on screen. */
+details.stock-card[open] > summary .score-chips,
+details.stock-card[open] > summary .setup-line,
+details.stock-card[open] > summary .rationale{display:none}
+details.stock-card[open] > summary .card-top{margin-bottom:4px}
+details.stock-card[open] > summary .badge-row{margin-bottom:0}
+details.macro-card[open] > summary{position:sticky;top:53px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55)}
+.collapse-bar{display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:12px 14px;background:#151515;border-top:1px solid #262626;
+  color:#82b1ff;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent}
+.collapse-bar:active{background:#202020}
+.fab{position:fixed;right:14px;bottom:18px;z-index:300;background:#82b1ff;color:#000;
+  border:none;border-radius:24px;padding:14px 18px;font-size:12px;font-weight:800;
+  box-shadow:0 4px 16px rgba(0,0,0,0.6);cursor:pointer;display:none}   /* >=44px tap target */
+.fab.show{display:block}
+
+/* DESKTOP */
+@media(min-width:700px){
+  body{max-width:900px;margin:0 auto}
+  .filter-bar{top:57px}
+  .meta-grid{grid-template-columns:repeat(6,1fr)}
+  details.stock-card[open] > summary{top:102px}   /* clears the taller desktop toolbars */
+}
+@media(min-width:1100px){body{max-width:1100px}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div>
+    <div class="site-title">HZ Capital</div>
+    <div class="site-sub">July 30, 2026</div>
+  </div>
+  <div class="regime-pill" style="background:#ffd600">UPTREND UNDER PRESSURE</div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">⚡ Today in 30 Seconds</div>
+  <div class="glance-card">
+    <div class="glance-row">
+      <div class="glance-stat"><div class="glance-label">Regime</div><div class="glance-val" style="color:#ffd600">UPTREND UNDER PRESSURE</div></div>
+      <div class="glance-stat"><div class="glance-label">Buy Setups</div><div class="glance-val">0</div></div>
+      <div class="glance-stat"><div class="glance-label">Wait</div><div class="glance-val">0</div></div>
+      <div class="glance-stat"><div class="glance-label">Watch</div><div class="glance-val">2</div></div>
+    </div>
+    <div class="glance-line">🏆 #1 pick: <b>INCY</b> <span class="badge b-watch">WATCH</span> $127.10 is 4.15% below pivot $132.60 — no trigger yet</div><div class="glance-line">Δ vs 2026-07-29: <span class="delta-chip d-drop">− ANET</span><span class="delta-chip d-drop">− IBKR</span></div><div class="glance-line">📅 Event radar: <b>Jobs report (NFP)</b> in 8d · <b>CPI release</b> in 13d</div><div class="glance-line" style="color:#667">🕐 Prices as of last US close: <b>2026-07-29</b></div>
+  </div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">📊 Macro Analysis</div>
+  <details class="macro-card" open>
+    <summary>
+      <span class="macro-title">🌍 UPTREND UNDER PRESSURE</span>
+      <span class="chevron">▼</span>
+    </summary>
+    <div class="macro-body">1. WHAT CHANGED SINCE YESTERDAY: The most significant development is the 13.45% jump in the VIX to 20.66, indicating a notable increase in market volatility, as reflected in the headline &quot;[CNBC, 0.1h ago] Stock futures rise as Microsoft jumps after earnings; traders hope to recover from Fed Day sell-off: Live updates&quot;. This suggests that despite positive earnings from Microsoft, the overall market mood remains cautious.<br><br>2. MARKET REGIME ASSESSMENT: The current regime remains an uptrend under pressure, with the SPY and QQQ indices both trading below their 50-day moving averages. The significant decline in technology and semiconductor stocks, as seen in the 1-day performances of XLK (-2.64%) and SOXX (-5.38%), further emphasizes the pressure on the uptrend.<br><br>3. SECTOR LEADERSHIP: Sector leadership has rotated towards more defensive areas, with Consumer Staples (XLP) and Healthcare (XLV) showing relative strength, up 0.34% and down 0.61% respectively. Energy (XLE) also saw a significant 1-day gain of 1.88%. Meanwhile, growth-oriented sectors like Technology and Semiconductors are lagging.<br><br>4. NEWS-DRIVEN RISKS &amp; CATALYSTS: Top news-driven risks and catalysts include the U.S. resuming strikes against Iran, as reported by CNBC, which could lead to increased geopolitical tensions. Additionally, the upcoming Jobs report (NFP) on 2026-08-07 and the CPI release on 2026-08-12 are key scheduled events that could impact market direction. The nomination vote for Todd Blanche as AG, postponed due to Trump-IRS settlement concerns, as mentioned in a CNBC headline, also bears watching for potential political implications.<br><br>5. GROWTH STOCK ENVIRONMENT: The current environment remains challenging for growth stocks, given the significant decline in the QQQ (-2.04% for the day) and the underperformance of growth-oriented sectors. However, positive earnings surprises from companies like Microsoft and Starbucks may offer some support to growth names.<br><br>6. POSTURE RECOMMENDATION: Given the increased volatility and the uptrend under pressure regime, a NEUTRAL posture is recommended, with a 60% equity allocation. This is unchanged from yesterday&#x27;s posture, as the market&#x27;s overall risk profile has not significantly improved despite some positive earnings reports.</div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse macro analysis</div>
+  </details>
+</div>
+
+<div class="section">
+  <div class="section-title">🏭 Industry Overview</div>
+  <div class="sector-card">
+<div class="sector-row">
+  <div class="sector-name">Financial Services <span style="font-size:10px;color:#666">· <span style="color:#ff6d6d">1D -1.6%</span> · <span style="color:#00c853">1W +1.5%</span> · <span style="color:#ff6d6d">▼3</span></span></div>
+  <div class="sector-chips"><span class="stk-chip watch">NTRS</span></div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare <span style="font-size:10px;color:#666">· <span style="color:#ff6d6d">1D -0.6%</span> · <span style="color:#00c853">1W +3.0%</span> · <span style="color:#ff6d6d">▼2</span></span></div>
+  <div class="sector-chips"><span class="stk-chip watch">INCY</span></div>
+</div></div>
+  
+  <details class="macro-card" style="margin-top:8px">
+    <summary><span class="macro-title" style="font-size:13px">📊 Sector rotation leaderboard (1-week momentum)</span><span class="chevron">▼</span></summary>
+    <div style="border-top:1px solid #222">
+<div class="sector-row">
+  <div class="sector-name">Consumer Staples<span style="color:#00c853"> ▲1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.3%</span> · <span style="color:#00c853">1W +5.0%</span> ·
+    1M 5.16%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Communication Svcs<span style="color:#00c853"> ▲5</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.1%</span> · <span style="color:#00c853">1W +3.9%</span> ·
+    1M 2.22%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare<span style="color:#ff6d6d"> ▼2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.6%</span> · <span style="color:#00c853">1W +3.0%</span> ·
+    1M 4.78%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Materials<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.1%</span> · <span style="color:#00c853">1W +2.9%</span> ·
+    1M 1.79%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Disc<span style="color:#00c853"> ▲5</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.8%</span> · <span style="color:#00c853">1W +2.6%</span> ·
+    1M -4.83%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Real Estate<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.1%</span> · <span style="color:#00c853">1W +2.2%</span> ·
+    1M 4.38%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Financials<span style="color:#ff6d6d"> ▼3</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.6%</span> · <span style="color:#00c853">1W +1.5%</span> ·
+    1M 5.73%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Energy<span style="color:#00c853"> ▲3</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.9%</span> · <span style="color:#ff6d6d">1W -1.2%</span> ·
+    1M 10.43%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Small Cap Growth</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -2.1%</span> · <span style="color:#ff6d6d">1W -2.8%</span> ·
+    1M -7.68%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Utilities<span style="color:#ff6d6d"> ▼2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.3%</span> · <span style="color:#ff6d6d">1W -2.8%</span> ·
+    1M -0.95%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Industrials<span style="color:#ff6d6d"> ▼5</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -3.2%</span> · <span style="color:#ff6d6d">1W -2.9%</span> ·
+    1M -4.63%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">ARK Innovation</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -2.6%</span> · <span style="color:#ff6d6d">1W -4.4%</span> ·
+    1M -12.67%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -2.6%</span> · <span style="color:#ff6d6d">1W -6.7%</span> ·
+    1M -12.57%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Semiconductors</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -5.4%</span> · <span style="color:#ff6d6d">1W -15.6%</span> ·
+    1M -27.43%</div>
+</div></div>
+  </details>
+</div>
+
+
+<div class="filter-bar">
+  <button class="filt active" onclick="filterCards('all',this)">All (2)</button>
+  <button class="filt" onclick="filterCards('buy',this)">🟢 Buy Now (0)</button>
+  <button class="filt" onclick="filterCards('wait',this)">⏳ Wait (0)</button>
+  <button class="filt" onclick="filterCards('watch',this)">🟡 Watch (2)</button>
+  <button class="filt" onclick="filterCards('avoid',this)">🔴 Avoid (0)</button>
+  <button class="filt" onclick="filterCards('high',this)">⭐ High Conv. (1)</button>
+</div>
+<div class="section" style="padding-top:10px">
+  <div class="section-title"><span id="stock-count">2 stocks</span> — tap to expand</div>
+  
+<details class="stock-card"
+  data-action="WATCH"
+  data-conviction="HIGH">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#1</span>
+      <span class="tk">INCY</span>
+      <span class="co-name">Incyte Corporation</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-watch">WATCH</span>
+      <span class="badge b-high">HIGH</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>24.7/40</b></span>
+  <span class="chip">Fund <b>32.6/40</b></span>
+  <span class='chip'>Score <b>57.3/80</b></span>
+</div>
+    <div class="setup-line">📐 $127.10 is 4.15% below pivot $132.60 — no trigger yet</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 14.5% · ATR 117% of 50d · vol 111% of 50d</div>
+    <div class="rationale">Incyte Corporation has a high technical score, strong fundamental score, and a diverse portfolio of products, making it an attractive stock in the current market regime. Its high RS rank and proximity to highs also contribute to its top ranking.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$127.1</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">92.6</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">96.8%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">37.7%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-4.1%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Healthcare</div></div>
+</div>
+    <div class="risk-line">⚠ Accounting red flags</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**1. BUSINESS QUALITY**<br>* Incyte Corporation is a biopharmaceutical company focused on the discovery, development, and commercialization of therapeutics.<br>* The company has a diverse portfolio of products, including JAKAFI, ICLUSIG, MONJUVI/MINJUVI, and NIKTIMVO, treating various diseases such as myelofibrosis, polycythemia vera, and chronic graft-versus-host disease.<br>* Incyte&#x27;s products are approved in the United States, Europe, Canada, and Japan, indicating a strong global presence.<br><br>**2. EARNINGS QUALITY**<br>* Incyte reported a 96.8% year-over-year EPS growth, driven by robust revenue growth and operating margin expansion.<br>* The company&#x27;s recent Q2 earnings call highlighted a 38% increase in total revenue, with Jakafi and Opzelura sales surging, prompting a raise in full-year guidance.<br>* No significant one-time items were mentioned in recent news, suggesting high-quality earnings.<br><br>**3. REVENUE ACCELERATION**<br>* Incyte&#x27;s revenue growth is accelerating, with a 37.7% year-over-year increase in Q2.<br>* Key drivers of revenue growth include demand growth across the company&#x27;s marketed portfolio and a one-time non-cash benefit.<br>* The company&#x27;s diverse product pipeline and recent approvals, such as Opzelura in the EU, are expected to contribute to future revenue growth.<br><br>**4. COMPETITIVE MOAT**<br>* Incyte&#x27;s competitive moat is built around its proprietary products, such as JAKAFI, which has a strong market position in the treatment of myelofibrosis and polycythemia vera.<br>* The company&#x27;s research and development capabilities, with a focus on innovative therapies, provide a barrier to entry for competitors.<br>* Incyte&#x27;s global presence and established distribution networks also contribute to its competitive advantage.<br><br>**5. INDUSTRY TAILWINDS**<br>* The biotechnology industry is experiencing growth, driven by increasing demand for innovative therapies and advancements in medical research.<br>* Recent news, such as the European Commission&#x27;s approval of Opzelura cream for the treatment of moderate eczema, highlights the industry&#x27;s potential for growth and Incyte&#x27;s position within it.<br>* Incyte&#x27;s diverse product pipeline, with multiple products in development for various diseases, positions the company to benefit from industry tailwinds.<br><br>**6. MANAGEMENT EXECUTION**<br>* Incyte&#x27;s management team has demonstrated strong execution, with recent Q2 earnings beating expectations and full-year guidance being raised.<br>* The company&#x27;s strategic focus on innovative therapies and expansion into new markets, such as the EU, suggests a well-executed growth strategy.<br>* Management&#x27;s track record of delivering on guidance and achieving revenue growth milestones is a positive indicator of their ability to execute.<br><br>**7. VALUATION**<br>* Incyte&#x27;s forward P/E ratio of 14.19 and PEG ratio of 12.21 suggest a premium valuation, but one that may be justified by the company&#x27;s strong growth prospects and competitive position.<br>* The company&#x27;s price-to-sales ratio of 4.43 is also relatively high, but Incyte&#x27;s high gross margin and profit margin support the valuation.<br>* A more detailed analysis of valuation multiples and growth rates is necessary to determine if the premium is fully justified.<br><br>**8. KEY RISKS**<br>* Recent news, such as Incyte&#x27;s shares retreating after the best day in a year despite Opzelura EU nod, highlights the risk of market volatility and potential overreaction to news (Stocktwits, 8.5h ago).<br>* The company&#x27;s full-year sales guidance missing expectations, despite Q2 earnings beating estimates, poses a risk to investor sentiment and potential downward revision of estimates (InvestorsHub, 36.4h ago).<br>* Regulatory risks, such as changes in EU or US regulations, could impact Incyte&#x27;s ability to commercialize its products, as seen with the recent EU approval of Opzelura (Stocktwits, 8.5h ago).<br><br>**9. RESEARCH VERDICT**<br>Incyte Corporation presents a compelling growth story, driven by its diverse product portfolio, strong revenue growth, and competitive position. With a robust pipeline and recent approvals, the company is well-positioned to benefit from industry tailwinds. However, market volatility and regulatory risks pose potential threats to the investment thesis. Conviction level: MEDIUM.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">After reviewing the research note on Incyte Corporation (INCY), I&#x27;ve identified several potential holes in the thesis:<br><br>**1. Accounting Red Flags:**<br>* The research note mentions a &quot;one-time non-cash benefit&quot; that contributed to revenue growth, but it doesn&#x27;t provide further details. This could be a potential red flag, as one-time benefits can mask underlying issues.<br>* The note also highlights a 38% increase in total revenue, but it&#x27;s essential to examine the breakdown of this growth. Is it solely due to the strong performance of Jakafi and Opzelura, or are there other factors at play?<br><br>**2. Thesis Killers:**<br>* A significant decline in sales of Jakafi or Opzelura could invalidate the entire bull case. Given that these products are major drivers of revenue growth, any disruptions to their sales could have a substantial impact on the company&#x27;s overall performance.<br>* Regulatory issues, such as a failure to secure approval for a key pipeline product or a major label expansion, could also severely impact the company&#x27;s growth prospects.<br><br>**3. Assumption Stress Test:**<br>* The research note assumes that Incyte&#x27;s diverse product pipeline will continue to drive revenue growth. However, this assumption may be overly optimistic, as the success of pipeline products is inherently uncertain.<br>* The note also assumes that the company&#x27;s global presence and established distribution networks will provide a barrier to entry for competitors. However, this assumption may not hold true if competitors develop more effective or cost-efficient products.<br><br>**4. Valuation Risk:**<br>* The forward P/E ratio of 14.19 and PEG ratio of 12.21 suggest a premium valuation. However, if the company&#x27;s growth prospects slow down or if the market becomes less enthusiastic about the biotechnology sector, this premium valuation could become unsustainable.<br>* The price-to-sales ratio of 4.43 is also relatively high, which could indicate that the stock is overvalued.<br><br>**5. Competitive Threats:**<br>* The research note highlights Incyte&#x27;s competitive moat, but it&#x27;s essential to consider the competitive landscape in the biotechnology sector. Companies like AbbVie, Pfizer, and Bristol Myers Squibb have significant resources and capabilities that could potentially threaten Incyte&#x27;s market position.<br>* The note mentions that Incyte&#x27;s products have a strong market position, but it&#x27;s crucial to examine the patent expiration dates for these products and the potential impact of generic competition.<br><br>**6. Macro Sensitivity:**<br>* The biotechnology sector is sensitive to regulatory changes, and Incyte is no exception. Changes in FDA regulations or reimbursement policies could impact the company&#x27;s ability to commercialize its products.<br>* The sector is also subject to fluctuations in investor sentiment, which could affect Incyte&#x27;s stock price.<br><br>**7. Institutional Risk:**<br>* The research note mentions that Incyte&#x27;s management team has demonstrated strong execution, but it&#x27;s essential to examine the company&#x27;s insider ownership and institutional holdings. With insider ownership at 1.9%, there may be a lack of alignment between management&#x27;s interests and those of shareholders.<br>* The short ratio of 5.32 days to cover suggests that there may be some short interest in the stock, which could contribute to market volatility.<br><br>**Recent News:**<br>* The news that Incyte&#x27;s shares retreated after the best day in a year despite the Opzelura EU nod suggests that the market may be overreacting to positive news, which could indicate a level of irrational exuberance.<br>* The fact that Incyte&#x27;s full-year sales guidance missed expectations despite Q2 earnings beating estimates could suggest that the company&#x27;s growth prospects may be slowing down.<br><br>**Challenge Verdict:**<br>Overall, I would rate the risk level as YELLOW (proceed with caution). While Incyte&#x27;s diverse product portfolio and strong revenue growth are positives, the company&#x27;s premium valuation, competitive threats, and macro sensitivity are concerns that need to be addressed. The recent news about the company&#x27;s shares retreating despite positive developments and the missed full-year sales guidance also raise some red flags. It&#x27;s essential to closely monitor the company&#x27;s progress and adjust the investment thesis accordingly.<br><br>Specifically, I would recommend:<br><br>* Closely monitoring the company&#x27;s pipeline progress and the success of its key products, such as Jakafi and Opzelura.<br>* Examining the competitive landscape and potential threats to Incyte&#x27;s market position.<br>* Keeping a close eye on regulatory developments and their potential impact on the company&#x27;s products and growth prospects.<br>* Reassessing the company&#x27;s valuation and growth prospects in light of the recent news and developments.</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse INCY</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="WATCH"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#2</span>
+      <span class="tk">NTRS</span>
+      <span class="co-name">Northern Trust Corporation</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-watch">WATCH</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>14.1/40</b></span>
+  <span class="chip">Fund <b>33.3/40</b></span>
+  <span class='chip'>Score <b>47.4/80</b></span>
+</div>
+    <div class="setup-line">📐 $177.65 is 7.28% below pivot $191.60 — no trigger yet</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 9.3% · ATR 119% of 50d · vol 119% of 50d</div>
+    <div class="rationale">Northern Trust Corporation has a strong fundamental score, but its technical score is relatively low, and it operates in a sector that may be more sensitive to market fluctuations. While it has a solid business quality, its lower RS rank and greater distance from highs make it less attractive than Incyte.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$177.65</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">71.8</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">98.6%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">36.4%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-7.3%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Financial Services</div></div>
+</div>
+    <div class="risk-line">⚠ Accounting red flags and sector sensitivity</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**1. BUSINESS QUALITY**<br>* Northern Trust Corporation is a financial holding company providing wealth management, asset servicing, asset management, and banking solutions to corporations, institutions, families, and individuals.<br>* The company operates in two segments: Asset Servicing and Wealth Management, offering a range of services including custody, fund administration, investment operations outsourcing, and investment management.<br>* Strong brand reputation and long history of operations contribute to its competitive advantage.<br><br>**2. EARNINGS QUALITY**<br>* Recent EPS growth is 98.6% year-over-year, indicating strong earnings momentum.<br>* Profit margin is 24.7%, suggesting ability to maintain profitability.<br>* Operating margin of 42.5% is high, indicating efficient operations.<br>* ROE of 17.1% is above average, indicating strong returns on equity.<br><br>**3. REVENUE ACCELERATION**<br>* Revenue growth is 36.4%, indicating accelerating top-line growth.<br>* Key drivers of revenue growth are not explicitly stated, but strong asset growth and expansion of services are likely contributors.<br>* Further analysis is needed to determine sustainability of revenue acceleration.<br><br>**4. COMPETITIVE MOAT**<br>* Northern Trust&#x27;s long history, strong brand, and wide range of services contribute to its competitive moat.<br>* High switching costs for clients, particularly in asset servicing and wealth management, also contribute to the moat.<br>* Network effects may also be present, as the company&#x27;s large client base and wide range of services attract additional clients.<br><br>**5. INDUSTRY TAILWINDS**<br>* The fixed-income ETF boom, as described in the 141.2h ago article from TheStreet, may benefit Northern Trust&#x27;s asset servicing and wealth management segments.<br>* The company&#x27;s strong asset growth and AI strategy, as discussed in the 169.1h ago Motley Fool article, position it well for future growth.<br>* The trend towards using bonds as a cash-flow schedule, rather than just for income, may also benefit Northern Trust&#x27;s wealth management segment.<br><br>**6. MANAGEMENT EXECUTION**<br>* CEO O&#x27;Grady&#x27;s discussion of strong asset growth and AI strategy in the Q2 2026 earnings call transcript suggests a clear vision for the company&#x27;s future.<br>* The company&#x27;s ability to boost its quarterly dividend, as reported in the 164.7h ago Simply Wall St article, indicates a commitment to returning value to shareholders.<br>* Further analysis is needed to evaluate the company&#x27;s capital allocation and guidance history.<br><br>**7. VALUATION**<br>* Forward P/E of 14.056256 is relatively low compared to growth rate.<br>* PEG ratio of 1.21 is slightly above average, indicating a potential premium for growth.<br>* Price/Sales ratio of 2.4017453 is relatively high, but may be justified by the company&#x27;s strong earnings growth and competitive moat.<br><br>**8. KEY RISKS**<br>* The recent article from Zacks (58.2h ago) comparing NTRS to USB may indicate increased competition in the wealth management and asset servicing spaces.<br>* The MarketBeat article (171.8h ago) discussing the growth of the Canton Network, a potential competitor, highlights the risk of disruption in the industry.<br>* The company&#x27;s high operating margin and profit margin may be at risk if interest rates or market conditions change, potentially impacting revenue and earnings growth.<br><br>**9. RESEARCH VERDICT**<br>The bull case for Northern Trust Corporation is based on its strong earnings growth, accelerating revenue growth, and competitive moat. The company&#x27;s position in the growing wealth management and asset servicing spaces, combined with its strong brand and high switching costs, contribute to its potential for long-term growth. I rate my conviction in this thesis as MEDIUM, as further analysis is needed to evaluate the company&#x27;s management execution and potential risks.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">After thoroughly reviewing the research note on Northern Trust Corporation (NTRS), I have identified several concerns that cast a skeptical eye on the bull case.<br><br>**1. ACCOUNTING RED FLAGS:**<br>The research note does not provide sufficient information on NTRS&#x27;s accounting practices. However, I note that the company&#x27;s revenue growth (36.4%) far exceeds its EPS growth (98.6% is year-over-year, but we don&#x27;t know the sequential growth). This discrepancy raises questions about the quality of earnings. I would like to see more data on receivables, inventory, and accruals to ensure there are no red flags.<br><br>**2. THESIS KILLERS:**<br>A single event that could invalidate the bull case is a significant decline in asset prices, which would negatively impact NTRS&#x27;s asset servicing and wealth management segments. For example, if the fixed-income ETF boom reverses, it could lead to a decline in revenue and earnings growth, killing the bull case.<br><br>**3. ASSUMPTION STRESS TEST:**<br>The research note assumes that NTRS&#x27;s strong brand, long history, and wide range of services will continue to drive growth. However, this assumption may be flawed if the company fails to adapt to changing market conditions, such as the growth of the Canton Network (mentioned in the MarketBeat article 171.8h ago). The note also assumes that the fixed-income ETF boom will continue, but this trend may be reversing (as hinted at in the Zacks article 58.2h ago).<br><br>**4. VALUATION RISK:**<br>The forward P/E of 14.056256 may seem relatively low compared to the growth rate, but it is still above the industry average. The Price/Sales ratio of 2.4017453 is relatively high, which may indicate that the stock is overvalued. If the company&#x27;s revenue growth slows down, the valuation multiple could contract, leading to a significant decline in the stock price.<br><br>**5. COMPETITIVE THREATS:**<br>The research note mentions the Canton Network as a potential competitor, but it does not adequately assess the threat. The MarketBeat article 171.8h ago highlights the Canton Network&#x27;s growth and increasing institutional participation, which could pose a significant threat to NTRS&#x27;s market share.<br><br>**6. MACRO SENSITIVITY:**<br>The research note does not adequately discuss NTRS&#x27;s sensitivity to macroeconomic factors, such as interest rate changes, recession, or sector rotation. As a financial institution, NTRS is likely to be affected by changes in interest rates, which could impact its net interest income and revenue growth.<br><br>**7. INSTITUTIONAL RISK:**<br>The research note does not provide information on institutional ownership or insider activity. However, I note that insider ownership is only 0.9%, which may indicate a lack of alignment between management and shareholders. The short ratio of 3.26 days to cover is relatively low, which may suggest that short sellers are not aggressively targeting the stock.<br><br>**8. CHALLENGE VERDICT:**<br>Overall, I rate the risk of this thesis as **RED (avoid)**. The research note has several holes, including the lack of accounting data, unrealistic assumptions about the company&#x27;s growth drivers, and inadequate assessment of competitive and macroeconomic threats. While NTRS has a strong brand and long history, the bull case is not convincing enough to justify an investment in the stock.<br><br>Specifically, I would like to see more data on the following:<br><br>* Receivables and inventory growth<br>* Accruals and deferred revenue<br>* Capital allocation and guidance history<br>* Institutional ownership and insider activity<br>* Sensitivity to macroeconomic factors, such as interest rate changes and recession<br><br>Until these concerns are addressed, I would avoid investing in NTRS.</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse NTRS</div>
+  </div>
+</details>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 Upcoming Earnings</div>
+  <div class="earnings-box">
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• LRCX</span>
+  <span style="color:#aaa">2026-07-30</span>
+  <span style="color:#ff6d6d;font-size:12px">0d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• META</span>
+  <span style="color:#aaa">2026-07-30</span>
+  <span style="color:#ff6d6d;font-size:12px">0d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• MSFT</span>
+  <span style="color:#aaa">2026-07-30</span>
+  <span style="color:#ff6d6d;font-size:12px">0d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• AMZN</span>
+  <span style="color:#aaa">2026-07-31</span>
+  <span style="color:#ff6d6d;font-size:12px">1d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• DDOG</span>
+  <span style="color:#aaa">2026-08-06</span>
+  <span style="color:#ff6d6d;font-size:12px">7d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• ELF</span>
+  <span style="color:#aaa">2026-08-06</span>
+  <span style="color:#ff6d6d;font-size:12px">7d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• CELH</span>
+  <span style="color:#aaa">2026-08-10</span>
+  <span style="color:#ffd600;font-size:12px">11d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• ONON</span>
+  <span style="color:#aaa">2026-08-11</span>
+  <span style="color:#ffd600;font-size:12px">12d</span>
+</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📈 Pick Track Record</div>
+  <div class="track-card">
+    <div class="track-grid">
+<div class="track-cell"><div class="track-h">1 Week Fwd · 11 picks</div>
+<div class="track-v tr-neg">-3.67% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 27.3% · avg -4.99%</div></div>
+<div class="track-cell"><div class="track-h">1 Month Fwd</div>
+<div class="track-v tr-neu">building…</div></div></div>
+    <div class="track-note">Top 5 daily picks tracked forward vs SPY ·
+    11 day(s) of history · builds daily</div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="collapseAll()">▲ Collapse</button>
+
+<div class="footer">
+  HZ Capital Trading Intelligence &nbsp;·&nbsp;
+  2026-07-30 09:52 &nbsp;·&nbsp;
+  Market analysis only — positions &amp; instructions are delivered privately via Telegram. Not financial advice.
+</div>
+
+<script>
+function filterCards(f, btn) {
+  document.querySelectorAll('.filt').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('details.stock-card').forEach(function(c) {
+    var show = true;
+    if      (f === 'buy')   show = c.dataset.action === 'BUY NOW';
+    else if (f === 'wait')  show = c.dataset.action.indexOf('WAIT') === 0;
+    else if (f === 'watch') show = c.dataset.action === 'WATCH';
+    else if (f === 'avoid') show = c.dataset.action === 'AVOID';
+    else if (f === 'high')  show = c.dataset.conviction === 'HIGH';
+    c.classList.toggle('hidden', !show);
+  });
+  var v = document.querySelectorAll('details.stock-card:not(.hidden)').length;
+  document.getElementById('stock-count').textContent = v + ' stocks';
+}
+
+/* Close the section this control belongs to and bring its header back into
+   view, so you never lose your place after reading a long note. */
+function closeCard(el) {
+  var d = el.closest('details');
+  if (!d) return;
+  d.open = false;
+  var y = d.getBoundingClientRect().top + window.scrollY - 108;
+  window.scrollTo({ top: y < 0 ? 0 : y, behavior: 'smooth' });
+  updateFab();
+}
+
+function collapseAll() {
+  document.querySelectorAll('details[open]').forEach(function (d) { d.open = false; });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateFab();
+}
+
+function updateFab() {
+  var f = document.getElementById('fab');
+  if (!f) return;
+  var n = document.querySelectorAll('details[open]').length;
+  f.classList.toggle('show', n > 0);
+  f.textContent = n > 1 ? '▲ Collapse all (' + n + ')' : '▲ Collapse';
+}
+
+/* toggle doesn't bubble — capture phase catches every <details> */
+document.addEventListener('toggle', updateFab, true);
+document.addEventListener('DOMContentLoaded', updateFab);
+</script>
+</body>
+</html>
