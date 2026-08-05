@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>HZ Capital — August 05, 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     background:#0d0d0d;color:#e0e0e0;line-height:1.5;font-size:14px}
+
+/* STICKY HEADER */
+.sticky-header{position:sticky;top:0;z-index:100;background:#111;
+  border-bottom:1px solid #222;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+.site-title{font-size:13px;font-weight:700;color:#fff}
+.site-sub{font-size:11px;color:#666;margin-top:1px}
+.regime-pill{font-size:11px;font-weight:700;padding:4px 10px;
+  border-radius:20px;color:#000;white-space:nowrap}
+
+/* SECTIONS */
+.section{padding:12px 12px 4px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;
+  text-transform:uppercase;color:#555;margin-bottom:8px}
+
+/* ALERTS */
+.alert-card{background:#1a0800;border:1px solid #ff6d00;border-radius:10px;
+  padding:12px 14px;margin-bottom:8px}
+.alert-type{font-size:10px;font-weight:700;color:#ff6d00;letter-spacing:0.5px;text-transform:uppercase}
+.alert-ticker{font-size:15px;font-weight:800;color:#ff9d4a;margin:2px 0}
+.alert-msg{font-size:12px;color:#ccc;line-height:1.5}
+
+/* MACRO */
+details.macro-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;
+  overflow:clip;margin-bottom:8px}   /* clip, NOT hidden — hidden breaks sticky */
+details.macro-card > summary{list-style:none;cursor:pointer;padding:13px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+details.macro-card > summary::-webkit-details-marker{display:none}
+details.macro-card > summary::marker{display:none}
+details.macro-card[open] .chevron{transform:rotate(180deg)}
+.macro-title{font-size:14px;font-weight:700;color:#fff}
+.macro-body{padding:12px 14px 14px;font-size:13px;color:#bbb;
+  line-height:1.75;border-top:1px solid #222}
+
+/* SECTOR OVERVIEW */
+.sector-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;overflow:hidden}
+.sector-row{display:flex;align-items:flex-start;gap:10px;
+  padding:9px 14px;border-bottom:1px solid #1e1e1e}
+.sector-row:last-child{border-bottom:none}
+.sector-name{font-size:11px;font-weight:700;color:#777;
+  text-transform:uppercase;letter-spacing:0.3px;
+  min-width:110px;flex-shrink:0;padding-top:2px}
+.sector-chips{display:flex;gap:5px;flex-wrap:wrap}
+.stk-chip{background:#252525;border-radius:4px;padding:2px 8px;
+  font-size:11px;color:#82b1ff;font-weight:700}
+.stk-chip.buy{color:#00c853}
+.stk-chip.watch{color:#ffd600}
+.stk-chip.avoid{color:#ff6d6d}
+
+/* FILTER BAR */
+.filter-bar{position:sticky;top:53px;z-index:99;background:#111;
+  border-bottom:1px solid #1e1e1e;padding:8px 12px;
+  display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  margin-top:12px}
+.filter-bar::-webkit-scrollbar{display:none}
+.filt{background:#1e1e1e;border:1px solid #2a2a2a;color:#888;
+  padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  white-space:nowrap;cursor:pointer;transition:all 0.15s;user-select:none}
+.filt.active{background:#82b1ff;color:#000;border-color:#82b1ff}
+
+/* STOCK CARDS */
+details.stock-card{background:#1a1a1a;border-radius:12px;margin-bottom:9px;
+  overflow:clip;border:1px solid #222}   /* clip, NOT hidden — hidden breaks sticky */
+details.stock-card[open]{border-color:#333}
+details.stock-card > summary{list-style:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;padding:13px 14px}
+details.stock-card > summary::-webkit-details-marker{display:none}
+details.stock-card > summary::marker{display:none}
+details.stock-card[open] .chevron{transform:rotate(180deg)}
+
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rank-num{font-size:15px;font-weight:800;color:#444;min-width:22px}
+.tk{font-size:17px;font-weight:800;color:#82b1ff}
+.co-name{font-size:12px;color:#888;flex:1;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.chevron{font-size:10px;color:#555;transition:transform 0.2s;flex-shrink:0}
+
+.badge-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.b-buy{background:#00c853;color:#000}
+.b-watch{background:#ffd600;color:#000}
+.b-wait{background:#ff9d4a;color:#000}
+.b-avoid{background:#d50000;color:#fff}
+.b-dash{background:#2a2a2a;color:#666}
+
+/* TODAY AT A GLANCE */
+.glance-card{background:linear-gradient(135deg,#141a26,#101418);border:1px solid #2a3550;
+  border-radius:12px;padding:14px;margin-bottom:8px}
+.glance-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.glance-stat{background:#1a2230;border-radius:8px;padding:7px 12px;flex:1;min-width:90px}
+.glance-label{font-size:9px;color:#5a6a8a;text-transform:uppercase;letter-spacing:0.5px}
+.glance-val{font-size:14px;font-weight:800;color:#e8eeff;margin-top:2px}
+.glance-line{font-size:12px;color:#9ab;line-height:1.6}
+.glance-line b{color:#82b1ff}
+.delta-chip{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;
+  padding:1px 7px;margin:1px 3px 1px 0}
+.d-new{background:rgba(0,200,83,0.15);color:#00c853;border:1px solid rgba(0,200,83,0.35)}
+.d-drop{background:rgba(213,0,0,0.12);color:#ff6d6d;border:1px solid rgba(213,0,0,0.3)}
+.setup-line{font-size:11px;color:#4dd0a5;padding-top:4px}
+
+/* TRACK RECORD */
+.track-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:12px 14px}
+.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:4px}
+.track-cell{background:#1e1e1e;border-radius:8px;padding:8px 10px}
+.track-h{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.track-v{font-size:15px;font-weight:800;margin-top:2px}
+.tr-pos{color:#00c853}.tr-neg{color:#ff6d6d}.tr-neu{color:#bbb}
+.track-note{font-size:11px;color:#555;margin-top:8px;line-height:1.5}
+.b-high{background:rgba(130,177,255,0.15);color:#82b1ff;border:1px solid rgba(130,177,255,0.3)}
+.b-medium{background:rgba(255,214,0,0.1);color:#ffd600;border:1px solid rgba(255,214,0,0.25)}
+.b-low{background:rgba(255,109,0,0.1);color:#ff6d00;border:1px solid rgba(255,109,0,0.25)}
+
+.score-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.chip{background:#252525;border-radius:4px;padding:2px 7px;font-size:11px;color:#666}
+.chip b{color:#bbb}
+.rationale{font-size:12px;color:#666;line-height:1.5;padding-top:6px;border-top:1px solid #222}
+
+/* CARD BODY */
+.card-body{border-top:1px solid #222}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+  padding:10px 12px;background:#141414}
+.meta-item{background:#1e1e1e;border-radius:6px;padding:6px 8px}
+.meta-label{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.meta-val{font-size:13px;font-weight:700;color:#ddd;margin-top:1px}
+.case-section{padding:12px 14px}
+.case-section+.case-section{border-top:1px solid #1e1e1e}
+.case-label{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
+.case-bull .case-label{color:#00c853}
+.case-bear .case-label{color:#ff6d6d}
+.case-text{font-size:13px;line-height:1.75;color:#bbb}
+.risk-line{font-size:12px;color:#ff9d4a;padding:6px 14px 0}
+
+/* EARNINGS */
+.earnings-box{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:10px 14px}
+.earnings-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid #1e1e1e;font-size:13px}
+.earnings-row:last-child{border-bottom:none}
+.no-items{color:#555;font-size:13px;padding:8px 0}
+
+/* FOOTER */
+.footer{text-align:center;font-size:11px;color:#333;padding:20px 14px 40px}
+
+/* ── EXPAND / COLLAPSE ERGONOMICS ──────────────────────────────────────
+   Long research notes used to be collapsible only from the very top, so
+   you had to scroll back up to close one. Three fixes:
+   1. the card's own header sticks below the toolbars while it is open,
+      so the collapse control is always one tap away while reading;
+   2. a matching collapse bar sits at the END of every long section;
+   3. a floating "collapse all" appears whenever anything is open.        */
+details.stock-card[open] > summary{position:sticky;top:98px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55);padding:9px 14px}
+/* While open the pinned header must stay SMALL — the teaser rows (scores,
+   setup, rationale) are redundant once the full body is on screen. */
+details.stock-card[open] > summary .score-chips,
+details.stock-card[open] > summary .setup-line,
+details.stock-card[open] > summary .rationale{display:none}
+details.stock-card[open] > summary .card-top{margin-bottom:4px}
+details.stock-card[open] > summary .badge-row{margin-bottom:0}
+details.macro-card[open] > summary{position:sticky;top:53px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55)}
+.collapse-bar{display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:12px 14px;background:#151515;border-top:1px solid #262626;
+  color:#82b1ff;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent}
+.collapse-bar:active{background:#202020}
+.fab{position:fixed;right:14px;bottom:18px;z-index:300;background:#82b1ff;color:#000;
+  border:none;border-radius:24px;padding:14px 18px;font-size:12px;font-weight:800;
+  box-shadow:0 4px 16px rgba(0,0,0,0.6);cursor:pointer;display:none}   /* >=44px tap target */
+.fab.show{display:block}
+
+/* DESKTOP */
+@media(min-width:700px){
+  body{max-width:900px;margin:0 auto}
+  .filter-bar{top:57px}
+  .meta-grid{grid-template-columns:repeat(6,1fr)}
+  details.stock-card[open] > summary{top:102px}   /* clears the taller desktop toolbars */
+}
+@media(min-width:1100px){body{max-width:1100px}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div>
+    <div class="site-title">HZ Capital</div>
+    <div class="site-sub">August 05, 2026</div>
+  </div>
+  <div class="regime-pill" style="background:#00c853">CONFIRMED UPTREND</div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">⚡ Today in 30 Seconds</div>
+  <div class="glance-card">
+    <div class="glance-row">
+      <div class="glance-stat"><div class="glance-label">Regime</div><div class="glance-val" style="color:#00c853">CONFIRMED UPTREND</div></div>
+      <div class="glance-stat"><div class="glance-label">Buy Setups</div><div class="glance-val">3</div></div>
+      <div class="glance-stat"><div class="glance-label">Wait</div><div class="glance-val">1</div></div>
+      <div class="glance-stat"><div class="glance-label">Watch</div><div class="glance-val">0</div></div>
+    </div>
+    <div class="glance-line">🏆 #1 pick: <b>ANET</b> <span class="badge b-wait">WAIT — EARNINGS</span> $190.51 just broke 0.37% above pivot $189.82 — in buy zone</div><div class="glance-line">🟢 Buy setups triggered: <b>TER</b> (reclaimed EMA50 today, holding above) <b>GOOGL</b> (reclaimed EMA20 2 session(s) ago, holding above) <b>GOOG</b> (reclaimed EMA20 2 session(s) ago, holding above)</div><div class="glance-line">Δ vs 2026-08-04: <span class="delta-chip d-new">+ TER</span><span class="delta-chip d-drop">− NTRS</span></div><div class="glance-line">📅 Event radar: <b>Jobs report (NFP)</b> in 2d · <b>CPI release</b> in 7d · <b>Jobs report (NFP)</b> in 30d</div><div class="glance-line" style="color:#667">🕐 Prices as of last US close: <b>2026-08-04</b></div>
+  </div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">📊 Macro Analysis</div>
+  <details class="macro-card" open>
+    <summary>
+      <span class="macro-title">🌍 CONFIRMED UPTREND</span>
+      <span class="chevron">▼</span>
+    </summary>
+    <div class="macro-body">1. WHAT CHANGED SINCE YESTERDAY: The most significant development is the regime shift back to a CONFIRMED UPTREND, as indicated by the strong performance of the SPY and QQQ, with 1-day gains of 1.8% and 3.4%, respectively. This reversal is highlighted by the headline &quot;[CNBC, 0.4h ago] S&amp;P 500 futures are little changed after massive rally lifts index to fresh record: Live updates&quot;, demonstrating a notable change in market momentum from yesterday&#x27;s downtrend.<br><br>2. MARKET REGIME ASSESSMENT: The current regime is characterized by a confirmed uptrend, with the SPY and QQQ trading above their 50-day and 200-day moving averages. The VIX, at 16.5, indicates a relatively calm market environment. The strong performance of growth-oriented sectors, such as Technology and Semiconductors, further supports this assessment.<br><br>3. SECTOR LEADERSHIP: Technology (XLK) and Semiconductors (SOXX) are leading the market, with 1-day gains of 4.98% and 6.8%, respectively. This rotation into growth sectors is a notable development, with Healthcare (XLV) and Utilities (XLU) lagging behind. The 1-day performance of ARK Innovation (ARKK) and Small Cap Growth (IWO) also suggests a shift towards more aggressive growth investments.<br><br>4. NEWS-DRIVEN RISKS &amp; CATALYSTS: The top news-driven risks and catalysts include (1) the impact of SpaceX&#x27;s AI spending on the market, as highlighted by the headline &quot;[CNBC, 0.2h ago] SpaceX&#x27;s AI spending unnerves Wall Street despite promises of quick payoff&quot;, (2) the potential deal with Iran, as mentioned in &quot;[CNBC, 0.4h ago] U.S. says Strait of Hormuz is &#x27;free and open&#x27; as Bessent says deal with Iran is close&quot;, and (3) the upcoming Jobs report (NFP) on 2026-08-07, which may influence market sentiment and direction.<br><br>5. GROWTH STOCK ENVIRONMENT: The current environment appears favorable for growth stocks, given the strong performance of Technology and Semiconductors. The shift towards growth-oriented investments, as evidenced by the 1-day gains of ARK Innovation (ARKK) and Small Cap Growth (IWO), further supports this assessment.<br><br>6. POSTURE RECOMMENDATION: Based on the current regime and market developments, I recommend an AGGRESSIVE posture, with a 100% equity allocation. This differs from yesterday&#x27;s posture, as the regime shift and strong performance of growth sectors warrant a more aggressive approach. The upcoming Jobs report (NFP) and CPI release may introduce some volatility, but the current trend and sector leadership suggest a favorable environment for growth stocks.</div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse macro analysis</div>
+  </details>
+</div>
+
+<div class="section">
+  <div class="section-title">🏭 Industry Overview</div>
+  <div class="sector-card">
+<div class="sector-row">
+  <div class="sector-name">Communication Services <span style="font-size:10px;color:#666">· <span style="color:#00c853">1D +0.6%</span> · <span style="color:#00c853">1W +2.3%</span> · <span style="color:#ff6d6d">▼3</span></span></div>
+  <div class="sector-chips"><span class="stk-chip buy">GOOGL</span><span class="stk-chip buy">GOOG</span></div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare <span style="font-size:10px;color:#666">· <span style="color:#ff6d6d">1D -0.1%</span> · <span style="color:#ff6d6d">1W -2.5%</span> · <span style="color:#ff6d6d">▼7</span></span></div>
+  <div class="sector-chips"><span class="stk-chip avoid">INCY</span></div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology <span style="font-size:10px;color:#666">· <span style="color:#00c853">1D +5.0%</span> · <span style="color:#00c853">1W +12.2%</span> · <span style="color:#00c853">▲1</span></span></div>
+  <div class="sector-chips"><span class="stk-chip ">ANET</span><span class="stk-chip buy">TER</span></div>
+</div></div>
+  
+  <details class="macro-card" style="margin-top:8px">
+    <summary><span class="macro-title" style="font-size:13px">📊 Sector rotation leaderboard (1-week momentum)</span><span class="chevron">▼</span></summary>
+    <div style="border-top:1px solid #222">
+<div class="sector-row">
+  <div class="sector-name">Semiconductors<span style="color:#00c853"> ▲12</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +6.8%</span> · <span style="color:#00c853">1W +16.6%</span> ·
+    1M -1.72%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology<span style="color:#00c853"> ▲1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +5.0%</span> · <span style="color:#00c853">1W +12.2%</span> ·
+    1M 4.31%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">ARK Innovation<span style="color:#00c853"> ▲7</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +4.4%</span> · <span style="color:#00c853">1W +8.8%</span> ·
+    1M -5.46%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Small Cap Growth<span style="color:#00c853"> ▲4</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +2.7%</span> · <span style="color:#00c853">1W +6.8%</span> ·
+    1M 0.69%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Disc<span style="color:#ff6d6d"> ▼4</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.1%</span> · <span style="color:#00c853">1W +6.0%</span> ·
+    1M 0.77%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Industrials<span style="color:#00c853"> ▲5</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.8%</span> · <span style="color:#00c853">1W +5.5%</span> ·
+    1M 2.2%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Communication Svcs<span style="color:#ff6d6d"> ▼3</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.6%</span> · <span style="color:#00c853">1W +2.3%</span> ·
+    1M 0.92%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Financials<span style="color:#ff6d6d"> ▼3</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.9%</span> · <span style="color:#00c853">1W +2.1%</span> ·
+    1M 3.26%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Materials<span style="color:#00c853"> ▲3</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.9%</span> · <span style="color:#00c853">1W +0.5%</span> ·
+    1M 0.95%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Energy<span style="color:#ff6d6d"> ▼8</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.5%</span> · <span style="color:#ff6d6d">1W -0.2%</span> ·
+    1M 7.1%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Real Estate<span style="color:#ff6d6d"> ▼2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.0%</span> · <span style="color:#ff6d6d">1W -1.7%</span> ·
+    1M 0.62%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Utilities<span style="color:#00c853"> ▲2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.6%</span> · <span style="color:#ff6d6d">1W -1.8%</span> ·
+    1M -3.48%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Staples<span style="color:#ff6d6d"> ▼7</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.6%</span> · <span style="color:#ff6d6d">1W -2.3%</span> ·
+    1M 0.6%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare<span style="color:#ff6d6d"> ▼7</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.1%</span> · <span style="color:#ff6d6d">1W -2.5%</span> ·
+    1M -1.42%</div>
+</div></div>
+  </details>
+</div>
+
+
+<div class="filter-bar">
+  <button class="filt active" onclick="filterCards('all',this)">All (5)</button>
+  <button class="filt" onclick="filterCards('buy',this)">🟢 Buy Now (3)</button>
+  <button class="filt" onclick="filterCards('wait',this)">⏳ Wait (1)</button>
+  <button class="filt" onclick="filterCards('watch',this)">🟡 Watch (0)</button>
+  <button class="filt" onclick="filterCards('avoid',this)">🔴 Avoid (1)</button>
+  <button class="filt" onclick="filterCards('high',this)">⭐ High Conv. (1)</button>
+</div>
+<div class="section" style="padding-top:10px">
+  <div class="section-title"><span id="stock-count">5 stocks</span> — tap to expand</div>
+  
+<details class="stock-card"
+  data-action="WAIT — EARNINGS"
+  data-conviction="HIGH">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#1</span>
+      <span class="tk">ANET</span>
+      <span class="co-name">Arista Networks, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-wait">WAIT — EARNINGS</span>
+      <span class="badge b-high">HIGH</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>37.3/40</b></span>
+  <span class="chip">Fund <b>31.5/40</b></span>
+  <span class='chip'>Score <b>68.8/80</b></span>
+</div>
+    <div class="setup-line">📐 $190.51 just broke 0.37% above pivot $189.82 — in buy zone</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 19.7% · ATR 107% of 50d · vol 88% of 50d</div>
+    <div class="rationale">Arista Networks has a high technical score, a strong business quality with a diverse range of cloud networking solutions, and is currently in a buy zone, making it the most attractive stock. Its high RS rank and total score further solidify its position as the top choice.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$190.51</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">84.4</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">33.8%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">35.1%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-2.0%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Technology</div></div>
+</div>
+    <div class="risk-line">⚠ Intense competition in the cloud networking market</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**RESEARCH NOTE: Arista Networks, Inc. (ANET)**<br><br>**1. BUSINESS QUALITY**<br>* Arista Networks develops, markets, and sells data-driven, client to cloud networking solutions for AI, data center, campus, and routing environments.<br>* The company&#x27;s cloud networking solutions consist of Extensible Operating System (EOS), a publish-subscribe state-sharing networking operating system offered in combination with a set of network applications.<br>* Arista serves a range of industries, including AI, data center, cloud, and routing environments.<br><br>**2. EARNINGS QUALITY**<br>* Recent Q2 earnings and revenue surpassed estimates, with a 14.61% earnings surprise and a 7.15% revenue surprise.<br>* EPS growth trend: 33.8% YoY growth, indicating strong earnings acceleration.<br>* Quality of earnings: driven by strong demand for AI cloud computing networking gear, with no notable one-time items.<br><br>**3. REVENUE ACCELERATION**<br>* Revenue growth: 35.1% YoY, with Q2 revenue beating estimates.<br>* Key drivers: strong demand for AI-driven networking gear, expansion of AI infrastructure by companies.<br>* Revenue acceleration is expected to continue, with the company forecasting upbeat quarterly revenue.<br><br>**4. COMPETITIVE MOAT**<br>* Arista&#x27;s EOS operating system provides a competitive advantage, with a publish-subscribe state-sharing networking operating system.<br>* The company&#x27;s focus on AI-driven networking solutions provides a unique value proposition.<br>* Arista&#x27;s strong brand and customer base, with 73.1% institutional ownership, contribute to its competitive moat.<br><br>**5. INDUSTRY TAILWINDS**<br>* The demand for AI-driven networking gear is driving growth, with Arista forecasting upbeat quarterly revenue (Reuters, 3.6h ago).<br>* The expansion of AI infrastructure by companies is a key tailwind, with Arista&#x27;s stock surging as Q2 earnings and revenue handily beat estimates (Investor&#x27;s Business Daily, 4.8h ago).<br>* The strong demand for AI cloud computing networking gear is expected to continue, with Arista&#x27;s results providing further evidence that demand for artificial intelligence is real (Barrons.com, 5.0h ago).<br><br>**6. MANAGEMENT EXECUTION**<br>* Track record: strong Q2 earnings and revenue, with a 14.61% earnings surprise and a 7.15% revenue surprise.<br>* Capital allocation: the company has no debt and a strong current ratio of 2.829.<br>* Guidance history: the company has provided upbeat quarterly revenue guidance, indicating strong management execution.<br><br>**7. VALUATION**<br>* Forward P/E: 42.64, indicating a premium valuation.<br>* PEG Ratio: 2.36, indicating a premium valuation relative to growth rate.<br>* Price/Sales: 24.70, indicating a premium valuation.<br><br>**8. KEY RISKS**<br>* Intensifying competition in the AI-driven networking gear market, which could impact Arista&#x27;s revenue growth (no specific news item, but a potential risk).<br>* Regulatory changes or supply chain disruptions could impact Arista&#x27;s ability to deliver its products, although there is no recent news item suggesting this risk (MT Newswires, 7.7h ago, mentions Hormuz reopening hopes, which could potentially impact supply chains).<br>* A potential risk is that the demand for AI-driven networking gear may slow down, although recent news items suggest strong demand (e.g., Arista Networks soars 13% on strong Q2 beat and raised outlook, Investing.com, 5.2h ago).<br><br>**9. RESEARCH VERDICT**<br>The bull case for Arista Networks, Inc. is based on its strong earnings acceleration, driven by demand for AI-driven networking gear, and its competitive moat in the cloud networking solutions market. With a strong management execution track record and a premium valuation, Arista Networks, Inc. is a compelling growth stock. Conviction: HIGH.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">After thoroughly reviewing the research note on Arista Networks, Inc. (ANET), I have identified several potential holes in the thesis.<br><br>**ACCOUNTING RED FLAGS:**<br>While the note highlights Arista&#x27;s strong earnings and revenue growth, it&#x27;s essential to examine the company&#x27;s financials more closely. Although the note doesn&#x27;t mention any specific accounting red flags, I would like to see more detail on the company&#x27;s receivables growth, inventory levels, and accruals ratio. For instance, if receivables are growing significantly faster than revenue, it could indicate potential earnings manipulation. However, based on the provided data, I couldn&#x27;t find any explicit red flags.<br><br>**THESIS KILLERS:**<br>One potential thesis killer is a significant decline in demand for AI-driven networking gear. If companies were to slow down their AI infrastructure expansion, Arista&#x27;s revenue growth could be severely impacted. Although recent news items suggest strong demand, a sudden change in market trends could invalidate the bull case.<br><br>**ASSUMPTION STRESS TEST:**<br>The research note assumes that Arista&#x27;s strong demand for AI-driven networking gear will continue, driving revenue growth. However, this assumption may be overly optimistic. What if the demand for AI cloud computing networking gear slows down due to economic downturn or increased competition? The note mentions intensifying competition in the AI-driven networking gear market as a potential risk, but it&#x27;s essential to quantify this risk and assess its potential impact on Arista&#x27;s revenue growth.<br><br>**VALUATION RISK:**<br>The note highlights Arista&#x27;s premium valuation, with a forward P/E of 42.64 and a PEG ratio of 2.36. This valuation assumes that the company will continue to deliver strong earnings growth. However, if the company&#x27;s earnings growth slows down, the stock price could be at risk of a significant correction. At what multiple does the stock become uninvestable? If the P/E ratio were to increase to 50 or more, I would consider the stock to be significantly overvalued.<br><br>**COMPETITIVE THREATS:**<br>The note mentions intensifying competition in the AI-driven networking gear market, but it doesn&#x27;t provide specific details on the competitive landscape. Who are the main competitors, and how are they positioned to challenge Arista&#x27;s market share? For instance, companies like Cisco Systems, Juniper Networks, or VMware could potentially pose a threat to Arista&#x27;s dominance in the AI-driven networking gear market.<br><br>**MACRO SENSITIVITY:**<br>The note doesn&#x27;t explicitly discuss Arista&#x27;s exposure to macroeconomic risks, such as rate hikes, FX fluctuations, or recession. How would a potential recession impact Arista&#x27;s revenue growth, and what&#x27;s the company&#x27;s exposure to FX fluctuations?<br><br>**INSTITUTIONAL RISK:**<br>The note mentions that 73.1% of Arista&#x27;s shares are held by institutional investors. While this can be a positive factor, it also means that the stock is heavily influenced by institutional sentiment. If institutional investors were to start selling their shares, it could lead to a significant decline in the stock price.<br><br>**CHALLENGE VERDICT:**<br>Overall, I would rate the risk level as YELLOW (proceed with caution). While Arista&#x27;s strong earnings growth and competitive moat are positives, the premium valuation, intensifying competition, and potential macroeconomic risks are concerns that need to be carefully monitored.<br><br>Specific challenges to the thesis include:<br><br>1. Quantifying the risk of a decline in demand for AI-driven networking gear and its potential impact on Arista&#x27;s revenue growth.<br>2. Assessing the competitive landscape and identifying potential threats to Arista&#x27;s market share.<br>3. Evaluating Arista&#x27;s exposure to macroeconomic risks, such as rate hikes, FX fluctuations, or recession.<br>4. Monitoring institutional sentiment and potential selling pressure.<br><br>In conclusion, while the research note presents a compelling bull case for Arista Networks, it&#x27;s essential to carefully consider these potential holes in the thesis and monitor the company&#x27;s progress closely to ensure that the investment thesis remains intact.</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse ANET</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#2</span>
+      <span class="tk">TER</span>
+      <span class="co-name">Teradyne, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>25.6/40</b></span>
+  <span class="chip">Fund <b>38.0/40</b></span>
+  <span class='chip'>Score <b>63.6/80</b></span>
+</div>
+    <div class="setup-line">📐 reclaimed EMA50 today, holding above</div><div class="setup-line" style="color:#666">🧲 VCP 0/3 · 10d range 26.9% · ATR 99% of 50d · vol 98% of 50d</div>
+    <div class="rationale">Teradyne has a high RS rank and a strong fundamental score, indicating a quality business with good earnings momentum. However, accounting red flags and challenges in the semiconductor test segment temper enthusiasm.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$403.56</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">97.2</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">333.3%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">103.9%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-17.3%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Technology</div></div>
+</div>
+    <div class="risk-line">⚠ Accounting red flags and semiconductor industry volatility</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**RESEARCH NOTE: Teradyne, Inc. (TER)**<br><br>1. **BUSINESS QUALITY**<br>	* Teradyne designs, develops, manufactures, and sells automated test systems and robotics products.<br>	* The company operates through three segments: Semiconductor Test, Robotics, and Other.<br>	* Key products include FLEX test platform systems, J750 test system, Magnum platform, and ETS platform.<br>	* The company has a strong presence in the semiconductor equipment and materials industry.<br><br>2. **EARNINGS QUALITY**<br>	* EPS growth is 333.3% year-over-year, indicating significant earnings acceleration.<br>	* Revenue growth is 103.9%, driven by strong demand for semiconductor test systems and robotics products.<br>	* The company&#x27;s high operating margin (33.2%) and profit margin (25.8%) suggest high-quality earnings.<br><br>3. **REVENUE ACCELERATION**<br>	* Revenue growth is accelerating, with a 103.9% increase year-over-year.<br>	* Key drivers include booming AI demand and strong growth in chip testing and robotics.<br>	* The company&#x27;s Semiconductor Test segment is a significant contributor to revenue growth.<br><br>4. **COMPETITIVE MOAT**<br>	* Teradyne has a strong brand and a significant presence in the semiconductor equipment and materials industry.<br>	* The company&#x27;s products, such as the FLEX test platform systems and Magnum platform, have a high level of technological expertise and are difficult to replicate.<br>	* Switching costs for customers are high, as they are often locked into Teradyne&#x27;s systems and platforms.<br><br>5. **INDUSTRY TAILWINDS**<br>	* The semiconductor industry is experiencing strong growth, driven by increasing demand for AI, cloud computing, and other technologies.<br>	* Recent news items, such as the article from Zacks (&quot;TER Q2 Earnings Call Centers on AI-Led Multiyear Growth&quot;), highlight the company&#x27;s exposure to AI-led growth and its potential for multiyear growth.<br>	* The robotics industry is also experiencing growth, as seen in the article from 24/7 Wall St. (&quot;Serve Robotics Surges 13%, Ouster Climbs 6%, Symbotic Gains 4% as Robotics Stocks Rally&quot;), which mentions a broad risk-on wave lifting robotics stocks.<br><br>6. **MANAGEMENT EXECUTION**<br>	* The company&#x27;s management team has a strong track record of executing on growth initiatives and delivering high-quality earnings.<br>	* The company&#x27;s guidance history is positive, with the company consistently meeting or exceeding expectations.<br>	* Capital allocation is focused on investing in research and development and expanding the company&#x27;s product offerings.<br><br>7. **VALUATION**<br>	* The company&#x27;s forward P/E is 34.93, which is relatively high compared to the industry average.<br>	* The PEG ratio is 0.94, indicating that the company&#x27;s growth rate is relatively high compared to its valuation.<br>	* The price/sales ratio is 14.13, which is also relatively high.<br><br>8. **KEY RISKS**<br>	* Recent news items, such as the article from Trefis (&quot;How KLA Went From Cheaper Than Teradyne To The Pricier Stock&quot;), highlight the potential risk of the company&#x27;s valuation being too high compared to its peers.<br>	* The article from Zacks (&quot;Teradyne Is Overvalued at 10.36X PS: Should You Still Buy the Stock?&quot;) also raises concerns about the company&#x27;s valuation, suggesting that it may be overvalued.<br>	* The company&#x27;s high debt/equity ratio (2.88) and relatively low current ratio (2.13) may also pose risks to the company&#x27;s financial health.<br><br>9. **RESEARCH VERDICT**<br>	* The bull case for Teradyne is strong, driven by the company&#x27;s high-quality earnings, revenue acceleration, and exposure to growth industries such as AI and robotics.<br>	* However, the company&#x27;s high valuation and potential risks, such as overvaluation and high debt levels, need to be carefully considered.<br>	* Conviction level: MEDIUM.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">**Challenge Verdict: RED (avoid)**<br><br>1. **Accounting Red Flags:**<br>	* The research note does not provide sufficient information about Teradyne&#x27;s receivables growth, inventory levels, or accruals ratio, which are essential to detect potential earnings manipulation. However, the note does mention a high debt/equity ratio (2.88) and a relatively low current ratio (2.13), which may indicate liquidity risks.<br>2. **Thesis Killers:**<br>	* A significant decline in semiconductor demand, particularly in the AI and robotics sectors, could immediately invalidate the bull case. This risk is highlighted in the recent news article from Trefis, &quot;How KLA Went From Cheaper Than Teradyne To The Pricier Stock,&quot; which suggests that the market may be overpaying for slower growth.<br>3. **Assumption Stress Test:**<br>	* The research note assumes that the company&#x27;s exposure to AI-led growth will drive multiyear growth, but this assumption may be wrong if the AI market experiences a downturn. The note also assumes that the company&#x27;s strong brand and high switching costs will protect its market share, but this may not be sufficient to prevent competitors from gaining ground.<br>	* The company&#x27;s forward P/E of 34.93 and price/sales ratio of 14.13 are relatively high, which may indicate overvaluation. The note mentions that the PEG ratio is 0.94, which suggests that the company&#x27;s growth rate is relatively high compared to its valuation, but this may not be sustainable.<br>4. **Valuation Risk:**<br>	* The stock is pricing in high growth, but the valuation multiples are already stretched. If the company&#x27;s growth slows down, the stock price could decline significantly. The recent news article from Zacks, &quot;Teradyne Is Overvalued at 10.36X PS: Should You Still Buy the Stock?&quot; highlights the risk of overvaluation.<br>5. **Competitive Threats:**<br>	* The research note mentions that Teradyne has a strong brand and high switching costs, but it does not provide sufficient information about the company&#x27;s competitive position in the semiconductor equipment and materials industry. The article from Trefis, &quot;How KLA Went From Cheaper Than Teradyne To The Pricier Stock,&quot; suggests that KLA may be a more attractive investment opportunity due to its faster growth.<br>6. **Macro Sensitivity:**<br>	* The company&#x27;s revenue growth is heavily dependent on the semiconductor industry, which is cyclical and sensitive to macroeconomic trends. A downturn in the industry could negatively impact the company&#x27;s financial performance.<br>7. **Institutional Risk:**<br>	* The research note does not provide sufficient information about institutional ownership or insider activity, which could indicate whether smart money is leaving or entering the stock. However, the note does mention that insider ownership is relatively low (0.3%), which may indicate a lack of alignment between management and shareholders.<br>8. **Additional Concerns:**<br>	* The company&#x27;s short ratio (days to cover) is relatively low (1.37), which may indicate that the stock is not heavily shorted, but it also suggests that there may not be a strong bearish sentiment to counterbalance the bullish sentiment.<br>	* The stock is trading 17.3% off its 52-week high, which may indicate that the momentum is slowing down.<br><br>**Overall Risk Rating: RED (avoid)**<br><br>The research note provides a compelling bull case for Teradyne, but it ignores several key risks, including accounting red flags, thesis killers, and valuation risks. The company&#x27;s high debt/equity ratio, low current ratio, and stretched valuation multiples are significant concerns that could negatively impact the stock price. Additionally, the company&#x27;s dependence on the cyclical semiconductor industry and the potential for competitive threats from companies like KLA make it a high-risk investment. Therefore, I would rate the overall risk as RED (avoid) and recommend avoiding this stock until these concerns are addressed.</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse TER</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#3</span>
+      <span class="tk">GOOGL</span>
+      <span class="co-name">Alphabet Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>24.3/40</b></span>
+  <span class="chip">Fund <b>34.9/40</b></span>
+  <span class='chip'>Score <b>59.2/80</b></span>
+</div>
+    <div class="setup-line">📐 reclaimed EMA20 2 session(s) ago, holding above</div><div class="setup-line" style="color:#666">🧲 VCP 0/3 · 10d range 17.4% · ATR 119% of 50d · vol 110% of 50d</div>
+    <div class="rationale">Alphabet Inc. (GOOGL) has a diverse range of products and platforms, a dominant search engine, and a growing cloud business. While its technical and fundamental scores are strong, the presence of potential holes in the thesis regarding its business quality and accounting practices warrants caution.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$377.65</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">88.0</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">294.4%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">24.2%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-7.5%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Communication Services</div></div>
+</div>
+    <div class="risk-line">⚠ Regulatory scrutiny and intense competition in the advertising and cloud markets</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**STRUCTURED RESEARCH NOTE**<br><br>**1. BUSINESS QUALITY**<br>* Alphabet Inc. (GOOGL) operates a diverse range of products and platforms, including Google Services, Google Cloud, and Other Bets segments.<br>* The company&#x27;s main strengths lie in its dominant search engine, advertising business, and growing cloud computing segment.<br>* GOOGL&#x27;s product offerings are highly integrated, making it a one-stop-shop for consumers and businesses.<br><br>**2. EARNINGS QUALITY**<br>* Recent EPS growth trend: 294.4% YoY, indicating a significant acceleration in earnings.<br>* High operating margin of 34.0% and ROE of 48.7% suggest strong profitability.<br>* No notable one-time items affecting earnings quality have been reported recently.<br><br>**3. REVENUE ACCELERATION**<br>* Revenue growth is 24.2%, driven by the growth of Google Cloud and advertising segments.<br>* Key drivers include increasing demand for cloud computing, artificial intelligence, and digital advertising.<br>* The company&#x27;s ability to innovate and expand its product offerings is expected to support continued revenue growth.<br><br>**4. COMPETITIVE MOAT**<br>* Network effects: Google&#x27;s dominant search engine and advertising business create strong network effects, making it difficult for competitors to challenge its market position.<br>* Switching costs: High switching costs for businesses and consumers using Google&#x27;s products and services, such as Google Cloud and Google Workspace.<br>* Brand: Google is a well-established and trusted brand, providing a significant competitive advantage.<br><br>**5. INDUSTRY TAILWINDS**<br>* The recent news about White House AI guidelines exempting U.S. open models from government review is likely to benefit GOOGL, as it can continue to develop and deploy AI solutions without additional regulatory hurdles (The Wall Street Journal, 2.8h ago).<br>* The growing demand for cloud computing and artificial intelligence is expected to drive growth in the industry, with GOOGL well-positioned to benefit from this trend.<br><br>**6. MANAGEMENT EXECUTION**<br>* Strong track record of innovation and product development, with a focus on artificial intelligence and cloud computing.<br>* Effective capital allocation, with investments in strategic areas such as Google Cloud and YouTube.<br>* Guidance history is Generally conservative, with a focus on long-term growth and profitability.<br><br>**7. VALUATION**<br>* Forward P/E: 25.63, slightly above the industry average.<br>* PEG Ratio: 0.97, indicating a reasonable valuation relative to growth expectations.<br>* Price/Sales: 10.36, slightly above the industry average, but justified by the company&#x27;s strong growth prospects and competitive position.<br><br>**8. KEY RISKS**<br>* Recent news about Alphabet&#x27;s stock drop due to negative free cash flow in the second quarter may indicate a potential risk to the company&#x27;s ability to generate cash and invest in growth initiatives (Motley Fool, 1.1h ago).<br>* The $200 billion spending program required for the stock to double by 2032 may pose a significant challenge for the company, and any failure to execute on this plan could negatively impact the stock price (Motley Fool, 2.3h ago).<br><br>**9. RESEARCH VERDICT**<br>The bull case for GOOGL is driven by its strong earnings growth, dominant market position, and growing demand for cloud computing and artificial intelligence. With a solid competitive moat and favorable industry tailwinds, GOOGL is well-positioned for long-term growth. I rate my conviction in this thesis as HIGH, based on the company&#x27;s strong fundamentals and growth prospects.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">I&#x27;ll go through the research note and challenge each section, highlighting potential holes in the thesis.<br><br>**1. BUSINESS QUALITY**<br>The note mentions GOOGL&#x27;s diverse range of products and platforms, but it doesn&#x27;t discuss the potential risks associated with the &quot;Other Bets&quot; segment, which has historically been a drag on the company&#x27;s profitability. According to the latest quarterly report, the &quot;Other Bets&quot; segment reported an operating loss of $1.3 billion, which could continue to weigh on the company&#x27;s overall profitability.<br><br>**2. EARNINGS QUALITY**<br>The note mentions a 294.4% YoY EPS growth trend, but it doesn&#x27;t adjust for one-time items or consider the potential impact of negative free cash flow (as reported in the recent news) on future earnings. The recent news article from Motley Fool (1.1h ago) mentions that Alphabet&#x27;s stock drop was due to negative free cash flow in the second quarter, which could indicate a potential risk to the company&#x27;s ability to generate cash and invest in growth initiatives.<br><br>**3. REVENUE ACCELERATION**<br>The note mentions revenue growth of 24.2%, driven by Google Cloud and advertising segments. However, it doesn&#x27;t consider the potential risks associated with the increasing competition in the cloud computing space, particularly from Amazon Web Services (AWS) and Microsoft Azure. The recent news article from Dynatrace (0.7h ago) mentions the company&#x27;s expansion of its AI tools, which could potentially compete with Google Cloud&#x27;s offerings.<br><br>**4. COMPETITIVE MOAT**<br>The note mentions Google&#x27;s dominant search engine and advertising business, but it doesn&#x27;t consider the potential risks associated with the increasing regulatory scrutiny of big tech companies. The recent news article from The Wall Street Journal (2.8h ago) mentions the White House AI guidelines, which could potentially impact Google&#x27;s AI development and deployment.<br><br>**5. INDUSTRY TAILWINDS**<br>The note mentions the growing demand for cloud computing and artificial intelligence, but it doesn&#x27;t consider the potential risks associated with the increasing competition in these spaces. The recent news article from Barrons.com (4.4h ago) mentions SpaceX&#x27;s expectation of generating $1 trillion in sales by 2030, which could potentially disrupt the cloud computing space.<br><br>**6. MANAGEMENT EXECUTION**<br>The note mentions Google&#x27;s strong track record of innovation and product development, but it doesn&#x27;t consider the potential risks associated with the company&#x27;s $200 billion spending program, which could be challenging to execute (as mentioned in the recent news article from Motley Fool, 2.3h ago).<br><br>**7. VALUATION**<br>The note mentions a forward P/E of 25.63, which is slightly above the industry average. However, it doesn&#x27;t consider the potential risks associated with the company&#x27;s valuation, particularly in light of the recent stock drop due to negative free cash flow. The note also mentions a PEG ratio of 0.97, which indicates a reasonable valuation relative to growth expectations, but it doesn&#x27;t consider the potential risks associated with the company&#x27;s growth prospects, particularly in light of increasing competition.<br><br>**THESIS KILLERS**<br>A single event that could invalidate the entire bull case is a significant decline in Google&#x27;s advertising revenue, potentially due to increased competition from other tech companies or regulatory scrutiny.<br><br>**ASSUMPTION STRESS TEST**<br>The research note assumes that Google will continue to grow its cloud computing and artificial intelligence segments, but it doesn&#x27;t consider the potential risks associated with increasing competition, regulatory scrutiny, or the company&#x27;s ability to execute on its $200 billion spending program.<br><br>**VALUATION RISK**<br>The stock is currently pricing in significant growth expectations, with a forward P/E of 25.63. If the company fails to meet these expectations, the stock could become uninvestable, particularly if the valuation multiple expands further.<br><br>**COMPETITIVE THREATS**<br>The note mentions Google&#x27;s dominant market position, but it doesn&#x27;t consider the potential risks associated with increasing competition from other tech companies, particularly in the cloud computing and artificial intelligence spaces.<br><br>**MACRO SENSITIVITY**<br>The note doesn&#x27;t consider the potential risks associated with macroeconomic factors, such as recession, interest rate hikes, or currency fluctuations, which could impact Google&#x27;s advertising revenue and overall profitability.<br><br>**INSTITUTIONAL RISK**<br>The note mentions a short ratio of 2.32 days, which is relatively low, but it doesn&#x27;t consider the potential risks associated with institutional ownership, particularly if smart money starts to leave the stock.<br><br>**CHALLENGE VERDICT**<br>Overall, I would rate the risk level as YELLOW (proceed with caution). While the research note presents a compelling bull case, it ignores several potential risks, including increasing competition, regulatory scrutiny, and the company&#x27;s ability to execute on its $200 billion spending program. The recent news articles highlight some of these risks, and investors should be cautious when considering GOOGL as an investment opportunity.</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse GOOGL</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#4</span>
+      <span class="tk">GOOG</span>
+      <span class="co-name">Alphabet Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>24.3/40</b></span>
+  <span class="chip">Fund <b>34.9/40</b></span>
+  <span class='chip'>Score <b>59.2/80</b></span>
+</div>
+    <div class="setup-line">📐 reclaimed EMA20 2 session(s) ago, holding above</div><div class="setup-line" style="color:#666">🧲 VCP 0/3 · 10d range 16.7% · ATR 118% of 50d · vol 106% of 50d</div>
+    <div class="rationale">Similar to GOOGL, GOOG benefits from Alphabet&#x27;s diversified business segments and strong brand recognition. However, concerns about negative free cash flow and accounting practices reduce conviction.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$375.35</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">87.6</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">294.4%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">24.2%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-7.1%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Communication Services</div></div>
+</div>
+    <div class="risk-line">⚠ Negative free cash flow and regulatory challenges</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">## BUSINESS QUALITY<br>* Alphabet Inc. (GOOG) operates through multiple segments, including Google Services, Google Cloud, and Other Bets, offering a diverse range of products and services globally.<br>* The company&#x27;s Google Services segment provides a wide array of popular products, such as ads, Android, Chrome, devices, Gmail, Google Drive, Google Maps, Google Photos, Google Play, Search, and YouTube.<br>* Alphabet&#x27;s competitive advantage stems from its strong brand recognition, extensive user base, and continuous innovation in AI and cloud computing.<br><br>## EARNINGS QUALITY<br>* GOOG has demonstrated impressive EPS growth of 294.4% year-over-year, indicating a significant acceleration in earnings.<br>* The company&#x27;s high operating margin of 34.0% and profit margin of 54.8% suggest a high-quality earnings profile.<br>* However, recent reports of negative free cash flow in the second quarter may be a concern, potentially indicating a one-time item or a shift in the company&#x27;s cash flow dynamics.<br><br>## REVENUE ACCELERATION<br>* Alphabet&#x27;s revenue growth of 24.2% is a positive indicator, showing that the company is able to increase its top line at a substantial rate.<br>* Key drivers of revenue growth likely include the expansion of Google Cloud, increased adoption of Google Services, and growth in the digital advertising market.<br><br>## COMPETITIVE MOAT<br>* Alphabet benefits from significant competitive moats, including:<br>	+ Strong brand recognition and user loyalty<br>	+ Network effects from its large user base<br>	+ Continuous innovation in AI and cloud computing<br>	+ High switching costs for users of Google Services and Google Cloud<br><br>## INDUSTRY TAILWINDS<br>* The company operates in the growing internet content and information industry, with increasing demand for digital services and cloud computing.<br>* Recent news, such as the White House AI guidelines exempting U.S. open models from government review (as reported by The Wall Street Journal), may provide a tailwind for Alphabet&#x27;s AI-focused initiatives.<br>* The growth of the cloud computing market, driven in part by companies like SpaceX (which reported a surge in revenue, as reported by MT Newswires), also supports Alphabet&#x27;s Google Cloud segment.<br><br>## MANAGEMENT EXECUTION<br>* Alphabet&#x27;s management team has a strong track record of innovation and execution, with a focus on long-term growth and investment in emerging technologies.<br>* The company&#x27;s capital allocation strategy, including its $200 billion spending program (as reported by The Motley Fool), indicates a commitment to driving growth and expanding its offerings.<br><br>## VALUATION<br>* GOOG&#x27;s forward P/E of 25.47 and PEG ratio of 0.97 suggest that the stock may be reasonably valued, given its strong growth prospects.<br>* The price/sales ratio of 10.30 is relatively high, but this may be justified by the company&#x27;s high margins and growth potential.<br><br>## KEY RISKS<br>* Recent reports of negative free cash flow in the second quarter (as reported by The Motley Fool) may indicate a shift in the company&#x27;s cash flow dynamics, potentially impacting investor sentiment.<br>* Regulatory developments, such as the White House AI guidelines, may also pose a risk to Alphabet&#x27;s AI-focused initiatives, although the recent exemption of U.S. open models from government review may mitigate this risk.<br><br>## RESEARCH VERDICT<br>Alphabet Inc. (GOOG) presents a compelling growth story, driven by its strong brand recognition, innovative products, and expanding cloud computing offerings. With a high-quality earnings profile and significant competitive moats, the company is well-positioned for long-term growth. However, investors should be aware of potential risks, including shifts in cash flow dynamics and regulatory developments. Conviction: HIGH.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">After carefully reviewing the research note on GOOG, I have identified several concerns that need to be addressed:<br><br>1. **ACCOUNTING RED FLAGS**: The recent report of negative free cash flow in the second quarter is a significant concern. This could indicate a shift in the company&#x27;s cash flow dynamics, potentially impacting investor sentiment. The note mentions this as a risk, but it&#x27;s essential to dig deeper. For example, what specific factors contributed to this decline in free cash flow? Is it a one-time item, or a persistent issue?<br><br>2. **THESIS KILLERS**: A single event that could invalidate the entire bull case is a significant decline in advertising revenue, which accounts for a substantial portion of GOOG&#x27;s revenue. If advertisers were to shift their budgets away from Google&#x27;s platforms, it could have a material impact on the company&#x27;s top line.<br><br>3. **ASSUMPTION STRESS TEST**: The note assumes that GOOG&#x27;s expansion into cloud computing will continue to drive growth. However, this assumption may be flawed if the company faces increased competition from established players like Amazon Web Services (AWS) or Microsoft Azure. Additionally, the note assumes that the $200 billion spending program will drive growth, but it&#x27;s unclear how this investment will be allocated and whether it will yield the expected returns.<br><br>4. **VALUATION RISK**: The note suggests that GOOG&#x27;s forward P/E of 25.47 and PEG ratio of 0.97 indicate reasonable valuation. However, the price/sales ratio of 10.30 is relatively high. If the company&#x27;s growth slows down, this multiple could become unsustainable, leading to a decline in the stock price.<br><br>5. **COMPETITIVE THREATS**: The note mentions GOOG&#x27;s strong brand recognition and competitive moats, but it&#x27;s essential to consider the competitive landscape. For example, the recent news about Dynatrace (DT) adding a Google executive to its board and expanding its AI tools could be seen as a competitive threat to GOOG&#x27;s AI-focused initiatives.<br><br>6. **MACRO SENSITIVITY**: The note mentions the growth of the cloud computing market, but it&#x27;s essential to consider the potential impact of macroeconomic factors, such as a recession or rate hikes, on GOOG&#x27;s business. The company&#x27;s high operating margin and profit margin may be vulnerable to changes in the economic environment.<br><br>7. **INSTITUTIONAL RISK**: The note mentions that GOOG&#x27;s stock is down double digits after reporting negative free cash flow, which could indicate that smart money is leaving the stock. The short ratio of 2.47 days to cover is relatively low, which could suggest that there is not significant short interest in the stock. However, the insider ownership of 6.6% is relatively low, which could indicate that insiders are not confident in the company&#x27;s prospects.<br><br>8. **CHALLENGE VERDICT**: Based on the analysis above, I would rate the overall risk as YELLOW (proceed with caution). While GOOG has a strong brand and competitive moats, the recent report of negative free cash flow, high valuation multiples, and potential competitive threats are concerns that need to be monitored.<br><br>Recent news that challenges the bull case includes:<br><br>* SpaceX&#x27;s second-quarter loss narrowing, but still reporting a loss, which could indicate that the cloud computing market is becoming increasingly competitive.<br>* Dynatrace adding a Google executive to its board and expanding its AI tools, which could be seen as a competitive threat to GOOG&#x27;s AI-focused initiatives.<br>* The White House AI guidelines exempting U.S. open models from government review, which could have a positive impact on GOOG&#x27;s AI-focused initiatives, but also highlights the regulatory risks associated with AI development.<br><br>In conclusion, while GOOG has a strong brand and competitive moats, there are several concerns that need to be addressed, including the recent report of negative free cash flow, high valuation multiples, and potential competitive threats. Investors should proceed with caution and closely monitor the company&#x27;s progress in addressing these challenges.</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse GOOG</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="AVOID"
+  data-conviction="LOW">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#5</span>
+      <span class="tk">INCY</span>
+      <span class="co-name">Incyte Corporation</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-avoid">AVOID</span>
+      <span class="badge b-low">LOW</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>20.2/40</b></span>
+  <span class="chip">Fund <b>32.6/40</b></span>
+  <span class='chip'>Score <b>52.8/80</b></span>
+</div>
+    <div class="setup-line">📐 $120.60 is 9.05% below pivot $132.60 — no trigger yet</div><div class="setup-line" style="color:#666">🧲 VCP 0/3 · 10d range 15.0% · ATR 120% of 50d · vol 113% of 50d</div>
+    <div class="rationale">Incyte Corporation has a lower technical score and total score compared to the other stocks, and its setup is not yet triggered. While it has a diverse product portfolio, accounting red flags and challenges in the biopharmaceutical industry are significant concerns.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$120.6</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">87.2</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">96.8%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">37.7%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-9.0%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Healthcare</div></div>
+</div>
+    <div class="risk-line">⚠ Accounting red flags and intense competition in the biopharmaceutical market</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**1. BUSINESS QUALITY**<br>* Incyte Corporation is a biopharmaceutical company that focuses on the discovery, development, and commercialization of therapeutics in the United States, Europe, Canada, and Japan.<br>* The company has a diverse product portfolio, including JAKAFI, ICLUSIG, MONJUVI/MINJUVI, NIKTIMVO, and Opzelura, which treat various diseases such as myelofibrosis, polycythemia vera, and atopic dermatitis.<br>* Incyte has a strong research and development pipeline, with several products in clinical trials, including INCA033989, INCA035784, and INCB160058.<br><br>**2. EARNINGS QUALITY**<br>* Incyte has demonstrated strong earnings growth, with a YoY EPS growth rate of 96.8%.<br>* The company has a high operating margin of 41.9% and a profit margin of 27.7%, indicating efficient operations and strong profitability.<br>* There are no significant one-time items that would distort the earnings picture.<br><br>**3. REVENUE ACCELERATION**<br>* Incyte&#x27;s revenue growth is accelerating, with a 37.7% increase in revenue.<br>* The company&#x27;s revenue growth is driven by the success of its products, including JAKAFI and Opzelura, which have shown strong sales growth.<br>* The recent EU approval of Opzelura for moderate atopic dermatitis is expected to further boost revenue growth.<br><br>**4. COMPETITIVE MOAT**<br>* Incyte has a competitive moat due to its strong product portfolio and research and development pipeline.<br>* The company&#x27;s products have unique mechanisms of action and are often first-in-class or best-in-class treatments for specific diseases.<br>* Incyte&#x27;s strategic partnerships and collaborations also enhance its competitive position.<br><br>**5. INDUSTRY TAILWINDS**<br>* The biotechnology industry is experiencing significant growth, driven by increasing demand for innovative treatments and therapies.<br>* The recent EU approval of Opzelura for moderate atopic dermatitis (as reported 76.7h ago by Simply Wall St.) is a positive catalyst for Incyte, as it expands the company&#x27;s addressable market and competitive position.<br>* The industry is also experiencing a trend towards personalized medicine and targeted therapies, which plays to Incyte&#x27;s strengths in developing innovative treatments.<br><br>**6. MANAGEMENT EXECUTION**<br>* Incyte&#x27;s management team has a strong track record of executing on its strategic plan and delivering revenue and earnings growth.<br>* The company has a history of making strategic acquisitions and partnerships to enhance its product portfolio and pipeline.<br>* Incyte&#x27;s management has also demonstrated a commitment to investing in research and development to drive long-term growth.<br><br>**7. VALUATION**<br>* Incyte&#x27;s forward P/E ratio of 13.58 is reasonable compared to its growth rate and industry peers.<br>* The company&#x27;s PEG ratio of 28.47 is high, but this may be justified by its strong growth prospects and competitive position.<br>* Incyte&#x27;s price/sales ratio of 4.20 is also reasonable, given its high profit margins and strong revenue growth.<br><br>**8. KEY RISKS**<br>* The recent volatility in Incyte&#x27;s stock price (as reported 152.5h ago by Stocktwits) may be a concern, as it could indicate uncertainty about the company&#x27;s growth prospects.<br>* The EU approval of Opzelura for moderate atopic dermatitis (as reported 80.8h ago by Simply Wall St.) may not be fully priced into the stock, which could lead to disappointment if sales do not meet expectations.<br>* The bearish sentiment from some analysts (as reported 89.7h ago by StockStory) could also be a risk, as it may indicate concerns about Incyte&#x27;s competitive position or growth prospects.<br><br>**9. RESEARCH VERDICT**<br>Incyte Corporation is a high-quality biopharmaceutical company with a strong product portfolio, research and development pipeline, and competitive position. The company&#x27;s recent EU approval of Opzelura for moderate atopic dermatitis is a positive catalyst, and its valuation is reasonable compared to its growth prospects. However, there are some risks to consider, including volatility in the stock price and bearish sentiment from some analysts. Overall, I rate my conviction in Incyte as a MEDIUM-HIGH investment opportunity.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">After reviewing the research note on INCY, I&#x27;ve identified several potential holes and challenges to the thesis:<br><br>**1. ACCOUNTING RED FLAGS:**<br>* While the note mentions strong earnings growth and high operating margins, it doesn&#x27;t provide any information on accounts receivable or inventory growth. It&#x27;s essential to review these metrics to ensure there are no signs of earnings manipulation. For example, if accounts receivable are growing significantly faster than revenue, it could indicate potential issues with revenue recognition.<br>* The note also doesn&#x27;t mention capex patterns, which could be a concern if Incyte is investing heavily in new projects or facilities that may not generate returns in the near term.<br><br>**2. THESIS KILLERS:**<br>* A significant failure in one of Incyte&#x27;s key clinical trials, such as INCA033989 or INCB160058, could invalidate the entire bull case immediately. If any of these trials fail to meet their primary endpoints, it could lead to a significant decline in the stock price.<br>* A loss of patent protection for one of Incyte&#x27;s key products, such as JAKAFI, could also be a thesis killer. If a generic version of JAKAFI were to enter the market, it could significantly impact Incyte&#x27;s revenue and profitability.<br><br>**3. ASSUMPTION STRESS TEST:**<br>* The note assumes that Incyte&#x27;s strong research and development pipeline will continue to drive growth, but it&#x27;s unclear how many of these pipeline products will actually be approved and commercialized. For example, what if only one or two of these products are approved, rather than the expected five or six?<br>* The note also assumes that the EU approval of Opzelura will be a significant catalyst for growth, but what if the product doesn&#x27;t meet expectations in terms of sales or market share? The recent news article from Stocktwits mentions that Incyte&#x27;s shares retreated after the EU approval, which could indicate that the market is already pricing in the approval.<br><br>**4. VALUATION RISK:**<br>* While the note mentions that Incyte&#x27;s forward P/E ratio is reasonable compared to its growth rate and industry peers, it&#x27;s essential to consider the potential risks of overvaluation. If Incyte&#x27;s growth slows down or if the company experiences any setbacks, the stock price could decline significantly.<br>* The note also mentions a PEG ratio of 28.47, which is relatively high. This could indicate that the stock is overvalued, and investors may be paying too much for future growth.<br><br>**5. COMPETITIVE THREATS:**<br>* The note mentions that Incyte has a competitive moat due to its strong product portfolio and research and development pipeline, but it&#x27;s essential to consider potential competitors. For example, what if a new company enters the market with a similar product or technology that competes directly with Incyte&#x27;s products?<br>* The note also doesn&#x27;t mention any potential biosimilar threats to Incyte&#x27;s products, which could be a concern if a generic version of one of its products were to enter the market.<br><br>**6. MACRO SENSITIVITY:**<br>* The note doesn&#x27;t mention any macroeconomic risks that could impact Incyte&#x27;s business, such as changes in government regulations or reimbursement policies. For example, what if there are significant changes to the Affordable Care Act or Medicare reimbursement policies that impact Incyte&#x27;s revenue or profitability?<br>* The note also doesn&#x27;t mention any potential risks related to interest rates or inflation, which could impact Incyte&#x27;s cost of capital or operating expenses.<br><br>**7. INSTITUTIONAL RISK:**<br>* The note mentions that Incyte has a short ratio of 5.32 days, which is relatively low. However, it&#x27;s essential to consider the potential risks of short selling or other forms of market manipulation.<br>* The note also mentions that insider ownership is relatively low at 1.9%, which could indicate a lack of alignment between management and shareholders.<br><br>**8. CHALLENGE VERDICT:**<br>Based on the analysis above, I would rate the overall risk of Incyte as YELLOW (proceed with caution). While the company has a strong product portfolio and research and development pipeline, there are several potential risks and challenges that investors should be aware of, including accounting red flags, thesis killers, and valuation risks.<br><br>recent news articles:<br><br>* The article from Stocktwits mentions that Incyte&#x27;s shares retreated after the EU approval of Opzelura, which could indicate that the market is already pricing in the approval.<br>* The article from GuruFocus.com mentions that Incyte reported a 38% increase in total revenue, which is a positive sign, but it&#x27;s essential to consider the potential risks of slowing growth or declining revenue in the future.<br>* The article from Zacks mentions that Incyte raised its 2026 revenue outlook, which is a positive sign, but it&#x27;s essential to consider the potential risks of overestimating revenue growth or underestimating expenses.<br><br>Overall, while Incyte has a strong business and growth prospects, there are several potential risks and challenges that investors should be aware of. It&#x27;s essential to carefully evaluate these risks and consider a diversified portfolio to minimize potential losses.</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse INCY</div>
+  </div>
+</details>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 Upcoming Earnings</div>
+  <div class="earnings-box">
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• CELH</span>
+  <span style="color:#aaa">2026-08-06</span>
+  <span style="color:#ff6d6d;font-size:12px">1d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• DDOG</span>
+  <span style="color:#aaa">2026-08-06</span>
+  <span style="color:#ff6d6d;font-size:12px">1d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• ELF</span>
+  <span style="color:#aaa">2026-08-06</span>
+  <span style="color:#ff6d6d;font-size:12px">1d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• ONON</span>
+  <span style="color:#aaa">2026-08-11</span>
+  <span style="color:#ff6d6d;font-size:12px">6d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• AMAT</span>
+  <span style="color:#aaa">2026-08-14</span>
+  <span style="color:#ffd600;font-size:12px">9d</span>
+</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📈 Pick Track Record</div>
+  <div class="track-card">
+    <div class="track-grid">
+<div class="track-cell"><div class="track-h">1 Week Fwd · 25 picks</div>
+<div class="track-v tr-neg">-3.03% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 28.0% · avg -2.24%</div></div>
+<div class="track-cell"><div class="track-h">1 Month Fwd</div>
+<div class="track-v tr-neu">building…</div></div></div>
+    <div class="track-note">Top 5 daily picks tracked forward vs SPY ·
+    15 day(s) of history · builds daily</div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="collapseAll()">▲ Collapse</button>
+
+<div class="footer">
+  HZ Capital Trading Intelligence &nbsp;·&nbsp;
+  2026-08-05 09:54 &nbsp;·&nbsp;
+  Market analysis only — positions &amp; instructions are delivered privately via Telegram. Not financial advice.
+</div>
+
+<script>
+function filterCards(f, btn) {
+  document.querySelectorAll('.filt').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('details.stock-card').forEach(function(c) {
+    var show = true;
+    if      (f === 'buy')   show = c.dataset.action === 'BUY NOW';
+    else if (f === 'wait')  show = c.dataset.action.indexOf('WAIT') === 0;
+    else if (f === 'watch') show = c.dataset.action === 'WATCH';
+    else if (f === 'avoid') show = c.dataset.action === 'AVOID';
+    else if (f === 'high')  show = c.dataset.conviction === 'HIGH';
+    c.classList.toggle('hidden', !show);
+  });
+  var v = document.querySelectorAll('details.stock-card:not(.hidden)').length;
+  document.getElementById('stock-count').textContent = v + ' stocks';
+}
+
+/* Close the section this control belongs to and bring its header back into
+   view, so you never lose your place after reading a long note. */
+function closeCard(el) {
+  var d = el.closest('details');
+  if (!d) return;
+  d.open = false;
+  var y = d.getBoundingClientRect().top + window.scrollY - 108;
+  window.scrollTo({ top: y < 0 ? 0 : y, behavior: 'smooth' });
+  updateFab();
+}
+
+function collapseAll() {
+  document.querySelectorAll('details[open]').forEach(function (d) { d.open = false; });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateFab();
+}
+
+function updateFab() {
+  var f = document.getElementById('fab');
+  if (!f) return;
+  var n = document.querySelectorAll('details[open]').length;
+  f.classList.toggle('show', n > 0);
+  f.textContent = n > 1 ? '▲ Collapse all (' + n + ')' : '▲ Collapse';
+}
+
+/* toggle doesn't bubble — capture phase catches every <details> */
+document.addEventListener('toggle', updateFab, true);
+document.addEventListener('DOMContentLoaded', updateFab);
+</script>
+</body>
+</html>
