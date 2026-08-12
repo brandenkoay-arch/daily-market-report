@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>HZ Capital — August 12, 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     background:#0d0d0d;color:#e0e0e0;line-height:1.5;font-size:14px}
+
+/* STICKY HEADER */
+.sticky-header{position:sticky;top:0;z-index:100;background:#111;
+  border-bottom:1px solid #222;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+.site-title{font-size:13px;font-weight:700;color:#fff}
+.site-sub{font-size:11px;color:#666;margin-top:1px}
+.regime-pill{font-size:11px;font-weight:700;padding:4px 10px;
+  border-radius:20px;color:#000;white-space:nowrap}
+
+/* SECTIONS */
+.section{padding:12px 12px 4px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;
+  text-transform:uppercase;color:#555;margin-bottom:8px}
+
+/* ALERTS */
+.alert-card{background:#1a0800;border:1px solid #ff6d00;border-radius:10px;
+  padding:12px 14px;margin-bottom:8px}
+.alert-type{font-size:10px;font-weight:700;color:#ff6d00;letter-spacing:0.5px;text-transform:uppercase}
+.alert-ticker{font-size:15px;font-weight:800;color:#ff9d4a;margin:2px 0}
+.alert-msg{font-size:12px;color:#ccc;line-height:1.5}
+
+/* MACRO */
+details.macro-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;
+  overflow:clip;margin-bottom:8px}   /* clip, NOT hidden — hidden breaks sticky */
+details.macro-card > summary{list-style:none;cursor:pointer;padding:13px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+details.macro-card > summary::-webkit-details-marker{display:none}
+details.macro-card > summary::marker{display:none}
+details.macro-card[open] .chevron{transform:rotate(180deg)}
+.macro-title{font-size:14px;font-weight:700;color:#fff}
+.macro-body{padding:12px 14px 14px;font-size:13px;color:#bbb;
+  line-height:1.75;border-top:1px solid #222}
+
+/* SECTOR OVERVIEW */
+.sector-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;overflow:hidden}
+.sector-row{display:flex;align-items:flex-start;gap:10px;
+  padding:9px 14px;border-bottom:1px solid #1e1e1e}
+.sector-row:last-child{border-bottom:none}
+.sector-name{font-size:11px;font-weight:700;color:#777;
+  text-transform:uppercase;letter-spacing:0.3px;
+  min-width:110px;flex-shrink:0;padding-top:2px}
+.sector-chips{display:flex;gap:5px;flex-wrap:wrap}
+.stk-chip{background:#252525;border-radius:4px;padding:2px 8px;
+  font-size:11px;color:#82b1ff;font-weight:700}
+.stk-chip.buy{color:#00c853}
+.stk-chip.watch{color:#ffd600}
+.stk-chip.avoid{color:#ff6d6d}
+
+/* FILTER BAR */
+.filter-bar{position:sticky;top:53px;z-index:99;background:#111;
+  border-bottom:1px solid #1e1e1e;padding:8px 12px;
+  display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  margin-top:12px}
+.filter-bar::-webkit-scrollbar{display:none}
+.filt{background:#1e1e1e;border:1px solid #2a2a2a;color:#888;
+  padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  white-space:nowrap;cursor:pointer;transition:all 0.15s;user-select:none}
+.filt.active{background:#82b1ff;color:#000;border-color:#82b1ff}
+
+/* STOCK CARDS */
+details.stock-card{background:#1a1a1a;border-radius:12px;margin-bottom:9px;
+  overflow:clip;border:1px solid #222}   /* clip, NOT hidden — hidden breaks sticky */
+details.stock-card[open]{border-color:#333}
+details.stock-card > summary{list-style:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;padding:13px 14px}
+details.stock-card > summary::-webkit-details-marker{display:none}
+details.stock-card > summary::marker{display:none}
+details.stock-card[open] .chevron{transform:rotate(180deg)}
+
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rank-num{font-size:15px;font-weight:800;color:#444;min-width:22px}
+.tk{font-size:17px;font-weight:800;color:#82b1ff}
+.co-name{font-size:12px;color:#888;flex:1;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.chevron{font-size:10px;color:#555;transition:transform 0.2s;flex-shrink:0}
+
+.badge-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.b-buy{background:#00c853;color:#000}
+.b-watch{background:#ffd600;color:#000}
+.b-wait{background:#ff9d4a;color:#000}
+.b-avoid{background:#d50000;color:#fff}
+.b-dash{background:#2a2a2a;color:#666}
+
+/* TODAY AT A GLANCE */
+.glance-card{background:linear-gradient(135deg,#141a26,#101418);border:1px solid #2a3550;
+  border-radius:12px;padding:14px;margin-bottom:8px}
+.glance-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.glance-stat{background:#1a2230;border-radius:8px;padding:7px 12px;flex:1;min-width:90px}
+.glance-label{font-size:9px;color:#5a6a8a;text-transform:uppercase;letter-spacing:0.5px}
+.glance-val{font-size:14px;font-weight:800;color:#e8eeff;margin-top:2px}
+.glance-line{font-size:12px;color:#9ab;line-height:1.6}
+.glance-line b{color:#82b1ff}
+.delta-chip{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;
+  padding:1px 7px;margin:1px 3px 1px 0}
+.d-new{background:rgba(0,200,83,0.15);color:#00c853;border:1px solid rgba(0,200,83,0.35)}
+.d-drop{background:rgba(213,0,0,0.12);color:#ff6d6d;border:1px solid rgba(213,0,0,0.3)}
+.setup-line{font-size:11px;color:#4dd0a5;padding-top:4px}
+
+/* TRACK RECORD */
+.track-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:12px 14px}
+.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:4px}
+.track-cell{background:#1e1e1e;border-radius:8px;padding:8px 10px}
+.track-h{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.track-v{font-size:15px;font-weight:800;margin-top:2px}
+.tr-pos{color:#00c853}.tr-neg{color:#ff6d6d}.tr-neu{color:#bbb}
+.track-note{font-size:11px;color:#555;margin-top:8px;line-height:1.5}
+.b-high{background:rgba(130,177,255,0.15);color:#82b1ff;border:1px solid rgba(130,177,255,0.3)}
+.b-medium{background:rgba(255,214,0,0.1);color:#ffd600;border:1px solid rgba(255,214,0,0.25)}
+.b-low{background:rgba(255,109,0,0.1);color:#ff6d00;border:1px solid rgba(255,109,0,0.25)}
+
+.score-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.chip{background:#252525;border-radius:4px;padding:2px 7px;font-size:11px;color:#666}
+.chip b{color:#bbb}
+.rationale{font-size:12px;color:#666;line-height:1.5;padding-top:6px;border-top:1px solid #222}
+
+/* CARD BODY */
+.card-body{border-top:1px solid #222}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+  padding:10px 12px;background:#141414}
+.meta-item{background:#1e1e1e;border-radius:6px;padding:6px 8px}
+.meta-label{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.meta-val{font-size:13px;font-weight:700;color:#ddd;margin-top:1px}
+.case-section{padding:12px 14px}
+.case-section+.case-section{border-top:1px solid #1e1e1e}
+.case-label{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
+.case-bull .case-label{color:#00c853}
+.case-bear .case-label{color:#ff6d6d}
+.case-text{font-size:13px;line-height:1.75;color:#bbb}
+.risk-line{font-size:12px;color:#ff9d4a;padding:6px 14px 0}
+
+/* EARNINGS */
+.earnings-box{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:10px 14px}
+.earnings-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid #1e1e1e;font-size:13px}
+.earnings-row:last-child{border-bottom:none}
+.no-items{color:#555;font-size:13px;padding:8px 0}
+
+/* FOOTER */
+.footer{text-align:center;font-size:11px;color:#333;padding:20px 14px 40px}
+
+/* ── EXPAND / COLLAPSE ERGONOMICS ──────────────────────────────────────
+   Long research notes used to be collapsible only from the very top, so
+   you had to scroll back up to close one. Three fixes:
+   1. the card's own header sticks below the toolbars while it is open,
+      so the collapse control is always one tap away while reading;
+   2. a matching collapse bar sits at the END of every long section;
+   3. a floating "collapse all" appears whenever anything is open.        */
+details.stock-card[open] > summary{position:sticky;top:98px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55);padding:9px 14px}
+/* While open the pinned header must stay SMALL — the teaser rows (scores,
+   setup, rationale) are redundant once the full body is on screen. */
+details.stock-card[open] > summary .score-chips,
+details.stock-card[open] > summary .setup-line,
+details.stock-card[open] > summary .rationale{display:none}
+details.stock-card[open] > summary .card-top{margin-bottom:4px}
+details.stock-card[open] > summary .badge-row{margin-bottom:0}
+details.macro-card[open] > summary{position:sticky;top:53px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55)}
+.collapse-bar{display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:12px 14px;background:#151515;border-top:1px solid #262626;
+  color:#82b1ff;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent}
+.collapse-bar:active{background:#202020}
+.fab{position:fixed;right:14px;bottom:18px;z-index:300;background:#82b1ff;color:#000;
+  border:none;border-radius:24px;padding:14px 18px;font-size:12px;font-weight:800;
+  box-shadow:0 4px 16px rgba(0,0,0,0.6);cursor:pointer;display:none}   /* >=44px tap target */
+.fab.show{display:block}
+
+/* DESKTOP */
+@media(min-width:700px){
+  body{max-width:900px;margin:0 auto}
+  .filter-bar{top:57px}
+  .meta-grid{grid-template-columns:repeat(6,1fr)}
+  details.stock-card[open] > summary{top:102px}   /* clears the taller desktop toolbars */
+}
+@media(min-width:1100px){body{max-width:1100px}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div>
+    <div class="site-title">HZ Capital</div>
+    <div class="site-sub">August 12, 2026</div>
+  </div>
+  <div class="regime-pill" style="background:#00c853">CONFIRMED UPTREND</div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">⚡ Today in 30 Seconds</div>
+  <div class="glance-card">
+    <div class="glance-row">
+      <div class="glance-stat"><div class="glance-label">Regime</div><div class="glance-val" style="color:#00c853">CONFIRMED UPTREND</div></div>
+      <div class="glance-stat"><div class="glance-label">Buy Setups</div><div class="glance-val">3</div></div>
+      <div class="glance-stat"><div class="glance-label">Wait</div><div class="glance-val">0</div></div>
+      <div class="glance-stat"><div class="glance-label">Watch</div><div class="glance-val">2</div></div>
+    </div>
+    <div class="glance-line">🏆 #1 pick: <b>INCY</b> <span class="badge b-buy">BUY NOW</span> reclaimed EMA20 2 session(s) ago, holding above</div><div class="glance-line">🟢 Buy setups triggered: <b>INCY</b> (reclaimed EMA20 2 session(s) ago, holding above) <b>NTRS</b> ($187.78 is 1.99% below pivot $191.60 — breakout imminent) <b>CPAY</b> ($406.16 just broke 0.05% above pivot $405.95 — in buy zone)</div><div class="glance-line">Δ vs 2026-08-11: <span class="delta-chip d-new">+ KEYS</span></div><div class="glance-line">📅 Event radar: <b>CPI release</b> in 0d · <b>Jobs report (NFP)</b> in 23d · <b>CPI release</b> in 30d</div><div class="glance-line" style="color:#667">🕐 Prices as of last US close: <b>2026-08-11</b></div>
+  </div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">📊 Macro Analysis</div>
+  <details class="macro-card" open>
+    <summary>
+      <span class="macro-title">🌍 CONFIRMED UPTREND</span>
+      <span class="chevron">▼</span>
+    </summary>
+    <div class="macro-body">1. WHAT CHANGED SINCE YESTERDAY: The most significant development is the decline in the VIX by -1.16% to 15.28, as well as the Energy sector (XLE) surging 1.25%, outperforming the broader market, as noted in the sector performance data. This shift is also reflected in the headlines, such as &quot;[CNBC, 0.5h ago] EVs dominate China’s car market: 5 takeaways from the country&#x27;s latest auto sales data&quot;, which may be contributing to the sector&#x27;s strength.<br><br>2. MARKET REGIME ASSESSMENT: The market remains in a CONFIRMED UPTREND regime, with the SPY and QQQ indices still above their 50-day and 200-day moving averages. The slight decline in the indices today, with the SPY down -0.32% and the QQQ down -0.34%, is a minor pullback in an otherwise uptrending market. The 10Y Yield&#x27;s decline to 4.68% may also be a sign of a continued favorable environment for stocks.<br><br>3. SECTOR LEADERSHIP: The Energy sector (XLE) is leading the charge today, with a 1.25% gain, followed closely by the Industrials (XLI) sector, which is up 0.6%. The Semiconductors (SOXX) sector is also showing strength, up 0.91% on the day. On the other hand, the Real Estate (XLRE) sector is lagging, down -0.72%.<br><br>4. NEWS-DRIVEN RISKS &amp; CATALYSTS: The top news-driven risks and catalysts include the upcoming CPI release scheduled for today (2026-08-12), which could impact the market&#x27;s inflation expectations, as well as the article &quot;[CNBC, 0.4h ago] Sen. Darline Graham advances to Republican special primary runoff in South Carolina&quot;, which may have implications for the political landscape. Additionally, the article &quot;[MarketWatch, 1.6h ago] CoreWeave’s stock soars as earnings show major AI momentum&quot; highlights the growing importance of AI in the market and potential opportunities for growth.<br><br>5. GROWTH STOCK ENVIRONMENT: The growth stock environment remains favorable, with the ARK Innovation (ARKK) ETF up 0.2% on the day and the Small Cap Growth (IWO) ETF up 0.31%. The Semiconductors (SOXX) sector&#x27;s strength also bodes well for growth stocks, given its importance in the tech industry.<br><br>6. POSTURE RECOMMENDATION: Given the ongoing uptrend and favorable growth stock environment, I recommend an AGGRESSIVE posture, with a 90% equity allocation. This posture remains unchanged from yesterday, as the market&#x27;s underlying trends and sector leadership continue to support a bullish outlook.</div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse macro analysis</div>
+  </details>
+</div>
+
+<div class="section">
+  <div class="section-title">🏭 Industry Overview</div>
+  <div class="sector-card">
+<div class="sector-row">
+  <div class="sector-name">Financial Services <span style="font-size:10px;color:#666">· <span style="color:#ff6d6d">1D -0.0%</span> · <span style="color:#ff6d6d">1W -0.3%</span> · <span style="color:#ff6d6d">▼4</span></span></div>
+  <div class="sector-chips"><span class="stk-chip buy">NTRS</span></div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare <span style="font-size:10px;color:#666">· <span style="color:#ff6d6d">1D -0.3%</span> · <span style="color:#00c853">1W +2.4%</span> · <span style="color:#ff6d6d">▼1</span></span></div>
+  <div class="sector-chips"><span class="stk-chip buy">INCY</span></div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology <span style="font-size:10px;color:#666">· <span style="color:#ff6d6d">1D -0.1%</span> · <span style="color:#00c853">1W +0.1%</span></span></div>
+  <div class="sector-chips"><span class="stk-chip buy">CPAY</span><span class="stk-chip watch">ANET</span><span class="stk-chip watch">KEYS</span></div>
+</div></div>
+  
+  <details class="macro-card" style="margin-top:8px">
+    <summary><span class="macro-title" style="font-size:13px">📊 Sector rotation leaderboard (1-week momentum)</span><span class="chevron">▼</span></summary>
+    <div style="border-top:1px solid #222">
+<div class="sector-row">
+  <div class="sector-name">Energy<span style="color:#00c853"> ▲2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.2%</span> · <span style="color:#00c853">1W +6.3%</span> ·
+    1M 6.99%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">ARK Innovation<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.2%</span> · <span style="color:#00c853">1W +5.8%</span> ·
+    1M 1.36%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.3%</span> · <span style="color:#00c853">1W +2.4%</span> ·
+    1M 6.14%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Materials</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.1%</span> · <span style="color:#00c853">1W +1.1%</span> ·
+    1M 5.13%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Semiconductors<span style="color:#00c853"> ▲9</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.9%</span> · <span style="color:#00c853">1W +0.7%</span> ·
+    1M -5.94%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Small Cap Growth</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.3%</span> · <span style="color:#00c853">1W +0.7%</span> ·
+    1M 1.9%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Disc<span style="color:#ff6d6d"> ▼2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.4%</span> · <span style="color:#00c853">1W +0.5%</span> ·
+    1M 2.88%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Communication Svcs</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.5%</span> · <span style="color:#00c853">1W +0.4%</span> ·
+    1M -0.16%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.1%</span> · <span style="color:#00c853">1W +0.1%</span> ·
+    1M 1.35%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Utilities<span style="color:#00c853"> ▲3</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.2%</span> · <span style="color:#ff6d6d">1W -0.1%</span> ·
+    1M -4.51%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Financials<span style="color:#ff6d6d"> ▼4</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.0%</span> · <span style="color:#ff6d6d">1W -0.3%</span> ·
+    1M 2.88%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Industrials<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.6%</span> · <span style="color:#ff6d6d">1W -0.3%</span> ·
+    1M 2.91%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Staples<span style="color:#ff6d6d"> ▼3</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.3%</span> · <span style="color:#ff6d6d">1W -0.8%</span> ·
+    1M 1.52%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Real Estate<span style="color:#ff6d6d"> ▼2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.7%</span> · <span style="color:#ff6d6d">1W -2.5%</span> ·
+    1M -0.9%</div>
+</div></div>
+  </details>
+</div>
+
+
+<div class="filter-bar">
+  <button class="filt active" onclick="filterCards('all',this)">All (5)</button>
+  <button class="filt" onclick="filterCards('buy',this)">🟢 Buy Now (3)</button>
+  <button class="filt" onclick="filterCards('wait',this)">⏳ Wait (0)</button>
+  <button class="filt" onclick="filterCards('watch',this)">🟡 Watch (2)</button>
+  <button class="filt" onclick="filterCards('avoid',this)">🔴 Avoid (0)</button>
+  <button class="filt" onclick="filterCards('high',this)">⭐ High Conv. (2)</button>
+</div>
+<div class="section" style="padding-top:10px">
+  <div class="section-title"><span id="stock-count">5 stocks</span> — tap to expand</div>
+  
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="HIGH">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#1</span>
+      <span class="tk">INCY</span>
+      <span class="co-name">Incyte Corporation</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-high">HIGH</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>28.1/40</b></span>
+  <span class="chip">Fund <b>32.6/40</b></span>
+  <span class='chip'>Score <b>60.7/80</b></span>
+</div>
+    <div class="setup-line">📐 reclaimed EMA20 2 session(s) ago, holding above</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 11.7% · ATR 95% of 50d · vol 94% of 50d</div>
+    <div class="rationale">Incyte Corporation has a high technical score, a diverse portfolio of products, and has reclaimed its EMA20, indicating strong technical strength and business quality. Its total score is also one of the highest among the given stocks.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$121.07</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">86.6</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">96.8%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">37.7%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-8.7%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Healthcare</div></div>
+</div>
+    <div class="risk-line">⚠ Regulatory risks associated with the biopharmaceutical industry</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**1. BUSINESS QUALITY**<br>* Incyte Corporation is a biopharmaceutical company focused on the discovery, development, and commercialization of therapeutics.<br>* The company has a diverse portfolio of products, including JAKAFI, ICLUSIG, MONJUVI/MINJUVI, and NIKTIMVO, among others.<br>* Incyte&#x27;s products target various diseases, such as myelofibrosis, polycythemia vera, chronic myeloid leukemia, and diffuse large B-cell lymphoma.<br><br>**2. EARNINGS QUALITY**<br>* Incyte&#x27;s EPS growth is 96.8% year-over-year, indicating a strong earnings acceleration.<br>* The company&#x27;s operating margin is 41.9%, and its profit margin is 27.7%, suggesting a high level of profitability.<br>* There are no notable one-time items or concerns regarding earnings quality.<br><br>**3. REVENUE ACCELERATION**<br>* Revenue growth is 37.7%, which is a significant increase.<br>* Key drivers of revenue growth are likely the company&#x27;s diverse portfolio of products and the approval of new treatments, such as Opzelura.<br>* Further acceleration may be expected due to the recent European Commission approval for Opzelura.<br><br>**4. COMPETITIVE MOAT**<br>* Incyte&#x27;s competitive moat is derived from its innovative products, strong research and development capabilities, and existing relationships with healthcare providers.<br>* The company&#x27;s products have unique characteristics, such as JAKAFI being the only FDA-approved treatment for myelofibrosis.<br>* Patents and regulatory approvals also contribute to Incyte&#x27;s competitive advantage.<br><br>**5. INDUSTRY TAILWINDS**<br>* The biotechnology industry is experiencing growth, driven by increasing demand for innovative treatments and advancements in medical research.<br>* Recent news, such as the European Commission&#x27;s approval of Opzelura for moderate atopic dermatitis (reported 246.7h ago by Simply Wall St.), is a positive catalyst for Incyte.<br>* The company&#x27;s expansion into new markets, such as the EU, is also a tailwind, as seen in the recent approval of Opzelura (reported 248.8h ago by Simply Wall St.).<br><br>**6. MANAGEMENT EXECUTION**<br>* Incyte&#x27;s management has a strong track record of developing and commercializing innovative products.<br>* The company&#x27;s capital allocation is focused on research and development, which has led to the creation of its diverse portfolio of products.<br>* Guidance history is not a significant concern, as the company has consistently delivered strong earnings and revenue growth.<br><br>**7. VALUATION**<br>* Incyte&#x27;s forward P/E is 13.63, and its PEG ratio is 28.96, indicating a premium valuation.<br>* The price-to-sales ratio is 4.22, which is relatively high but justifiable given the company&#x27;s strong growth prospects.<br>* The valuation may be justified by the company&#x27;s high growth rate and competitive advantage.<br><br>**8. KEY RISKS**<br>* Recent news, such as Mirum&#x27;s Q2 earnings miss (reported 130.5h ago by Zacks), may not directly impact Incyte but could indicate a competitive landscape that is increasingly challenging.<br>* The stock&#x27;s reaction to the European Commission&#x27;s approval of Opzelura, with shares retreating after the best day in a year (reported 320.5h ago by Stocktwits), may indicate that the market has already priced in the approval, potentially limiting upside.<br>* Regulatory risks, such as changes in approval standards or unexpected side effects, are always present in the biotechnology industry.<br><br>**9. RESEARCH VERDICT**<br>Incyte Corporation is a high-growth biopharmaceutical company with a strong competitive advantage and a diverse portfolio of innovative products. The recent European Commission approval of Opzelura is a positive catalyst, and the company&#x27;s valuation, although premium, may be justified by its growth prospects. I rate my conviction in this thesis as MEDIUM, as while the company has a strong track record and competitive advantage, the biotechnology industry is inherently risky, and regulatory or competitive challenges may arise.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">I&#x27;ll scrutinize the research note on INCY, looking for potential holes in the thesis.<br><br>**1. ACCOUNTING RED FLAGS:**<br>While the note doesn&#x27;t raise any explicit concerns, I&#x27;d like to see more detail on the company&#x27;s revenue recognition policies, particularly given the recent approval of Opzelura. The current ratio of 4.593 is healthy, but I&#x27;d like to see more breakdown on the components of current assets and liabilities. The debt-to-equity ratio of 0.603 is relatively high, which could be a concern if interest rates rise.<br><br>**2. THESIS KILLERS:**<br>A single event that could invalidate the bull case is a negative regulatory development, such as a failed clinical trial or a black-box warning on one of Incyte&#x27;s key products. For example, if the European Commission were to reconsider its approval of Opzelura due to safety concerns, it could significantly impact the company&#x27;s growth prospects.<br><br>**3. ASSUMPTION STRESS TEST:**<br>The research note assumes that Incyte&#x27;s strong growth will continue, driven by its diverse portfolio of products and recent approvals. However, this assumption may be overly optimistic, given the competitive landscape and potential regulatory risks. The note also assumes that the market has not fully priced in the European Commission&#x27;s approval of Opzelura, which may not be the case, as suggested by the stock&#x27;s retreat after the best day in a year (reported 320.5h ago by Stocktwits).<br><br>**4. VALUATION RISK:**<br>The forward P/E of 13.63 and PEG ratio of 28.96 suggest a premium valuation, which may be justified by the company&#x27;s growth prospects. However, if the growth rate slows down or the competitive landscape becomes more challenging, the valuation multiple could contract, making the stock less attractive. The price-to-sales ratio of 4.22 is relatively high, which could indicate that the market is pricing in overly optimistic growth expectations.<br><br>**5. COMPETITIVE THREATS:**<br>The recent news on Mirum&#x27;s Q2 earnings miss (reported 130.5h ago by Zacks) may indicate a more competitive landscape than expected. While Mirum is not a direct competitor, its earnings miss could be a canary in the coal mine, suggesting that the biotechnology industry is facing increasing competition. Incyte&#x27;s competitive moat, derived from its innovative products and strong research and development capabilities, may not be as robust as assumed.<br><br>**6. MACRO SENSITIVITY:**<br>The biotechnology industry is sensitive to regulatory developments, and Incyte is no exception. Changes in approval standards or unexpected side effects could impact the company&#x27;s growth prospects. Additionally, the industry is also sensitive to macroeconomic factors, such as interest rates and recession, which could affect the company&#x27;s valuation multiple.<br><br>**7. INSTITUTIONAL RISK:**<br>The short ratio of 5.32 days to cover is relatively low, which could indicate that institutional investors are not overly bearish on the stock. However, the insider ownership of 1.8% is relatively low, which could suggest that insiders are not as confident in the company&#x27;s prospects as they could be.<br><br>**8. CHALLENGE VERDICT:**<br>Overall, I would rate the risk as YELLOW (proceed with caution). While Incyte has a strong track record and a diverse portfolio of innovative products, the biotechnology industry is inherently risky, and regulatory or competitive challenges may arise. The premium valuation and relatively high debt-to-equity ratio are also concerns that need to be carefully considered.<br><br>Specifically, I would like to see more detail on the following:<br><br>* Revenue recognition policies and potential accounting risks<br>* Breakdown of current assets and liabilities to better understand the company&#x27;s liquidity position<br>* Update on the regulatory landscape and potential risks associated with Incyte&#x27;s products<br>* More information on the competitive landscape and potential threats to Incyte&#x27;s market share<br><br>Until these concerns are addressed, I would approach the stock with caution and carefully consider the potential risks and downsides.</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse INCY</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="HIGH">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#2</span>
+      <span class="tk">NTRS</span>
+      <span class="co-name">Northern Trust Corporation</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-high">HIGH</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>34.6/40</b></span>
+  <span class="chip">Fund <b>33.3/40</b></span>
+  <span class='chip'>Score <b>67.9/80</b></span>
+</div>
+    <div class="setup-line">📐 $187.78 is 1.99% below pivot $191.60 — breakout imminent</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 6.5% · ATR 87% of 50d · vol 96% of 50d</div>
+    <div class="rationale">Northern Trust Corporation has a high total score, a strong technical score, and is close to a breakout, indicating a favorable technical setup. Its business quality is also high, with a diverse range of services.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$187.78</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">82.4</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">98.6%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">36.4%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-2.0%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Financial Services</div></div>
+</div>
+    <div class="risk-line">⚠ Interest rate risks affecting the financial services sector</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**RESEARCH NOTE: NTRS**<br><br>1. **BUSINESS QUALITY**<br>	* Northern Trust Corporation provides wealth management, asset servicing, asset management, and banking solutions for corporations, institutions, families, and individuals.<br>	* Operates in two segments: Asset Servicing and Wealth Management.<br>	* Offers a range of services, including custody, fund administration, investment operations outsourcing, and securities lending.<br>	* Serves a diverse client base, including corporate and public retirement funds, foundations, endowments, and other institutional investors.<br><br>2. **EARNINGS QUALITY**<br>	* Recent EPS growth: 98.6% YoY, indicating strong earnings acceleration.<br>	* Operating margin: 42.5%, suggesting a high level of operational efficiency.<br>	* ROE: 17.1%, indicating strong returns on equity.<br>	* No one-time items or extraordinary gains/losses reported.<br><br>3. **REVENUE ACCELERATION**<br>	* Revenue growth: 36.4%, indicating a strong top-line growth trend.<br>	* Key drivers: growth in asset servicing and wealth management segments, as well as expansion of services to institutional clients.<br>	* Recent launch of real-time banking APIs for institutional clients may also contribute to revenue growth.<br><br>4. **COMPETITIVE MOAT**<br>	* Strong brand presence in the financial services industry.<br>	* Scale advantages in asset servicing and wealth management.<br>	* High switching costs for institutional clients, given the complexity of services provided.<br>	* Recent partnerships, such as the one with Lukka on digital asset reporting, may further enhance its competitive position.<br><br>5. **INDUSTRY TAILWINDS**<br>	* Recent news on hopes for a US-Iran deal and the subsequent impact on oil prices (Bloomberg, 10.4h ago) may lead to increased market activity and asset flows, benefiting Northern Trust&#x27;s business.<br>	* The company&#x27;s launch of real-time banking APIs for institutional clients (Simply Wall St, 128.6h ago) may also contribute to industry tailwinds, as it enhances the efficiency and competitiveness of its services.<br><br>6. **MANAGEMENT EXECUTION**<br>	* Recent mandate renewal from the General Pension and Social Security Authority (Simply Wall St, 133.6h ago) suggests strong execution and client relationships.<br>	* Launch of new services and partnerships, such as the one with Lukka, indicates a proactive management approach to innovation and growth.<br>	* Guidance history and capital allocation decisions not explicitly disclosed, but recent investments in digital capabilities suggest a focus on growth and innovation.<br><br>7. **VALUATION**<br>	* Forward P/E: 14.82, relatively in line with industry peers.<br>	* PEG ratio: 1.24, indicating a potential premium for growth.<br>	* Price/Sales: 3.78, slightly above industry averages, but justified by strong revenue growth and operational efficiency.<br><br>8. **KEY RISKS**<br>	* Recent article on &quot;1 Profitable Stock on Our Buy List and 2 We Find Risky&quot; (StockStory, 38.6h ago) may indicate potential concerns about Northern Trust&#x27;s competitive position and margins, although the article does not explicitly mention NTRS as a risky stock.<br>	* The company&#x27;s reliance on institutional clients and the potential for market volatility (as seen in the recent oil price fluctuations, Bloomberg, 10.4h ago) may also pose risks to its business and revenue growth.<br><br>9. **RESEARCH VERDICT**<br>	* Northern Trust Corporation presents a compelling growth story, with strong earnings acceleration, revenue growth, and a solid competitive moat.<br>	* Recent industry trends and news suggest a positive outlook for the company&#x27;s business.<br>	* We rate our conviction in this stock as MEDIUM, due to some concerns about potential risks and the need for continued monitoring of industry trends and company execution.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">After carefully reviewing the research note on Northern Trust Corporation (NTRS), I have identified several holes in the thesis. Here are my specific concerns:<br><br>1. **ACCOUNTING RED FLAGS**: The note does not provide any information on receivables, inventory, or accruals, which could be indicative of earnings manipulation. However, the note does mention a high operating margin of 42.5%, which may be unsustainable. I would like to see more detailed information on the company&#x27;s accounting practices.<br><br>2. **THESIS KILLERS**: A single event that could invalidate the entire bull case is a significant decline in asset values, which could lead to a decrease in revenue and profitability for NTRS. For example, if the US-Iran deal falls through, oil prices could surge, leading to market volatility and a decline in asset values.<br><br>3. **ASSUMPTION STRESS TEST**: The research note assumes that NTRS will continue to experience strong revenue growth, driven by its asset servicing and wealth management segments. However, this assumption may be wrong if the company&#x27;s institutional clients start to switch to lower-cost providers or if market volatility increases. The note also assumes that the company&#x27;s recent launch of real-time banking APIs will contribute to revenue growth, but it is unclear how significant this contribution will be.<br><br>4. **VALUATION RISK**: The note mentions that NTRS has a forward P/E of 14.82, which is relatively in line with industry peers. However, the PEG ratio of 1.24 suggests that the stock may be overvalued, given its growth prospects. Additionally, the price/sales ratio of 3.78 is slightly above industry averages, which could indicate that the stock is overpriced.<br><br>5. **COMPETITIVE THREATS**: The note mentions that NTRS has a strong brand presence and scale advantages in asset servicing and wealth management. However, it is unclear how the company will respond to increasing competition from lower-cost providers, such as fintech companies. The recent news about NTRS&#x27;s partnership with Lukka on digital asset reporting may be an attempt to stay competitive, but it is unclear how significant this partnership will be.<br><br>6. **MACRO SENSITIVITY**: The note mentions that NTRS&#x27;s business may be affected by market volatility, but it is unclear how sensitive the company is to changes in interest rates, FX, or recession. The recent news about the US-Iran deal and oil prices suggests that the company&#x27;s business may be affected by geopolitical events, but it is unclear how significant this impact will be.<br><br>7. **INSTITUTIONAL RISK**: The note mentions that NTRS has a short ratio of 3.26 days, which suggests that there may be some short-selling activity in the stock. However, it is unclear what is driving this short-selling activity or whether it is a sign of broader institutional skepticism about the company&#x27;s prospects.<br><br>8. **CHALLENGE VERDICT**: Overall, I would rate the risk of this thesis as **RED (AVOID)**. While NTRS has a strong track record of revenue growth and profitability, the company&#x27;s valuation appears to be stretched, and there are significant competitive and macro risks that could affect its business. Additionally, the note&#x27;s assumptions about the company&#x27;s growth prospects and valuation may be overly optimistic.<br><br>Specifically, I am concerned about the following numbers:<br><br>* The high operating margin of 42.5%, which may be unsustainable<br>* The PEG ratio of 1.24, which suggests that the stock may be overvalued<br>* The price/sales ratio of 3.78, which is slightly above industry averages<br>* The short ratio of 3.26 days, which suggests that there may be some short-selling activity in the stock<br><br>I am also concerned about the following recent news:<br><br>* The US-Iran deal and oil prices, which could lead to market volatility and affect NTRS&#x27;s business<br>* The partnership with Lukka on digital asset reporting, which may not be significant enough to drive revenue growth<br>* The lack of information on the company&#x27;s accounting practices, such as receivables and accruals, which could be indicative of earnings manipulation.</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse NTRS</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#3</span>
+      <span class="tk">CPAY</span>
+      <span class="co-name">Corpay, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>36.6/40</b></span>
+  <span class="chip">Fund <b>29.6/40</b></span>
+  <span class='chip'>Score <b>66.2/80</b></span>
+</div>
+    <div class="setup-line">📐 $406.16 just broke 0.05% above pivot $405.95 — in buy zone</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 7.4% · ATR 108% of 50d · vol 104% of 50d</div>
+    <div class="rationale">Corpay, Inc. has a high technical score and is in a buy zone, but its fundamental score is relatively lower compared to other stocks. Its business quality is good, with a diversified segment structure.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$406.16</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">76.4</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">36.5%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">21.5%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-0.9%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Technology</div></div>
+</div>
+    <div class="risk-line">⚠ Competition in the payments industry</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**BUSINESS QUALITY**<br>* Corpay, Inc. operates as a payments company, providing solutions for businesses and consumers to manage and pay expenses.<br>* The company has a diversified segment structure, including Corporate Payments, Vehicle Payments, Lodging Payments, and Other segments.<br>* Corpay&#x27;s offerings include vehicle payment solutions, corporate payment solutions, and lodging payments solutions, catering to various industries and use cases.<br><br>**EARNINGS QUALITY**<br>* Corpay reported a 36.5% year-over-year EPS growth, indicating strong earnings momentum.<br>* The company&#x27;s recent Q2 earnings beat estimates, with revenues up 21.5% year-over-year to $1.34 billion.<br>* No significant one-time items or accounting adjustments were noted in the recent earnings report.<br><br>**REVENUE ACCELERATION**<br>* Corpay&#x27;s revenue growth is accelerating, with a 21.5% year-over-year increase in Q2.<br>* Key drivers of revenue growth include the company&#x27;s Corporate Payments segment and favorable macroeconomic conditions.<br>* Management expects full-year revenue to be strong, driven by organic growth and strategic simplification.<br><br>**COMPETITIVE MOAT**<br>* Corpay&#x27;s payments platform benefits from network effects, as more users and merchants join the platform.<br>* The company&#x27;s solutions offer switching costs, making it difficult for customers to switch to competitors.<br>* Corpay&#x27;s brand and scale provide a competitive advantage, enabling the company to negotiate favorable terms with partners and suppliers.<br><br>**INDUSTRY TAILWINDS**<br>* The payments industry is experiencing growth, driven by increasing demand for digital payment solutions.<br>* Recent news items, such as Corpay&#x27;s Q2 earnings beat and raised price target by brokers (e.g., [130.4h ago, Exec Edge]), suggest a positive industry trend.<br>* However, the industry is not without challenges, as seen in Fiserv&#x27;s Q2 earnings miss due to margin pressure (e.g., [130.6h ago, Zacks]), highlighting the need for companies to maintain competitive pricing and margins.<br><br>**MANAGEMENT EXECUTION**<br>* Corpay&#x27;s management has demonstrated strong execution, delivering double-digit organic revenue growth and expanding margins.<br>* The company&#x27;s capital allocation strategy is increasingly important to investors, with management focused on strategic simplification and growth initiatives.<br>* Corpay&#x27;s guidance history is positive, with the company raising its 2026 profit guidance after the Q2 earnings beat.<br><br>**VALUATION**<br>* Corpay&#x27;s forward P/E is 12.99, with a PEG ratio of 0.89, suggesting a reasonable valuation relative to growth.<br>* The company&#x27;s Price/Sales ratio is 5.31, which is relatively high but may be justified by its strong growth prospects and competitive moat.<br>* Corpay&#x27;s valuation is supported by its high ROE (29.2%) and operating margin (46.9%).<br><br>**KEY RISKS**<br>* Recent news items highlight potential risks, such as margin pressure in the payments industry (e.g., [130.6h ago, Zacks]), which could impact Corpay&#x27;s profitability.<br>* The company&#x27;s high debt-to-equity ratio (275.29) may pose a risk if interest rates rise or the company experiences a downturn in its business.<br>* Corpay&#x27;s dependence on favorable macroeconomic conditions (e.g., [134.8h ago, MarketBeat]) may expose the company to economic downturns or changes in consumer behavior.<br><br>**RESEARCH VERDICT**<br>Corpay, Inc. is a high-quality growth company with a strong competitive moat, driven by its payments platform and diversified segment structure. The company&#x27;s recent earnings beat and raised guidance suggest a positive growth trajectory. However, potential risks, such as margin pressure and high debt levels, warrant close monitoring. Conviction level: MEDIUM.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">I&#x27;ll go through the research note and challenge it based on the provided criteria.<br><br>**ACCOUNTING RED FLAGS:**<br>While the note mentions no significant one-time items or accounting adjustments, I notice that the debt-to-equity ratio is quite high (275.29). This could be a sign of potential financial strain, especially if interest rates rise. Additionally, the current ratio is relatively low (0.972), which may indicate liquidity issues.<br><br>**THESIS KILLERS:**<br>A single event that could invalidate the bull case is a significant increase in interest rates, which could exacerbate the company&#x27;s high debt levels and lead to a decline in profitability. Another potential thesis killer is a downturn in the macroeconomic conditions that have been favorable to Corpay&#x27;s business, as mentioned in the [134.8h ago, MarketBeat] news article.<br><br>**ASSUMPTION STRESS TEST:**<br>The research note assumes that Corpay&#x27;s strong growth momentum will continue, driven by its Corporate Payments segment and favorable macroeconomic conditions. However, this assumption may be wrong if the company&#x27;s high debt levels become a significant burden or if the macroeconomic conditions deteriorate. The note also assumes that the company&#x27;s competitive moat will continue to protect its market share, but this assumption may be challenged if new competitors enter the market or if existing competitors improve their offerings.<br><br>**VALUATION RISK:**<br>The note mentions that Corpay&#x27;s forward P/E is 12.99, with a PEG ratio of 0.89, which suggests a reasonable valuation relative to growth. However, the Price/Sales ratio is relatively high (5.31), which may indicate that the stock is overvalued. If the company&#x27;s growth slows down or if the macroeconomic conditions deteriorate, the stock price could decline significantly.<br><br>**COMPETITIVE THREATS:**<br>The note mentions that Corpay&#x27;s payments platform benefits from network effects, but it does not discuss potential competitive threats in detail. The [130.6h ago, Zacks] news article mentions that Fiserv&#x27;s Q2 revenues missed estimates due to margin pressure, which could be a sign that competitors are gaining traction in the market.<br><br>**MACRO SENSITIVITY:**<br>The note mentions that Corpay&#x27;s business is dependent on favorable macroeconomic conditions, but it does not provide a detailed analysis of the company&#x27;s sensitivity to macroeconomic factors. The [134.8h ago, MarketBeat] news article mentions that Corpay&#x27;s Q2 revenue was positively impacted by favorable macroeconomic conditions, but it does not discuss the potential risks of a downturn in these conditions.<br><br>**INSTITUTIONAL RISK:**<br>The note does not provide any information about institutional ownership or insider activity. However, the [62.7h ago, Simply Wall St.] news article mentions that Corpay&#x27;s fair value estimate has increased by 11% due to recent analyst target increases, which could indicate that institutional investors are becoming more bullish on the stock. The short ratio is relatively low (3.3 days to cover), which may indicate that short sellers are not a significant threat to the stock price.<br><br>**CHALLENGE VERDICT:**<br>Overall, I would rate the risk level of this investment as YELLOW (proceed with caution). While the company&#x27;s strong growth momentum and competitive moat are positives, the high debt levels, dependence on favorable macroeconomic conditions, and potential competitive threats are significant risks that need to be carefully considered. The valuation risk is also a concern, as the stock price could decline significantly if the company&#x27;s growth slows down or if the macroeconomic conditions deteriorate.<br><br>Specifically, I would like to see more detailed analysis of the following:<br><br>* The company&#x27;s debt levels and potential risks associated with high interest rates<br>* The competitive landscape and potential threats to Corpay&#x27;s market share<br>* The company&#x27;s sensitivity to macroeconomic factors and potential risks associated with a downturn in these conditions<br>* Institutional ownership and insider activity to gauge the level of support from sophisticated investors<br><br>Without this additional information, I would be cautious about investing in Corpay, despite its strong growth momentum and competitive moat.</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse CPAY</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="WATCH"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#4</span>
+      <span class="tk">ANET</span>
+      <span class="co-name">Arista Networks, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-watch">WATCH</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>20.5/40</b></span>
+  <span class="chip">Fund <b>33.9/40</b></span>
+  <span class='chip'>Score <b>54.4/80</b></span>
+</div>
+    <div class="setup-line">📐 $197.85 is 7.93% below pivot $214.89 — no trigger yet</div><div class="setup-line" style="color:#666">🧲 VCP 0/3 · 10d range 29.3% · ATR 118% of 50d · vol 113% of 50d</div>
+    <div class="rationale">Arista Networks, Inc. has a high total score and a strong technical score, but it is still below its pivot price. Its business quality is high, with a strong portfolio of cloud networking solutions.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$197.85</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">89.4</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">39.7%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">37.7%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-7.9%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Technology</div></div>
+</div>
+    <div class="risk-line">⚠ Intense competition in the cloud networking market</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**1. BUSINESS QUALITY**<br>* Arista Networks, Inc. (ANET) develops, markets, and sells data-driven, client to cloud networking solutions for various environments.<br>* The company&#x27;s cloud networking solutions include the Extensible Operating System (EOS) and a set of network applications.<br>* ANET serves a range of industries, providing data center, cloud and AI networking, cognitive adjacencies, and cognitive network software and services.<br>* The company&#x27;s products and services are designed to support the growing demand for AI, cloud, and data center infrastructure.<br><br>**2. EARNINGS QUALITY**<br>* EPS growth trend: 39.7% YoY, indicating strong earnings growth.<br>* Quality of earnings: Supported by revenue growth, high gross margin (63.0%), and high profit margin (38.4%).<br>* One-time items: No significant one-time items reported in recent quarters.<br><br>**3. REVENUE ACCELERATION**<br>* Revenue growth: 37.7% YoY, indicating strong revenue acceleration.<br>* Key drivers: Growing demand for AI, cloud, and data center infrastructure, as well as the company&#x27;s expanding product offerings.<br>* Recent guidance increase suggests continued strong revenue growth.<br><br>**4. COMPETITIVE MOAT**<br>* Network effects: ANET&#x27;s EOS and network applications create a robust and scalable networking solution, making it difficult for customers to switch to alternative solutions.<br>* Switching costs: High, due to the complexity and customization of ANET&#x27;s solutions.<br>* Patents and brand: ANET has a strong portfolio of patents and a well-established brand in the industry.<br><br>**5. INDUSTRY TAILWINDS**<br>* Growing demand for AI, cloud, and data center infrastructure drives ANET&#x27;s revenue growth.<br>* Recent news items, such as &quot;Arista Networks Stock Is Waiting On Parts, Not Orders&quot; (Trefis), highlight the company&#x27;s ability to raise its revenue outlook as it locks up component supply agreements, supporting the upside case.<br>* The industry&#x27;s growth is also reflected in the recent performance of other companies, such as Nokia, which is expected to recover from its decline due to AI infrastructure growth and stronger networking demand (Zacks).<br><br>**6. MANAGEMENT EXECUTION**<br>* Track record: Strong revenue growth and earnings performance.<br>* Capital allocation: Effective, with high ROE (31.5%) and no debt.<br>* Guidance history: Recent guidance increase suggests management&#x27;s confidence in the company&#x27;s growth prospects.<br><br>**7. VALUATION**<br>* Forward P/E: 38.35, indicating a premium valuation.<br>* PEG ratio: 1.81, slightly above 1, suggesting the valuation may be somewhat stretched.<br>* Price/Sales: 23.67, high, but supported by strong revenue growth and high margins.<br><br>**8. KEY RISKS**<br>* Component supply agreements: Recent news item &quot;Arista Networks Stock Is Waiting On Parts, Not Orders&quot; (Trefis) highlights the company&#x27;s reliance on securing component supply agreements to drive revenue growth. Failure to secure these agreements could negatively impact revenue growth.<br>* Intensifying competition: Recent news item &quot;Nokia Declines 28.7% in Three Months: Should You Buy the Dip?&quot; (Zacks) mentions AI infrastructure growth and stronger networking demand, which could attract new competitors to the industry, potentially disrupting ANET&#x27;s growth.<br><br>**9. RESEARCH VERDICT**<br>Arista Networks, Inc. (ANET) is a high-growth company with strong earnings quality, revenue acceleration, and a competitive moat. The company&#x27;s products and services are well-positioned to benefit from the growing demand for AI, cloud, and data center infrastructure. While the valuation is somewhat stretched, the company&#x27;s strong growth prospects and execution justify a premium. Conviction: HIGH.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">**ACCOUNTING RED FLAGS:**<br>While the research note highlights strong earnings growth and high margins, it&#x27;s essential to scrutinize the numbers further. The note mentions no significant one-time items, but it&#x27;s crucial to review the company&#x27;s receivables, inventory, and accruals ratio. With a current ratio of 2.957, the company appears to have a healthy balance sheet, but a deeper dive into the components of the current ratio is necessary. For instance, if accounts receivable are growing faster than revenue, it could indicate potential issues with collecting payments from customers.<br><br>**THESIS KILLERS:**<br>A single event that could invalidate the bull case immediately is a significant disruption to the global supply chain, particularly in the semiconductor industry, which could impact Arista Networks&#x27; ability to secure component supply agreements. This risk is acknowledged in the research note, but its potential impact is not fully explored. If Arista Networks fails to secure these agreements, it could lead to delayed or canceled orders, ultimately affecting revenue growth.<br><br>**ASSUMPTION STRESS TEST:**<br>The research note assumes that Arista Networks will continue to benefit from the growing demand for AI, cloud, and data center infrastructure. However, this assumption may be overly optimistic. The note cites Nokia&#x27;s expected recovery as evidence of industry growth, but Nokia&#x27;s decline was not solely due to industry trends. Instead, it was likely a result of company-specific issues. Furthermore, the note assumes that Arista Networks&#x27; strong track record of revenue growth and earnings performance will continue, but this may not be sustainable in the long term.<br><br>**VALUATION RISK:**<br>The stock&#x27;s forward P/E of 38.35 and PEG ratio of 1.81 indicate a premium valuation. While the research note argues that the valuation is justified by the company&#x27;s strong growth prospects, this may not be the case if the growth slows down. The price/sales ratio of 23.67 is also high, making the stock vulnerable to a correction if revenue growth decelerates.<br><br>**COMPETITIVE THREATS:**<br>The research note mentions intensifying competition as a key risk, but it does not provide a detailed analysis of the competitive landscape. Recent news about Nokia&#x27;s expected recovery and the growth of AI infrastructure could attract new competitors to the industry, potentially disrupting Arista Networks&#x27; growth. For instance, companies like Cisco Systems or Juniper Networks may increase their focus on AI-powered networking solutions, posing a threat to Arista Networks&#x27; market share.<br><br>**MACRO SENSITIVITY:**<br>The research note does not explicitly discuss the company&#x27;s exposure to macroeconomic risks such as rate hikes, FX, recession, or sector rotation. However, Arista Networks&#x27; business may be sensitive to changes in the global economy, particularly if a recession were to impact IT spending.<br><br>**INSTITUTIONAL RISK:**<br>The research note does not provide information on institutional ownership or insider activity that could indicate signs of distribution or smart money leaving the stock. However, with insider ownership at 17.2%, it&#x27;s possible that insiders may be selling their shares, which could be a red flag.<br><br>**CHALLENGE VERDICT:**<br>Overall, I would rate the risk as YELLOW (proceed with caution). While Arista Networks has a strong track record of revenue growth and earnings performance, the valuation is stretched, and the company faces significant risks, including supply chain disruptions, intensifying competition, and macroeconomic sensitivity. The recent news about the company&#x27;s reliance on component supply agreements and the potential for new competitors to enter the industry adds to the uncertainty. Therefore, it&#x27;s essential to approach this investment with caution and closely monitor the company&#x27;s progress.<br><br>Specifically, I would like to see more detailed analysis on the following:<br><br>1. Supply chain risks: How will Arista Networks mitigate the risks associated with securing component supply agreements?<br>2. Competitive landscape: What is the current competitive landscape, and how will Arista Networks maintain its market share in the face of intensifying competition?<br>3. Valuation: What are the key drivers of the stock&#x27;s premium valuation, and how will the company sustain its growth to justify the current valuation?<br>4. Macro sensitivity: How will Arista Networks&#x27; business be impacted by changes in the global economy, and what strategies will the company employ to mitigate these risks?</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse ANET</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="WATCH"
+  data-conviction="LOW">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#5</span>
+      <span class="tk">KEYS</span>
+      <span class="co-name">Keysight Technologies Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-watch">WATCH</span>
+      <span class="badge b-low">LOW</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>16.7/40</b></span>
+  <span class="chip">Fund <b>29.1/40</b></span>
+  <span class='chip'>Score <b>45.8/80</b></span>
+</div>
+    <div class="setup-line">📐 $343.70 is 8.34% below pivot $374.96 — no trigger yet</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 15.1% · ATR 95% of 50d · vol 72% of 50d</div>
+    <div class="rationale">Keysight Technologies Inc. has a relatively lower total score and is further away from its pivot price. While its business quality is good, the accounting red flags and lack of detail on certain financial metrics are concerns.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$343.7</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">91.0</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">68.8%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">31.5%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-8.3%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Technology</div></div>
+</div>
+    <div class="risk-line">⚠ Accounting red flags and potential financial metric issues</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**BUSINESS QUALITY**<br>* Keysight Technologies provides electronic design and test solutions worldwide, operating through two main segments: Communications Solutions Group and Electronic Industrial Solutions Group.<br>* The company offers a wide range of products and services used in various end markets, including wireless, data center ecosystem, enterprise, aerospace, defense, and government.<br>* Keysight&#x27;s diverse product portfolio and broad market reach suggest a high level of business quality.<br><br>**EARNINGS QUALITY**<br>* KEYS has demonstrated strong EPS growth, with a 68.8% year-over-year increase.<br>* The company&#x27;s operating margin of 18.8% and profit margin of 17.3% indicate a high level of earnings quality.<br>* No significant one-time items or concerns regarding earnings quality were identified.<br><br>**REVENUE ACCELERATION**<br>* Revenue growth has been robust, with a 31.5% increase.<br>* The company&#x27;s ability to maintain high revenue growth is a key factor in its attractiveness as a growth investment.<br>* Drivers of revenue acceleration include growing demand for electronic design and test solutions in various end markets.<br><br>**COMPETITIVE MOAT**<br>* Keysight&#x27;s strong brand and market position in the electronic design and test solutions industry provide a competitive advantage.<br>* The company&#x27;s broad product portfolio and diversified customer base contribute to its moat.<br>* Network effects and switching costs may also play a role in maintaining Keysight&#x27;s competitive position.<br><br>**INDUSTRY TAILWINDS**<br>* The global power device analyzer market is expected to grow, driven by increasing demand for electric vehicles, renewable energy systems, semiconductor production, and advanced industrial applications (as reported by Simply Wall St, 72.7h ago).<br>* The recent surge in site rental revenues and spectrum sales growth (as seen in AD and TDS&#x27; Q2 earnings) may also benefit Keysight&#x27;s communications-focused business.<br>* These industry tailwinds suggest a favorable environment for Keysight&#x27;s growth.<br><br>**MANAGEMENT EXECUTION**<br>* The company&#x27;s strong revenue growth and high earnings quality suggest effective management execution.<br>* Keysight&#x27;s ability to maintain a high level of profitability, with an operating margin of 18.8%, indicates good capital allocation decisions.<br>* No significant concerns regarding management execution were identified.<br><br>**VALUATION**<br>* KEYS&#x27; forward P/E of 28.83 and PEG ratio of 1.2 suggest a premium valuation.<br>* The price-to-sales ratio of 9.65 is also relatively high.<br>* However, given the company&#x27;s strong growth prospects and high earnings quality, the premium valuation may be justified.<br><br>**KEY RISKS**<br>* The recent wider-than-expected Q2 loss reported by AST SpaceMobile (as reported by Zacks, 12.7h ago) may indicate potential risks in the industry, such as higher costs and lower-than-expected margins.<br>* The potential for increased competition in the electronic design and test solutions market, as seen in the recent earnings beat by inTest Corporation (as reported by Zacks, 38.5h ago), may also pose a risk to Keysight&#x27;s growth.<br><br>**RESEARCH VERDICT**<br>The bull case for KEYS is supported by its strong earnings growth, high revenue acceleration, and favorable industry tailwinds. With a high level of business quality, competitive moat, and effective management execution, Keysight Technologies appears to be an attractive growth investment. I rate my conviction in this thesis as HIGH.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">I&#x27;ll go through the research note and identify potential holes in the thesis.<br><br>**ACCOUNTING RED FLAGS:**<br>1. The note doesn&#x27;t delve into Keysight&#x27;s accounts receivable, inventory, or accruals ratio. Given the 31.5% revenue growth, it&#x27;s crucial to verify if receivables are growing in tandem or if there&#x27;s an unusual accruals pattern.<br>2. The debt-to-equity ratio is relatively high at 43.64. While not alarming, it&#x27;s essential to monitor interest expenses and ensure they don&#x27;t become a significant burden.<br>3. The current ratio is 1.903, which is relatively modest. This might indicate a potential liquidity risk if the company faces unexpected expenses or revenue shortfalls.<br><br>**THESIS KILLERS:**<br>1. A significant decline in demand for electronic design and test solutions in the aerospace, defense, or government sectors could severely impact Keysight&#x27;s revenue.<br>2. The emergence of a new, disruptive technology that renders Keysight&#x27;s solutions obsolete could invalidate the bull case.<br><br>**ASSUMPTION STRESS TEST:**<br>1. The note assumes that Keysight&#x27;s strong brand and market position will continue to provide a competitive advantage. However, the recent earnings beat by inTest Corporation (INTT) might indicate increasing competition in the electronic design and test solutions market.<br>2. The thesis relies on the continued growth of the global power device analyzer market, driven by demand for electric vehicles, renewable energy systems, and semiconductor production. Any slowdown in these end markets could negatively impact Keysight&#x27;s growth prospects.<br><br>**VALUATION RISK:**<br>1. The forward P/E of 28.83 and PEG ratio of 1.2 suggest a premium valuation. If Keysight&#x27;s growth slows down or the industry experiences a downturn, the stock might become overvalued.<br>2. The price-to-sales ratio of 9.65 is relatively high, indicating that the market is pricing in significant growth expectations. If Keysight fails to deliver on these expectations, the stock could correct.<br><br>**COMPETITIVE THREATS:**<br>1. The recent earnings beat by inTest Corporation (INTT) might indicate increasing competition in the electronic design and test solutions market.<br>2. The note doesn&#x27;t discuss potential competitive threats from other companies, such as National Instruments or Rohde &amp; Schwarz.<br><br>**MACRO SENSITIVITY:**<br>1. Keysight&#x27;s revenue is exposed to the aerospace, defense, and government sectors, which can be sensitive to macroeconomic factors like budget cuts or changes in government policies.<br>2. The company&#x27;s growth is also tied to the demand for electronic design and test solutions in various end markets, which can be impacted by macroeconomic factors like recession or changes in trade policies.<br><br>**INSTITUTIONAL RISK:**<br>1. Insider ownership is relatively low at 0.6%, which might indicate a lack of alignment between management and shareholders.<br>2. The short ratio is 1.94 days, which is relatively modest. However, a potential short squeeze could lead to increased volatility in the stock.<br><br>**CHALLENGE VERDICT:**<br>Overall risk rating: YELLOW (proceed with caution)<br><br>While the research note presents a compelling bull case for Keysight Technologies, there are several potential holes in the thesis that warrant caution. The high valuation multiples, increasing competition, and macroeconomic sensitivity are concerns that need to be monitored. Additionally, the lack of discussion on accounting red flags, such as accounts receivable and accruals ratio, is a notable omission. Investors should carefully consider these factors before making a decision.</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse KEYS</div>
+  </div>
+</details>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 Upcoming Earnings</div>
+  <div class="earnings-box">
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• AMAT</span>
+  <span style="color:#aaa">2026-08-14</span>
+  <span style="color:#ff6d6d;font-size:12px">2d</span>
+</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📈 Pick Track Record</div>
+  <div class="track-card">
+    <div class="track-grid">
+<div class="track-cell"><div class="track-h">1 Week Fwd · 42 picks</div>
+<div class="track-v tr-neg">-2.3% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 33.3% · avg -0.75%</div></div>
+<div class="track-cell"><div class="track-h">1 Month Fwd</div>
+<div class="track-v tr-neu">building…</div></div></div>
+    <div class="track-note">Top 5 daily picks tracked forward vs SPY ·
+    20 day(s) of history · builds daily</div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="collapseAll()">▲ Collapse</button>
+
+<div class="footer">
+  HZ Capital Trading Intelligence &nbsp;·&nbsp;
+  2026-08-12 09:54 &nbsp;·&nbsp;
+  Market analysis only — positions &amp; instructions are delivered privately via Telegram. Not financial advice.
+</div>
+
+<script>
+function filterCards(f, btn) {
+  document.querySelectorAll('.filt').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('details.stock-card').forEach(function(c) {
+    var show = true;
+    if      (f === 'buy')   show = c.dataset.action === 'BUY NOW';
+    else if (f === 'wait')  show = c.dataset.action.indexOf('WAIT') === 0;
+    else if (f === 'watch') show = c.dataset.action === 'WATCH';
+    else if (f === 'avoid') show = c.dataset.action === 'AVOID';
+    else if (f === 'high')  show = c.dataset.conviction === 'HIGH';
+    c.classList.toggle('hidden', !show);
+  });
+  var v = document.querySelectorAll('details.stock-card:not(.hidden)').length;
+  document.getElementById('stock-count').textContent = v + ' stocks';
+}
+
+/* Close the section this control belongs to and bring its header back into
+   view, so you never lose your place after reading a long note. */
+function closeCard(el) {
+  var d = el.closest('details');
+  if (!d) return;
+  d.open = false;
+  var y = d.getBoundingClientRect().top + window.scrollY - 108;
+  window.scrollTo({ top: y < 0 ? 0 : y, behavior: 'smooth' });
+  updateFab();
+}
+
+function collapseAll() {
+  document.querySelectorAll('details[open]').forEach(function (d) { d.open = false; });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateFab();
+}
+
+function updateFab() {
+  var f = document.getElementById('fab');
+  if (!f) return;
+  var n = document.querySelectorAll('details[open]').length;
+  f.classList.toggle('show', n > 0);
+  f.textContent = n > 1 ? '▲ Collapse all (' + n + ')' : '▲ Collapse';
+}
+
+/* toggle doesn't bubble — capture phase catches every <details> */
+document.addEventListener('toggle', updateFab, true);
+document.addEventListener('DOMContentLoaded', updateFab);
+</script>
+</body>
+</html>
