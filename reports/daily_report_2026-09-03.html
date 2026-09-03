@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>HZ Capital — September 03, 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     background:#0d0d0d;color:#e0e0e0;line-height:1.5;font-size:14px}
+
+/* STICKY HEADER */
+.sticky-header{position:sticky;top:0;z-index:100;background:#111;
+  border-bottom:1px solid #222;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+.site-title{font-size:13px;font-weight:700;color:#fff}
+.site-sub{font-size:11px;color:#666;margin-top:1px}
+.regime-pill{font-size:11px;font-weight:700;padding:4px 10px;
+  border-radius:20px;color:#000;white-space:nowrap}
+
+/* SECTIONS */
+.section{padding:12px 12px 4px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;
+  text-transform:uppercase;color:#555;margin-bottom:8px}
+
+/* ALERTS */
+.alert-card{background:#1a0800;border:1px solid #ff6d00;border-radius:10px;
+  padding:12px 14px;margin-bottom:8px}
+.alert-type{font-size:10px;font-weight:700;color:#ff6d00;letter-spacing:0.5px;text-transform:uppercase}
+.alert-ticker{font-size:15px;font-weight:800;color:#ff9d4a;margin:2px 0}
+.alert-msg{font-size:12px;color:#ccc;line-height:1.5}
+
+/* MACRO */
+details.macro-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;
+  overflow:clip;margin-bottom:8px}   /* clip, NOT hidden — hidden breaks sticky */
+details.macro-card > summary{list-style:none;cursor:pointer;padding:13px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+details.macro-card > summary::-webkit-details-marker{display:none}
+details.macro-card > summary::marker{display:none}
+details.macro-card[open] .chevron{transform:rotate(180deg)}
+.macro-title{font-size:14px;font-weight:700;color:#fff}
+.macro-body{padding:12px 14px 14px;font-size:13px;color:#bbb;
+  line-height:1.75;border-top:1px solid #222}
+
+/* SECTOR OVERVIEW */
+.sector-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;overflow:hidden}
+.sector-row{display:flex;align-items:flex-start;gap:10px;
+  padding:9px 14px;border-bottom:1px solid #1e1e1e}
+.sector-row:last-child{border-bottom:none}
+.sector-name{font-size:11px;font-weight:700;color:#777;
+  text-transform:uppercase;letter-spacing:0.3px;
+  min-width:110px;flex-shrink:0;padding-top:2px}
+.sector-chips{display:flex;gap:5px;flex-wrap:wrap}
+.stk-chip{background:#252525;border-radius:4px;padding:2px 8px;
+  font-size:11px;color:#82b1ff;font-weight:700}
+.stk-chip.buy{color:#00c853}
+.stk-chip.watch{color:#ffd600}
+.stk-chip.avoid{color:#ff6d6d}
+
+/* FILTER BAR */
+.filter-bar{position:sticky;top:53px;z-index:99;background:#111;
+  border-bottom:1px solid #1e1e1e;padding:8px 12px;
+  display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  margin-top:12px}
+.filter-bar::-webkit-scrollbar{display:none}
+.filt{background:#1e1e1e;border:1px solid #2a2a2a;color:#888;
+  padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  white-space:nowrap;cursor:pointer;transition:all 0.15s;user-select:none}
+.filt.active{background:#82b1ff;color:#000;border-color:#82b1ff}
+
+/* STOCK CARDS */
+details.stock-card{background:#1a1a1a;border-radius:12px;margin-bottom:9px;
+  overflow:clip;border:1px solid #222}   /* clip, NOT hidden — hidden breaks sticky */
+details.stock-card[open]{border-color:#333}
+details.stock-card > summary{list-style:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;padding:13px 14px}
+details.stock-card > summary::-webkit-details-marker{display:none}
+details.stock-card > summary::marker{display:none}
+details.stock-card[open] .chevron{transform:rotate(180deg)}
+
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rank-num{font-size:15px;font-weight:800;color:#444;min-width:22px}
+.tk{font-size:17px;font-weight:800;color:#82b1ff}
+.co-name{font-size:12px;color:#888;flex:1;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.chevron{font-size:10px;color:#555;transition:transform 0.2s;flex-shrink:0}
+
+.badge-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.b-buy{background:#00c853;color:#000}
+.b-watch{background:#ffd600;color:#000}
+.b-wait{background:#ff9d4a;color:#000}
+.b-avoid{background:#d50000;color:#fff}
+.b-dash{background:#2a2a2a;color:#666}
+
+/* TODAY AT A GLANCE */
+.glance-card{background:linear-gradient(135deg,#141a26,#101418);border:1px solid #2a3550;
+  border-radius:12px;padding:14px;margin-bottom:8px}
+.glance-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.glance-stat{background:#1a2230;border-radius:8px;padding:7px 12px;flex:1;min-width:90px}
+.glance-label{font-size:9px;color:#5a6a8a;text-transform:uppercase;letter-spacing:0.5px}
+.glance-val{font-size:14px;font-weight:800;color:#e8eeff;margin-top:2px}
+.glance-line{font-size:12px;color:#9ab;line-height:1.6}
+.glance-line b{color:#82b1ff}
+.delta-chip{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;
+  padding:1px 7px;margin:1px 3px 1px 0}
+.d-new{background:rgba(0,200,83,0.15);color:#00c853;border:1px solid rgba(0,200,83,0.35)}
+.d-drop{background:rgba(213,0,0,0.12);color:#ff6d6d;border:1px solid rgba(213,0,0,0.3)}
+.setup-line{font-size:11px;color:#4dd0a5;padding-top:4px}
+
+/* TRACK RECORD */
+.track-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:12px 14px}
+.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:4px}
+.track-cell{background:#1e1e1e;border-radius:8px;padding:8px 10px}
+.track-h{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.track-v{font-size:15px;font-weight:800;margin-top:2px}
+.tr-pos{color:#00c853}.tr-neg{color:#ff6d6d}.tr-neu{color:#bbb}
+.track-note{font-size:11px;color:#555;margin-top:8px;line-height:1.5}
+.b-high{background:rgba(130,177,255,0.15);color:#82b1ff;border:1px solid rgba(130,177,255,0.3)}
+.b-medium{background:rgba(255,214,0,0.1);color:#ffd600;border:1px solid rgba(255,214,0,0.25)}
+.b-low{background:rgba(255,109,0,0.1);color:#ff6d00;border:1px solid rgba(255,109,0,0.25)}
+
+.score-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.chip{background:#252525;border-radius:4px;padding:2px 7px;font-size:11px;color:#666}
+.chip b{color:#bbb}
+.rationale{font-size:12px;color:#666;line-height:1.5;padding-top:6px;border-top:1px solid #222}
+
+/* CARD BODY */
+.card-body{border-top:1px solid #222}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+  padding:10px 12px;background:#141414}
+.meta-item{background:#1e1e1e;border-radius:6px;padding:6px 8px}
+.meta-label{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.meta-val{font-size:13px;font-weight:700;color:#ddd;margin-top:1px}
+.case-section{padding:12px 14px}
+.case-section+.case-section{border-top:1px solid #1e1e1e}
+.case-label{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
+.case-bull .case-label{color:#00c853}
+.case-bear .case-label{color:#ff6d6d}
+.case-text{font-size:13px;line-height:1.75;color:#bbb}
+.risk-line{font-size:12px;color:#ff9d4a;padding:6px 14px 0}
+
+/* EARNINGS */
+.earnings-box{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:10px 14px}
+.earnings-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid #1e1e1e;font-size:13px}
+.earnings-row:last-child{border-bottom:none}
+.no-items{color:#555;font-size:13px;padding:8px 0}
+
+/* FOOTER */
+.footer{text-align:center;font-size:11px;color:#333;padding:20px 14px 40px}
+
+/* ── EXPAND / COLLAPSE ERGONOMICS ──────────────────────────────────────
+   Long research notes used to be collapsible only from the very top, so
+   you had to scroll back up to close one. Three fixes:
+   1. the card's own header sticks below the toolbars while it is open,
+      so the collapse control is always one tap away while reading;
+   2. a matching collapse bar sits at the END of every long section;
+   3. a floating "collapse all" appears whenever anything is open.        */
+details.stock-card[open] > summary{position:sticky;top:98px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55);padding:9px 14px}
+/* While open the pinned header must stay SMALL — the teaser rows (scores,
+   setup, rationale) are redundant once the full body is on screen. */
+details.stock-card[open] > summary .score-chips,
+details.stock-card[open] > summary .setup-line,
+details.stock-card[open] > summary .rationale{display:none}
+details.stock-card[open] > summary .card-top{margin-bottom:4px}
+details.stock-card[open] > summary .badge-row{margin-bottom:0}
+details.macro-card[open] > summary{position:sticky;top:53px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55)}
+.collapse-bar{display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:12px 14px;background:#151515;border-top:1px solid #262626;
+  color:#82b1ff;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent}
+.collapse-bar:active{background:#202020}
+.fab{position:fixed;right:14px;bottom:18px;z-index:300;background:#82b1ff;color:#000;
+  border:none;border-radius:24px;padding:14px 18px;font-size:12px;font-weight:800;
+  box-shadow:0 4px 16px rgba(0,0,0,0.6);cursor:pointer;display:none}   /* >=44px tap target */
+.fab.show{display:block}
+
+/* DESKTOP */
+@media(min-width:700px){
+  body{max-width:900px;margin:0 auto}
+  .filter-bar{top:57px}
+  .meta-grid{grid-template-columns:repeat(6,1fr)}
+  details.stock-card[open] > summary{top:102px}   /* clears the taller desktop toolbars */
+}
+@media(min-width:1100px){body{max-width:1100px}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div>
+    <div class="site-title">HZ Capital</div>
+    <div class="site-sub">September 03, 2026</div>
+  </div>
+  <div class="regime-pill" style="background:#d50000">MARKET IN DOWNTREND</div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">⚡ Today in 30 Seconds</div>
+  <div class="glance-card">
+    <div class="glance-row">
+      <div class="glance-stat"><div class="glance-label">Regime</div><div class="glance-val" style="color:#d50000">MARKET IN DOWNTREND</div></div>
+      <div class="glance-stat"><div class="glance-label">Buy Setups</div><div class="glance-val">1</div></div>
+      <div class="glance-stat"><div class="glance-label">Wait</div><div class="glance-val">0</div></div>
+      <div class="glance-stat"><div class="glance-label">Watch</div><div class="glance-val">1</div></div>
+    </div>
+    <div class="glance-line">🏆 #1 pick: <b>INCY</b> <span class="badge b-buy">BUY NOW</span> reclaimed EMA20 today, holding above</div><div class="glance-line">🟢 Buy setups triggered: <b>INCY</b> (reclaimed EMA20 today, holding above)</div><div class="glance-line">Δ vs 2026-09-02: no list changes</div><div class="glance-line">📅 Event radar: <b>Jobs report (NFP)</b> in 1d · <b>CPI release</b> in 8d · <b>FOMC rate decision</b> in 13d</div><div class="glance-line" style="color:#667">🕐 Prices as of last US close: <b>2026-09-01</b></div>
+  </div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">📊 Macro Analysis</div>
+  <details class="macro-card" open>
+    <summary>
+      <span class="macro-title">🌍 MARKET IN DOWNTREND</span>
+      <span class="chevron">▼</span>
+    </summary>
+    <div class="macro-body">**DATE:** 2026-09-03<br>**REGIME:** MARKET IN DOWNTREND<br><br>### 1. WHAT CHANGED SINCE YESTERDAY<br>The regime has officially flipped from &quot;Uptrend Under Pressure&quot; to **Market in Downtrend** based on rule-based triggers. The single most important development is the confirmation of this shift via the **QQQ dropping -1.27%** to close decisively **below its 50-day moving average** ($707.64 vs. False &gt;50DMA). While yesterday showed a VIX spike, today’s tape confirms structural weakness: QQQ is now -5.06% off its highs, and the Tech sector (XLK) has lost another 1.53% today. The market is no longer just &quot;consolidating&quot;; it is statistically in a downtrend, triggered by the failure of the 50DMA support in high-beta tech.<br><br>### 2. MARKET REGIME ASSESSMENT<br>The tape is telling us that the tug-of-war between AI optimism and valuation pressure has currently resolved in favor of sellers. With QQQ below its 50DMA and down 4.81% over 3 months, the primary growth engine of the market is in corrective mode. While VIX at 15.2 suggests no panic is setting in, the persistent drift lower in QQQ, IWO, and SOXX indicates that institutions are de-risking, not just fluctuating. This is not a &quot;buy the dip&quot; environment yet; it is a distribution phase.<br><br>### 3. SECTOR LEADERSHIP<br>*   **Leading:** Energy (XLE, +1.27% 1D, +10.68% 1M) and Healthcare (XLV, +0.66% 1D, +16.86% 3M). Risk-off rotation is clear; capital is fleeing tech for value/commodities and defensive stability.<br>*   **Lagging:** Semiconductors (SOXX, -2.1% 1D, -18.7% 3M) and Consumer Discretionary (XLY, -1.72% 1D, -3.06% 1M).<br>*   **Rotation Note:** There is acute dispersion. While broad market indices (SPY) are relatively flat (-0.69%), the growth components are bleeding. The 3-month trend for SOXX (-18.7%) contrasts sharply with Energy’s +11.12%, signaling a sustained macro rotation away from tech growth toward cyclical value/inflation hedges.<br><br>### 4. NEWS-DRIVEN RISKS &amp; CATALYSTS<br>1.  **Risk: &quot;Sell-the-News&quot; in AI Hardware:** **Broadcom’s stock falls despite upbeat earnings** (MarketWatch, 1.4h ago). Even with a strong view and CEO touting AI lab growth, the stock is down. This signals that positive earnings are no longer a universal buy signal in semis; the market is punishing multiples. The **South Korea semiconductor export surge** (CNBC, 0.7h ago) may be viewed negatively if interpreted as oversupply or margin compression rather than pure demand growth.<br>2.  **Catalyst/Acceptor: AI Software Resilience:** **Snowflake’s stock soars** and **HPE follows Dell** (MarketWatch, 1.5h ago) on strong AI-fueled forecasts. This proves the AI trade is not dead, but it is selective. Money is rotating out of expensive hardware (Semis) and into software/infrastructure that shows clear margin improvement and specific revenue visibility.<br>3.  **Event Risk: NFP Release Imminent:** The **Jobs report (NFP)** is scheduled for **2026-09-04** (in 1 day). With the 10Y yield holding at 4.8% and the FOMC meeting on Sept 16, an unexpected &quot;hot&quot; NFP print could push yields higher, further pressuring the already fragile tech valuation structure. A &quot;cool&quot; print might provide temporary relief for QQQ to reclaim the 50DMA, but given the downtrend classification, a higher doji or continued drift is more likely if rates stay sticky.<br><br>### 5. GROWTH STOCK ENVIRONMENT<br>**Poor time to be fully invested in growth.** The primary growth vehicle (QQQ) is technically broken (below 50DMA) and in a 3-month downtrend. The minervini &quot;Stage 1/2&quot; transition is failing; we are seeing Stage 4 (decline) characteristics</div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse macro analysis</div>
+  </details>
+</div>
+
+<div class="section">
+  <div class="section-title">🏭 Industry Overview</div>
+  <div class="sector-card">
+<div class="sector-row">
+  <div class="sector-name">Other</div>
+  <div class="sector-chips"><span class="stk-chip buy">INCY</span><span class="stk-chip watch">ANET</span></div>
+</div></div>
+  
+  <details class="macro-card" style="margin-top:8px">
+    <summary><span class="macro-title" style="font-size:13px">📊 Sector rotation leaderboard (1-week momentum)</span><span class="chevron">▼</span></summary>
+    <div style="border-top:1px solid #222">
+<div class="sector-row">
+  <div class="sector-name">Energy</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.3%</span> · <span style="color:#00c853">1W +3.8%</span> ·
+    1M 10.68%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.5%</span> · <span style="color:#00c853">1W +1.1%</span> ·
+    1M 3.15%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.7%</span> · <span style="color:#ff6d6d">1W -1.1%</span> ·
+    1M 5.9%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Staples</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.3%</span> · <span style="color:#ff6d6d">1W -1.5%</span> ·
+    1M 0.46%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Utilities</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.8%</span> · <span style="color:#ff6d6d">1W -1.7%</span> ·
+    1M -4.06%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Financials</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.9%</span> · <span style="color:#ff6d6d">1W -1.8%</span> ·
+    1M -1.17%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Communication Svcs</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.5%</span> · <span style="color:#ff6d6d">1W -2.0%</span> ·
+    1M -0.41%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Real Estate</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.2%</span> · <span style="color:#ff6d6d">1W -2.3%</span> ·
+    1M -2.5%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Materials</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.2%</span> · <span style="color:#ff6d6d">1W -2.8%</span> ·
+    1M 2.08%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Disc</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.7%</span> · <span style="color:#ff6d6d">1W -2.9%</span> ·
+    1M -3.06%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Semiconductors</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -2.1%</span> · <span style="color:#ff6d6d">1W -2.9%</span> ·
+    1M -7.73%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Industrials</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.4%</span> · <span style="color:#ff6d6d">1W -3.2%</span> ·
+    1M -5.69%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Small Cap Growth</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.5%</span> · <span style="color:#ff6d6d">1W -3.7%</span> ·
+    1M -1.8%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">ARK Innovation</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -2.9%</span> · <span style="color:#ff6d6d">1W -3.8%</span> ·
+    1M 12.97%</div>
+</div></div>
+  </details>
+</div>
+
+
+<div class="filter-bar">
+  <button class="filt active" onclick="filterCards('all',this)">All (2)</button>
+  <button class="filt" onclick="filterCards('buy',this)">🟢 Buy Now (1)</button>
+  <button class="filt" onclick="filterCards('wait',this)">⏳ Wait (0)</button>
+  <button class="filt" onclick="filterCards('watch',this)">🟡 Watch (1)</button>
+  <button class="filt" onclick="filterCards('avoid',this)">🔴 Avoid (0)</button>
+  <button class="filt" onclick="filterCards('high',this)">⭐ High Conv. (1)</button>
+</div>
+<div class="section" style="padding-top:10px">
+  <div class="section-title"><span id="stock-count">2 stocks</span> — tap to expand</div>
+  
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="HIGH">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#1</span>
+      <span class="tk">INCY</span>
+      <span class="co-name">Incyte Corporation</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-high">HIGH</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>30.4/40</b></span>
+  <span class="chip">Fund <b>32.6/40</b></span>
+  <span class='chip'>Score <b>63.0/80</b></span>
+</div>
+    <div class="setup-line">📐 reclaimed EMA20 today, holding above</div><div class="setup-line" style="color:#ffd600">🧲 VCP 2/3 · 10d range 7.4% · ATR 89% of 50d · vol 67% of 50d</div>
+    <div class="rationale">INCY demonstrates superior technical strength with a high RS rank (92.6) and an active setup (reclaimed EMA20), aligning well with the &#x27;Uptrend Under Pressure&#x27; regime where relative strength is key. The fundamental score is robust, and the stock is closer to its breakout point compared to ANET.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$—</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">—</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">—</div></div>
+</div>
+    <div class="risk-line">⚠ Biotech sector volatility and potential pullback if the EMA20 reclamation fails to hold.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">No research note available.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">Listen, I’ve seen this play before. An analyst writes a &quot;Minervini SEPA&quot; note, slaps a **96.8% EPS growth** figure on the top, highlights a 14x forward P/E, and suddenly a biotech company that has been a value trap for a decade looks like a screaming buy.<br><br>This note is dangerous. It’s not just optimistic; it’s likely referencing stale or distorted data points that, if acted upon now, could lead you to buy exactly when the cycle turns. Let’s dismantle this.<br><br>### 1. ACCOUNTING RED FLAGS: The &quot;96.8% EPS&quot; Mirage<br>You are praising a 96.8% YoY EPS acceleration as evidence of a &quot;step-change in profitability.&quot; **Where did that number come from?**<br><br>*   **The Denominator Effect:** Incyte has historically struggled to convert revenue to bottom-line income due to massive R&amp;D spend and legacy JAKAFI erosion. If EPS grew nearly 100% in a single quarter, it is almost certainly due to a **low base effect** from a year-ago quarter that was heavily burdened by one-time charges, impairment losses, or elevated clinical trial costs that have since normalized.<br>*   **Quality Check Failure:** The note claims &quot;no indication of one-time items.&quot; I accept that. However, look at the **Operating Margin of 41.9%**. For a commercial-stage biopharm company, this is *exorbitantly* high. J&amp;J is ~30%. Amgen is ~30%. If Incyte is really running at 41.9%, it is running more like a software company than a drug maker. This suggests either:<br>    1.  The margin calculation excludes significant stock-based compensation or R&amp;D amortization (accounting &quot;cherry-picking&quot;).<br>    2.  The data point is outdated (e.g., referring to a specific quarter where R&amp;D was temporarily deferred or capitalized).<br>*   **FCF Discrepancy:** The note cites ~$1.18B in FCF against a $25B market cap (4.7% yield). Let’s check the math. If Incyte is growing revenue at ~38% and has a 55.7% gross margin, year-over-year revenue growth alone is consuming huge amounts of working capital (inventory and receivables for the ICLUSIG ramp). To report $1.18B in *Free* Cash Flow after CapEx and OpEx while growing revenue that fast is financially inefficient unless they are aggressively cutting R&amp;D on other pipelines. That kills the &quot;Pipeline Depth&quot; argument.<br><br>### 2. THESIS KILLERS: The ESMO Binary Event<br>The note treats the upcoming ESMO data for the KRAS G12D inhibitor (&quot;734&quot;) as a &quot;binary-but-highly-positive catalyst.&quot;<br><br>*   **The Kill Switch:** In Oncology, &quot;binary&quot; means 50% chance of disaster. If the &quot;734&quot; data at ESMO shows marginal efficacy or, worse, a safety signal in pancreatic cancer (a notoriously hard-to-treat area), the stock does not just &quot;pull back.&quot; It will gap down 20-30% in a day.<br>*   **Priced-in Optimism:** The news cycle (RBC Capital, Simply Wall St, Josh Brown’s CNBC appearance) has been *heavy* on this upcoming data for two weeks. The RS Rank is already 92.6. This is not a &quot;surprise&quot; catalyst; it is a **highly anticipated event with maximum dispersion**. You are buying the rumor at the peak of the news cycle. If the data is merely &quot;good&quot; and not &quot;blockbuster,&quot; the stock sells off against the bid.<br><br>### 3. ASSUMPTION STRESS TEST: The PEG Ratio Lie<br>The note highlights a PEG ratio of **30.01** and then immediately dismisses it as &quot;misleading.&quot; This is intellectual malpractice.<br><br>*   **Why the PEG is 30:** A PEG over 30 usually implies that the &quot;G&quot; (growth) component is calculated using **long-term consensus estimates** (e.g., 5-year CAGR) which are low, while the &quot;P&quot; (Price) is high. OR, it implies the &quot;G&quot; is trailing, which doesn&#x27;t make sense here.<br>*   **The Real Assumption:** The bull case assumes that **37.7% revenue growth is sustainable**. It is not.<br>    *   **ICLUSIG (CML):** This is a mature market. ASCINIB (SVR) and other next-gen TKIs are coming. CML is a small patient pool. You cannot push linear growth in a saturated niche disease forever.<br>    *   **JAKAFI:** This is a declining asset. Peak sales were years ago. It is a &quot;cash cow&quot; right now, but mathematically, it provides a negative drag on *total* revenue growth every single year.<br>    *   **The &quot;734&quot; Gap:** To maintain 37% growth, the KRAS asset must become a $1B+ drug *immediately* and require zero R&amp;D dilution. If the stock is trading at 14x Forward Earnings, the market is **not** pricing in sustainable 30% growth. The market is pricing in a &quot;pulse&quot; year. When the pulse fades in year 2, the multiple will expand, and the P/E will jump to 25x-30x. The &quot;cheap&quot; valuation is an illusion of the peak earnings year.<br><br></div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse INCY</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="WATCH"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#2</span>
+      <span class="tk">ANET</span>
+      <span class="co-name">Arista Networks, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-watch">WATCH</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>15.2/40</b></span>
+  <span class="chip">Fund <b>33.8/40</b></span>
+  <span class='chip'>Score <b>49.0/80</b></span>
+</div>
+    <div class="setup-line">📐 $189.26 is 11.93% below pivot $214.89 — no trigger yet</div><div class="setup-line" style="color:#00c853">🧲 VCP 3/3 · 10d range 12.3% · ATR 78% of 50d · vol 75% of 50d</div>
+    <div class="rationale">ANET has strong fundamentals but lacks the immediate technical trigger, sitting nearly 12% below its pivot point with a lower RS rank (80.2). While a quality business, it does not meet the strict Minervini entry criteria as effectively as INCY in the current market regime.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$—</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">—</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">—</div></div>
+</div>
+    <div class="risk-line">⚠ Extended drawdown from highs and lack of immediate catalyst to re-enter the primary trend.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">No research note available.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">Listen closely. I’ve managed portfolios through three major tech-capex cycles, and I know exactly how these &quot;gratuity&quot; stocks look right before the music stops. This note reads less like rigorous fundamental analysis and more like a cheerleading squad for a stock that is already priced for perfection. The analyst has polished a diamond to show me, but they’ve failed to mention that it’s sitting on a table made of glass, under a ceiling fan that’s spinning faster every hour.<br><br>Here is my brutal audit of this Arista Networks thesis.<br><br>### 1. ACCOUNTING RED FLAGS: The &quot;Cash Cow&quot; Illusion<br>The analyst boasts robust FCF of $3.9B and a clean balance sheet. This is dangerous comfort. Wait — look closer at the **Days to next earnings: 63**. In the current environment, 63 days is an eternity. More importantly, the note focuses on *reported* margins (45% Op, 38% Net) but ignores the **inventory and receivables mismatch** typical of hyper-growth hardware cycles.<br>*   **The Trap:** When revenue growth hits 37%, Arista is likely booking revenue as soon as hardware ships, but the *cost* of that silicon (switch ASICs, optics) is often lagged or deferred in supply chain negotiations. If the &quot;hyper-growth&quot; slows even slightly, that &quot;no debt&quot; balance sheet will flood with write-downs on inventory or allowance for doubtful accounts if hyperscalers delay shipments.<br>*   **Red Flag:** The note claims &quot;No Debt.&quot; That’s fine. But what is happening to **Accounts Receivable (AR)**? In a market where Microsoft and Meta are trying to stretch payables and manage their own capex budgets, Arista’s AR growth is almost certainly outpacing revenue growth. That is uncollected cash. The &quot;robust FCF&quot; is a historical metric; the forward FCF is at risk if collection times slip.<br><br>### 2. THESIS KILLERS: The &quot;Good Enough&quot; Cisco Squeeze<br>The single event that kills this bull case is **Cisco winning the mid-market AI cluster segment**.<br>*   **The Reality Check:** The note cites a &quot;Cisco Counter-Attack&quot; as a minor risk, citing Nokia’s surge (which is confusing/irrelevant to AR). But look at the **Fresh News (27.9h ago): &quot;Cisco Systems Stock Has A Second Engine... The enterprise refresh... that management calls early, not the hyperscaler AI line.&quot;**<br>*   **The Kill Shot:** Arista’s moat is built on the *hyperscaler* (Meta, Microsoft, Netflix). These clients are increasingly building **custom in-house silicon and networking fabrics** (Meta’s RoCE, Microsoft’s Azure internal shifts). If Arista loses even 10% of its share to in-house solutions because the &quot;premacy&quot; of EOS offers diminishing returns compared to the total cost of ownership (TCO) of custom infra, the &quot;37% growth&quot; narrative evaporates overnight. The note assumes hyperscalers will forever buy Arista’s premium fabric. They don’t. They buy what is cheap and works.<br><br>### 3. ASSUMPTION STRESS TEST: The Non-Linear AI Capex Fallacy<br>The core assumption is: &quot;As NVIDIA’s H100/B200 shipments grow, the required networking fabric grows non-linearly.&quot;<br>*   **The Flaw:** This is a **linear correlation assumption** dressed up as non-linear.<br>    *   **Assumption A:** Every new GPU cluster requires a *proportionally larger* Arista spend.<br>    *   **Reality:** Arista is competing for the &quot;East-West&quot; traffic. But hyperscalers are increasingly using **InfiniBand** (NVIDIA’s own fabric) for high-performance AI training clusters, not just Ethernet. Arista is strong in Ethernet, but NVIDIA is vertically integrating its network stack (Spectrum-X). If NVIDIA’s integrated fabric becomes the &quot;default&quot; for AI training, Arista is relegated to the less critical &quot;North-South&quot; or general compute traffic, which grows linearly, not exponentially.<br>    *   **The Math Check:** The note cites a **PEG of 1.85**. It calls this &quot;slightly rich.&quot; It is not. For a company with a **22.6x Price/Sales ratio**, a PEG of 1.85 means you are paying $22 for every $1 of sales AND expecting that sales growth to compound at 37% *forever*. If growth decelerates to 25% (still strong), the PEG explodes to 2.7+, and the multiple compresses from 36x to ~25x. That is a 30-40% drawdown, not a &quot;correction.&quot;<br><br>### 4. VALUATION RISK: The Ceiling is the Floor<br>The analyst says the stock is down -11.9% from highs, suggesting an &quot;accumulation zone.&quot;<br>*   **Skeptical View:** In a high-growth regime, an 11.9% dip is noise. The real risk is **Multiple Compression**.<br>*   **Macro Sensitivity:** The note dismisses the **Simply Wall St (45.3h ago)** warning about rising bond yields. This is the biggest error in the note. Arista is a &quot;long-duration asset&quot; in equity terms. It has no dividend (0 yield). Its value is entirely in the distant future cash flows.<br>    *   If 10-year yields rise another 50-100bps due to inflation stickiness (the note mentions &quot;inflation concerns&quot; via</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse ANET</div>
+  </div>
+</details>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 Upcoming Earnings</div>
+  <div class="earnings-box">
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• SNOW</span>
+  <span style="color:#aaa">2026-09-03</span>
+  <span style="color:#ff6d6d;font-size:12px">0d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• LULU</span>
+  <span style="color:#aaa">2026-09-04</span>
+  <span style="color:#ff6d6d;font-size:12px">1d</span>
+</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📈 Pick Track Record</div>
+  <div class="track-card">
+    <div class="track-grid">
+<div class="track-cell"><div class="track-h">1 Week Fwd · 112 picks</div>
+<div class="track-v tr-neu">nan% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 36.6% · avg nan%</div></div>
+<div class="track-cell"><div class="track-h">1 Month Fwd · 42 picks</div>
+<div class="track-v tr-neu">nan% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 50.0% · avg nan%</div></div></div>
+    <div class="track-note">Top 5 daily picks tracked forward vs SPY ·
+    35 day(s) of history · builds daily</div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="collapseAll()">▲ Collapse</button>
+
+<div class="footer">
+  HZ Capital Trading Intelligence &nbsp;·&nbsp;
+  2026-09-03 09:51 &nbsp;·&nbsp;
+  Market analysis only — positions &amp; instructions are delivered privately via Telegram. Not financial advice.
+</div>
+
+<script>
+function filterCards(f, btn) {
+  document.querySelectorAll('.filt').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('details.stock-card').forEach(function(c) {
+    var show = true;
+    if      (f === 'buy')   show = c.dataset.action === 'BUY NOW';
+    else if (f === 'wait')  show = c.dataset.action.indexOf('WAIT') === 0;
+    else if (f === 'watch') show = c.dataset.action === 'WATCH';
+    else if (f === 'avoid') show = c.dataset.action === 'AVOID';
+    else if (f === 'high')  show = c.dataset.conviction === 'HIGH';
+    c.classList.toggle('hidden', !show);
+  });
+  var v = document.querySelectorAll('details.stock-card:not(.hidden)').length;
+  document.getElementById('stock-count').textContent = v + ' stocks';
+}
+
+/* Close the section this control belongs to and bring its header back into
+   view, so you never lose your place after reading a long note. */
+function closeCard(el) {
+  var d = el.closest('details');
+  if (!d) return;
+  d.open = false;
+  var y = d.getBoundingClientRect().top + window.scrollY - 108;
+  window.scrollTo({ top: y < 0 ? 0 : y, behavior: 'smooth' });
+  updateFab();
+}
+
+function collapseAll() {
+  document.querySelectorAll('details[open]').forEach(function (d) { d.open = false; });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateFab();
+}
+
+function updateFab() {
+  var f = document.getElementById('fab');
+  if (!f) return;
+  var n = document.querySelectorAll('details[open]').length;
+  f.classList.toggle('show', n > 0);
+  f.textContent = n > 1 ? '▲ Collapse all (' + n + ')' : '▲ Collapse';
+}
+
+/* toggle doesn't bubble — capture phase catches every <details> */
+document.addEventListener('toggle', updateFab, true);
+document.addEventListener('DOMContentLoaded', updateFab);
+</script>
+</body>
+</html>
