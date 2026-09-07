@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>HZ Capital — September 07, 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     background:#0d0d0d;color:#e0e0e0;line-height:1.5;font-size:14px}
+
+/* STICKY HEADER */
+.sticky-header{position:sticky;top:0;z-index:100;background:#111;
+  border-bottom:1px solid #222;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+.site-title{font-size:13px;font-weight:700;color:#fff}
+.site-sub{font-size:11px;color:#666;margin-top:1px}
+.regime-pill{font-size:11px;font-weight:700;padding:4px 10px;
+  border-radius:20px;color:#000;white-space:nowrap}
+
+/* SECTIONS */
+.section{padding:12px 12px 4px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;
+  text-transform:uppercase;color:#555;margin-bottom:8px}
+
+/* ALERTS */
+.alert-card{background:#1a0800;border:1px solid #ff6d00;border-radius:10px;
+  padding:12px 14px;margin-bottom:8px}
+.alert-type{font-size:10px;font-weight:700;color:#ff6d00;letter-spacing:0.5px;text-transform:uppercase}
+.alert-ticker{font-size:15px;font-weight:800;color:#ff9d4a;margin:2px 0}
+.alert-msg{font-size:12px;color:#ccc;line-height:1.5}
+
+/* MACRO */
+details.macro-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;
+  overflow:clip;margin-bottom:8px}   /* clip, NOT hidden — hidden breaks sticky */
+details.macro-card > summary{list-style:none;cursor:pointer;padding:13px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+details.macro-card > summary::-webkit-details-marker{display:none}
+details.macro-card > summary::marker{display:none}
+details.macro-card[open] .chevron{transform:rotate(180deg)}
+.macro-title{font-size:14px;font-weight:700;color:#fff}
+.macro-body{padding:12px 14px 14px;font-size:13px;color:#bbb;
+  line-height:1.75;border-top:1px solid #222}
+
+/* SECTOR OVERVIEW */
+.sector-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;overflow:hidden}
+.sector-row{display:flex;align-items:flex-start;gap:10px;
+  padding:9px 14px;border-bottom:1px solid #1e1e1e}
+.sector-row:last-child{border-bottom:none}
+.sector-name{font-size:11px;font-weight:700;color:#777;
+  text-transform:uppercase;letter-spacing:0.3px;
+  min-width:110px;flex-shrink:0;padding-top:2px}
+.sector-chips{display:flex;gap:5px;flex-wrap:wrap}
+.stk-chip{background:#252525;border-radius:4px;padding:2px 8px;
+  font-size:11px;color:#82b1ff;font-weight:700}
+.stk-chip.buy{color:#00c853}
+.stk-chip.watch{color:#ffd600}
+.stk-chip.avoid{color:#ff6d6d}
+
+/* FILTER BAR */
+.filter-bar{position:sticky;top:53px;z-index:99;background:#111;
+  border-bottom:1px solid #1e1e1e;padding:8px 12px;
+  display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  margin-top:12px}
+.filter-bar::-webkit-scrollbar{display:none}
+.filt{background:#1e1e1e;border:1px solid #2a2a2a;color:#888;
+  padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  white-space:nowrap;cursor:pointer;transition:all 0.15s;user-select:none}
+.filt.active{background:#82b1ff;color:#000;border-color:#82b1ff}
+
+/* STOCK CARDS */
+details.stock-card{background:#1a1a1a;border-radius:12px;margin-bottom:9px;
+  overflow:clip;border:1px solid #222}   /* clip, NOT hidden — hidden breaks sticky */
+details.stock-card[open]{border-color:#333}
+details.stock-card > summary{list-style:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;padding:13px 14px}
+details.stock-card > summary::-webkit-details-marker{display:none}
+details.stock-card > summary::marker{display:none}
+details.stock-card[open] .chevron{transform:rotate(180deg)}
+
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rank-num{font-size:15px;font-weight:800;color:#444;min-width:22px}
+.tk{font-size:17px;font-weight:800;color:#82b1ff}
+.co-name{font-size:12px;color:#888;flex:1;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.chevron{font-size:10px;color:#555;transition:transform 0.2s;flex-shrink:0}
+
+.badge-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.b-buy{background:#00c853;color:#000}
+.b-watch{background:#ffd600;color:#000}
+.b-wait{background:#ff9d4a;color:#000}
+.b-avoid{background:#d50000;color:#fff}
+.b-dash{background:#2a2a2a;color:#666}
+
+/* TODAY AT A GLANCE */
+.glance-card{background:linear-gradient(135deg,#141a26,#101418);border:1px solid #2a3550;
+  border-radius:12px;padding:14px;margin-bottom:8px}
+.glance-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.glance-stat{background:#1a2230;border-radius:8px;padding:7px 12px;flex:1;min-width:90px}
+.glance-label{font-size:9px;color:#5a6a8a;text-transform:uppercase;letter-spacing:0.5px}
+.glance-val{font-size:14px;font-weight:800;color:#e8eeff;margin-top:2px}
+.glance-line{font-size:12px;color:#9ab;line-height:1.6}
+.glance-line b{color:#82b1ff}
+.delta-chip{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;
+  padding:1px 7px;margin:1px 3px 1px 0}
+.d-new{background:rgba(0,200,83,0.15);color:#00c853;border:1px solid rgba(0,200,83,0.35)}
+.d-drop{background:rgba(213,0,0,0.12);color:#ff6d6d;border:1px solid rgba(213,0,0,0.3)}
+.setup-line{font-size:11px;color:#4dd0a5;padding-top:4px}
+
+/* TRACK RECORD */
+.track-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:12px 14px}
+.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:4px}
+.track-cell{background:#1e1e1e;border-radius:8px;padding:8px 10px}
+.track-h{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.track-v{font-size:15px;font-weight:800;margin-top:2px}
+.tr-pos{color:#00c853}.tr-neg{color:#ff6d6d}.tr-neu{color:#bbb}
+.track-note{font-size:11px;color:#555;margin-top:8px;line-height:1.5}
+.b-high{background:rgba(130,177,255,0.15);color:#82b1ff;border:1px solid rgba(130,177,255,0.3)}
+.b-medium{background:rgba(255,214,0,0.1);color:#ffd600;border:1px solid rgba(255,214,0,0.25)}
+.b-low{background:rgba(255,109,0,0.1);color:#ff6d00;border:1px solid rgba(255,109,0,0.25)}
+
+.score-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.chip{background:#252525;border-radius:4px;padding:2px 7px;font-size:11px;color:#666}
+.chip b{color:#bbb}
+.rationale{font-size:12px;color:#666;line-height:1.5;padding-top:6px;border-top:1px solid #222}
+
+/* CARD BODY */
+.card-body{border-top:1px solid #222}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+  padding:10px 12px;background:#141414}
+.meta-item{background:#1e1e1e;border-radius:6px;padding:6px 8px}
+.meta-label{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.meta-val{font-size:13px;font-weight:700;color:#ddd;margin-top:1px}
+.case-section{padding:12px 14px}
+.case-section+.case-section{border-top:1px solid #1e1e1e}
+.case-label{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
+.case-bull .case-label{color:#00c853}
+.case-bear .case-label{color:#ff6d6d}
+.case-text{font-size:13px;line-height:1.75;color:#bbb}
+.risk-line{font-size:12px;color:#ff9d4a;padding:6px 14px 0}
+
+/* EARNINGS */
+.earnings-box{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:10px 14px}
+.earnings-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid #1e1e1e;font-size:13px}
+.earnings-row:last-child{border-bottom:none}
+.no-items{color:#555;font-size:13px;padding:8px 0}
+
+/* FOOTER */
+.footer{text-align:center;font-size:11px;color:#333;padding:20px 14px 40px}
+
+/* ── EXPAND / COLLAPSE ERGONOMICS ──────────────────────────────────────
+   Long research notes used to be collapsible only from the very top, so
+   you had to scroll back up to close one. Three fixes:
+   1. the card's own header sticks below the toolbars while it is open,
+      so the collapse control is always one tap away while reading;
+   2. a matching collapse bar sits at the END of every long section;
+   3. a floating "collapse all" appears whenever anything is open.        */
+details.stock-card[open] > summary{position:sticky;top:98px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55);padding:9px 14px}
+/* While open the pinned header must stay SMALL — the teaser rows (scores,
+   setup, rationale) are redundant once the full body is on screen. */
+details.stock-card[open] > summary .score-chips,
+details.stock-card[open] > summary .setup-line,
+details.stock-card[open] > summary .rationale{display:none}
+details.stock-card[open] > summary .card-top{margin-bottom:4px}
+details.stock-card[open] > summary .badge-row{margin-bottom:0}
+details.macro-card[open] > summary{position:sticky;top:53px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55)}
+.collapse-bar{display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:12px 14px;background:#151515;border-top:1px solid #262626;
+  color:#82b1ff;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent}
+.collapse-bar:active{background:#202020}
+.fab{position:fixed;right:14px;bottom:18px;z-index:300;background:#82b1ff;color:#000;
+  border:none;border-radius:24px;padding:14px 18px;font-size:12px;font-weight:800;
+  box-shadow:0 4px 16px rgba(0,0,0,0.6);cursor:pointer;display:none}   /* >=44px tap target */
+.fab.show{display:block}
+
+/* DESKTOP */
+@media(min-width:700px){
+  body{max-width:900px;margin:0 auto}
+  .filter-bar{top:57px}
+  .meta-grid{grid-template-columns:repeat(6,1fr)}
+  details.stock-card[open] > summary{top:102px}   /* clears the taller desktop toolbars */
+}
+@media(min-width:1100px){body{max-width:1100px}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div>
+    <div class="site-title">HZ Capital</div>
+    <div class="site-sub">September 07, 2026</div>
+  </div>
+  <div class="regime-pill" style="background:#ffd600">UPTREND UNDER PRESSURE</div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">⚡ Today in 30 Seconds</div>
+  <div class="glance-card">
+    <div class="glance-row">
+      <div class="glance-stat"><div class="glance-label">Regime</div><div class="glance-val" style="color:#ffd600">UPTREND UNDER PRESSURE</div></div>
+      <div class="glance-stat"><div class="glance-label">Buy Setups</div><div class="glance-val">3</div></div>
+      <div class="glance-stat"><div class="glance-label">Wait</div><div class="glance-val">0</div></div>
+      <div class="glance-stat"><div class="glance-label">Watch</div><div class="glance-val">2</div></div>
+    </div>
+    <div class="glance-line">🏆 #1 pick: <b>NTRS</b> <span class="badge b-buy">BUY NOW</span> reclaimed EMA20 1 session(s) ago, holding above</div><div class="glance-line">🟢 Buy setups triggered: <b>NTRS</b> (reclaimed EMA20 1 session(s) ago, holding above) <b>CPAY</b> ($416.37 is 2.59% below pivot $427.46 — breakout imminent) <b>ANET</b> (reclaimed EMA20 1 session(s) ago, holding above)</div><div class="glance-line">Δ vs 2026-09-02: <span class="delta-chip d-new">+ CPAY</span><span class="delta-chip d-new">+ MU</span><span class="delta-chip d-new">+ NTAP</span><span class="delta-chip d-new">+ NTRS</span></div><div class="glance-line">📅 Event radar: <b>CPI release</b> in 4d · <b>FOMC rate decision</b> in 9d · <b>Jobs report (NFP)</b> in 25d</div><div class="glance-line" style="color:#667">🕐 Prices as of last US close: <b>2026-09-04</b></div>
+  </div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">📊 Macro Analysis</div>
+  <details class="macro-card" open>
+    <summary>
+      <span class="macro-title">🌍 UPTREND UNDER PRESSURE</span>
+      <span class="chevron">▼</span>
+    </summary>
+    <div class="macro-body">**DATE:** 2026-09-07<br>**REGIME:** UPTREND UNDER PRESSURE<br><br>### 1. WHAT CHANGED SINCE YESTERDAY<br>The single most critical development is the **regime shift from &quot;Market in Downtrend&quot; to &quot;Uptrend Under Pressure.&quot;** While yesterday&#x27;s tape showed fragile stabilization after a weekly drop, today confirms that the broader market has regained technical footing with SPY holding above its 200DMA and QQQ (+0.18%) outperforming SPY (-0.39%). However, this is not a clean recovery. The most visible sign of this &quot;pressure&quot; is the violent, isolated **3.52% surge in Semiconductors (SOXX)** yesterday. This move decoupled the tech sector from the rest of the market (XLK only +0.7%), suggesting a specific catalyst-driven bid rather than broad-based confidence, which defines the &quot;pressure&quot; in an otherwise stabilizing uptrend.<br><br>### 2. MARKET REGIME ASSESSMENT<br>The tape is telling us that the market is digesting a bottom but is not yet rotating into broad leadership. SPY and QQQ are above their key moving averages, confirming the long-term uptrend is intact, but the fact that SPY is down -0.39% today while QQQ is up +0.18% indicates a stock-picking environment, not an index-grind-up environment. VIX at 14.53 (up 1.47%) shows that while panic is absent, volatility is not sleeping, reflecting investor wariness ahead of CPI. The market is in a &quot;wait-and-see&quot; mode: holding gains in selective tech, but pulling back in defensive and consumer names.<br><br>### 3. SECTOR LEADERSHIP<br>*   **Leading (1-Week/1-Day):** **Semiconductors (SOXX)** are the clear alpha driver, posting a massive **+3.52% single-day move** and +1.73% weekly. This is a sharp reversal from their -4.31% 1M trend. **Utilities (XLU)** show steady strength (+2.01% 1W), likely playing bid due to the 4.78% 10Y yield making bonds less attractive.<br>*   **Lagging (1-Day/1-Week):** **Consumer Discretionary (XLY)** is the weakest link, down **-1.33%** today and **-1.44%** for the week. **Communication Services (XLC)** and **Staples (XLP)** also saw meaningful 1-day retreats (-1.19% and -0.80%), indicating money is rotating *out* of defensive/consumer plays *into* cyclical tech (specifically semis) rather than staying in breadth.<br>*   **Rotation Note:** The divergence between SOXX (+3.52%) and XLY (-1.33%) is significant. Investors are chasing momentum in tech hardware while ignoring or selling off consumer softness. This is a narrow, risky lead.<br><br>### 4. NEWS-DRIVEN RISKS &amp; CATALYSTS<br>1.  **CPI Inflation Shock Risk (Sep 11):** With the **CPI release scheduled for 2026-09-11** (4 days away), the 10Y yield climbing to **4.78%** (+0.46% today) creates a double-edged sword. If CPI prints hot, the yield curve will likely steepen further, pressuring high-multiple growth stocks. The market is currently pricing in uncertainty, as seen in the VIX uptick.<br>2.  **Geopolitical Supply Chain/Disruption:** The headline **&quot;Volcano eruption disrupts hundreds of flights at Southeast Asia&#x27;s second-busiest airport&quot;** (CNBC, 0.3h ago) is a micro-catalyst for macro risk. While not a direct earnings impact, it highlights ongoing operational fragility in Asian logistics and travel, which indirectly pressures consumer sentiment and supply chains for tech hardware.<br>3.  **Sector-Specific Catalyst Semis:** The **SOXX +3.52% move** likely correlates with headlines around **&quot;Data centers in space&quot;** (CNBC, 1.8h ago) or broader AI infrastructure optimism. This is a positive catalyst for growth portfolios, but the magnitude of the move suggests a crowded trade. Caution: If this was driven by speculation rather than earnings (like NVDA/AMD), it may be mean-reversion prone.<br><br>### 5. GROWTH STOCK ENVIRONMENT<br>**Moderate attractiveness, high selectivity.** The regime is technically</div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse macro analysis</div>
+  </details>
+</div>
+
+<div class="section">
+  <div class="section-title">🏭 Industry Overview</div>
+  <div class="sector-card">
+<div class="sector-row">
+  <div class="sector-name">Financial Services <span style="font-size:10px;color:#666">· <span style="color:#ff6d6d">1D -0.8%</span> · <span style="color:#00c853">1W +0.7%</span> · <span style="color:#00c853">▲1</span></span></div>
+  <div class="sector-chips"><span class="stk-chip buy">NTRS</span></div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare <span style="font-size:10px;color:#666">· <span style="color:#ff6d6d">1D -1.0%</span> · <span style="color:#00c853">1W +0.5%</span> · <span style="color:#ff6d6d">▼2</span></span></div>
+  <div class="sector-chips"><span class="stk-chip watch">INCY</span></div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology <span style="font-size:10px;color:#666">· <span style="color:#00c853">1D +0.7%</span> · <span style="color:#00c853">1W +0.4%</span> · <span style="color:#00c853">▲3</span></span></div>
+  <div class="sector-chips"><span class="stk-chip buy">CPAY</span><span class="stk-chip buy">ANET</span><span class="stk-chip watch">MU</span><span class="stk-chip avoid">NTAP</span></div>
+</div></div>
+  
+  <details class="macro-card" style="margin-top:8px">
+    <summary><span class="macro-title" style="font-size:13px">📊 Sector rotation leaderboard (1-week momentum)</span><span class="chevron">▼</span></summary>
+    <div style="border-top:1px solid #222">
+<div class="sector-row">
+  <div class="sector-name">Utilities<span style="color:#00c853"> ▲7</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.1%</span> · <span style="color:#00c853">1W +2.0%</span> ·
+    1M -1.22%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Semiconductors<span style="color:#00c853"> ▲11</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +3.5%</span> · <span style="color:#00c853">1W +1.7%</span> ·
+    1M -4.31%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">ARK Innovation<span style="color:#00c853"> ▲11</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.1%</span> · <span style="color:#00c853">1W +0.8%</span> ·
+    1M 8.55%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Financials<span style="color:#00c853"> ▲1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.8%</span> · <span style="color:#00c853">1W +0.7%</span> ·
+    1M 0.87%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare<span style="color:#ff6d6d"> ▼2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.0%</span> · <span style="color:#00c853">1W +0.5%</span> ·
+    1M 3.48%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Communication Svcs<span style="color:#ff6d6d"> ▼4</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.2%</span> · <span style="color:#00c853">1W +0.5%</span> ·
+    1M 0.7%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology<span style="color:#00c853"> ▲3</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.7%</span> · <span style="color:#00c853">1W +0.4%</span> ·
+    1M -0.37%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Energy<span style="color:#ff6d6d"> ▼7</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.9%</span> · <span style="color:#00c853">1W +0.2%</span> ·
+    1M 11.41%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Small Cap Growth<span style="color:#00c853"> ▲2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.1%</span> · <span style="color:#00c853">1W +0.1%</span> ·
+    1M -3.23%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Industrials<span style="color:#00c853"> ▲2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.4%</span> · <span style="color:#00c853">1W +0.1%</span> ·
+    1M -5.35%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Real Estate<span style="color:#ff6d6d"> ▼2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.7%</span> · <span style="color:#ff6d6d">1W -0.4%</span> ·
+    1M -2.33%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Staples<span style="color:#ff6d6d"> ▼8</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.8%</span> · <span style="color:#ff6d6d">1W -0.5%</span> ·
+    1M -0.63%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Materials<span style="color:#ff6d6d"> ▼7</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.3%</span> · <span style="color:#ff6d6d">1W -0.5%</span> ·
+    1M -0.79%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Disc<span style="color:#ff6d6d"> ▼7</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.3%</span> · <span style="color:#ff6d6d">1W -1.4%</span> ·
+    1M -4.13%</div>
+</div></div>
+  </details>
+</div>
+
+
+<div class="filter-bar">
+  <button class="filt active" onclick="filterCards('all',this)">All (6)</button>
+  <button class="filt" onclick="filterCards('buy',this)">🟢 Buy Now (3)</button>
+  <button class="filt" onclick="filterCards('wait',this)">⏳ Wait (0)</button>
+  <button class="filt" onclick="filterCards('watch',this)">🟡 Watch (2)</button>
+  <button class="filt" onclick="filterCards('avoid',this)">🔴 Avoid (1)</button>
+  <button class="filt" onclick="filterCards('high',this)">⭐ High Conv. (2)</button>
+</div>
+<div class="section" style="padding-top:10px">
+  <div class="section-title"><span id="stock-count">6 stocks</span> — tap to expand</div>
+  
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="HIGH">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#1</span>
+      <span class="tk">NTRS</span>
+      <span class="co-name">Northern Trust Corporation</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-high">HIGH</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>31.3/40</b></span>
+  <span class="chip">Fund <b>33.5/40</b></span>
+  <span class='chip'>Score <b>64.8/80</b></span>
+</div>
+    <div class="setup-line">📐 reclaimed EMA20 1 session(s) ago, holding above</div><div class="setup-line" style="color:#ffd600">🧲 VCP 2/3 · 10d range 3.9% · ATR 87% of 50d · vol 84% of 50d</div>
+    <div class="rationale">Highest total score (74.8) with the strongest technical setup, having reclaimed the EMA20 and holding above it. Financials often outperform in &#x27;uptrend under pressure&#x27; regimes due to defensive characteristics and rate sensitivity, providing a solid risk-adjusted entry.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$186.63</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">83.2</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">98.6%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">36.4%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-4.2%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Financial Services</div></div>
+</div>
+    <div class="risk-line">⚠ Interest rate volatility impacting net interest margins and asset valuations.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1500. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1200. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse NTRS</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="HIGH">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#2</span>
+      <span class="tk">CPAY</span>
+      <span class="co-name">Corpay, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-high">HIGH</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>33.1/40</b></span>
+  <span class="chip">Fund <b>29.7/40</b></span>
+  <span class='chip'>Score <b>62.8/80</b></span>
+</div>
+    <div class="setup-line">📐 $416.37 is 2.59% below pivot $427.46 — breakout imminent</div><div class="setup-line" style="color:#00c853">🧲 VCP 3/3 · 10d range 6.2% · ATR 83% of 50d · vol 77% of 50d</div>
+    <div class="rationale">Strong technical momentum (highest technical score at 33.1) and is &#x27;imminent&#x27; for a breakout, which is ideal for Minervini-style entries. The business model shift to recurring revenue supports fundamental quality despite a slightly lower fundamental score.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$416.37</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">78.8</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">36.5%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">21.5%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-2.6%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Technology</div></div>
+</div>
+    <div class="risk-line">⚠ Failure to break out from the pivot could lead to a sharp pullback in a pressured market.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**RESEARCH NOTE: CORPAY, INC. (CPAY)**<br>**Date:** Current<br>**Analyst:** Senior Fundamental Research (SEPA Framework)<br><br>### 1. BUSINESS QUALITY<br>*   **Core Model:** Corpay operates a global spend management and payments platform, shifting from transactional fee models to recurring software-plus-service revenue.<br>*   **Segment Structure:** Dominated by Corporate Payments (AP modernization, card spend, cross-border), Vehicle Payments, and Lodging/Logistics.<br>*   **Competitive Advantage:** Highly fragmented industry with high switching costs. Once integrated into a company’s ERP and procurement workflow, churn is negligible. Corpay benefits from &quot;land-and-expand&quot; sales velocity in the AP Automation space.<br>*   **Scale Effect:** As a leader in global corporate spend, Corpay leverages massive data sets to refine fraud detection and compliance algorithms, creating a data moat that smaller regional players cannot replicate.<br><br>### 2. EARNINGS QUALITY<br>*   **EPS Trajectory:** YoY EPS growth of 36.5% is exceptional for a mature tech company. This reflects operational leverage as high-margin software revenue outpaces lower-margin transaction volume.<br>*   **Margin Expansion:** Operating margins of ~47% and gross margins of ~80% indicate high quality of earnings. The shift from pure processing fees to SaaS/subscription models is driving sustainable margin accretion.<br>*   **One-Time Items:** Recent news notes &quot;profits take a hit&quot; due to the divestiture of the UK fleet software business. While this creates a temporary noise in GAAP earnings, it is a strategic rationalization to focus on higher-growth core segments, not a sign of operational decay.<br>*   **Cash Conversion:** Free Cash Flow of ~$1.95B on a $27B market cap represents a ~7.1% FCF Yield. This provides balance sheet strength to fuel buybacks and M&amp;A.<br><br>### 3. REVENUE ACCELERATION<br>*   **Growth Rate:** Revenue growth of 21.5% is robust for a company of this size ($7–8B revenue base implied by P/S 5.4x and Market Cap $27B).<br>*   **Drivers:**<br>    *   **Corporate Payments:** Strong demand for AP modernization and cross-border payment solutions as companies adapt to global supply chains and rising inflationary scrutiny on vendor spend.<br>    *   **Vehicle/Lodging:** Inflationary tailwinds in fuel/toll prices and corporate travel recovery provide natural top-line inflation.<br>*   **Forward Outlook:** CFO Peter Walker explicitly stated expectations for &quot;growth momentum to continue through the second half of the year,&quot; citing strong customer activity and retention. The 2026 outlook has been characterized as &quot;stronger,&quot; suggesting the quarter-over-quarter acceleration is real, not a one-off.<br><br>### 4. COMPETITIVE MOAT<br>*   **Switching Costs:** High. Integration with SAP, Oracle, NetSuite, and other ERPs makes switching painful and costly.<br>*   **Network Effects/Scale:** Global payment rails and compliance data require significant capital to build. Corpay’s existing infrastructure lowers marginal costs for new customers.<br>*   **Brand &amp; Trust:** In payments, trust is the product. Corpay’s established presence with Fortune 500 logos creates a barrier to entry for fintech startups targeting enterprise spend management.<br>*   **Data Moat:** Proprietary data on global spending patterns improves risk scoring and procurement insights, adding value beyond mere payment processing.<br><br>### 5. INDUSTRY TAILWINDS<br>*   **AP Modernization Wave:** Enterprises are aggressively digitizing Accounts Payable to catch-check fraud, improve DPO (Days Payable Outstanding), and gain visibility into non-card spend. Corpay is a primary beneficiary.<br>*   **Cross-Border Complexity:** Geopolitical fragmentation is making cross-border payments more complex and expensive, driving demand for specialized platforms that handle currency conversion, compliance, and speed.<br>*   **Corporate Travel Recovery:** As business travel normalizes, the Logistics segment (Lodging) is seeing renewed volume, aided by pricing power in a post-pandemic labor market for travel services.<br>*   **News Context:** Recent reports highlight that &quot;Corporate Payments takes center stage&quot; in sustaining momentum. The industry trend is shifting from simple card issuance to holistic spend intelligence, a niche Corpay dominates.<br><br>### 6. MANAGEMENT EXECUTION<br>*   **Capital Allocation:** Aggressive buybacks (noted in recent news) are supporting EPS growth alongside organic expansion. With $1.9B FCF, the balance sheet can support continuous share reduction.<br>*   **Strategic Focus:** The simplification of the business via the UK fleet sale demonstrates a willingness to prune low-growth or non-core assets to sharpen the investment thesis. This is a positive signal of discipline.<br>*   **Guidance:** History of beating targets (Q2 beat) and raising outlooks. Management is confident in the &quot;strong 2026 outlook.&quot;<br><br>### 7. VALUATION<br>*   **Forward P/E:** ~13.2x. This is remarkably low for a company growing EPS at 36.5% and Revenue at 21.5%.<br>*   **PEG Ratio:** 0.8. A PEG &lt; 1.0 typically signals undervaluation relative to growth.<br>*   **Relative Valuation:** Comparables in the Spend Management space (e.g., Guidewire, TripActions, or fintech peers) often trade at 20–30x forward earnings. Corpay’s discount likely reflects its legacy transaction mix, but the transition to software is re-rating the multiple.<br>*   **Technical Premium:** The stock is at $416.37, only 2.6% from its 52-week high. The low multiple is not due to stock de-rating; rather, the stock has been strong, but the growth acceleration has outpaced the multiple expansion. This suggests the &quot;good&quot; news is already priced in, but the valuation still offers a margin of safety if growth holds.<br><br>### 8. KEY RISKS<br>*   **Margins Compression from Integration/Divestiture:** The recent sale of the UK fleet software business (reported ~4.7 days ago) and simplification efforts could one-time hit profits or create integration costs. Investors must monitor if this is a one-time drag or a sign of broader operational inefficiency.<br>*   **Macro Sensitivity in Logistics:** A sudden downturn in global shipping or travel could hit the Vehicle and Lodging segments. However, Corporate Payments (40-50% of revenue) is more resilient.<br>*   **Competition from Big Tech/FinCos:** PayPal, Stripe, and Visa are pushing into B2B spend management. Corpay must prove its software layer is superior to simple payment rails.<br>*   **Debt Levels:** Debt/Equity of 275% is high, but typical for leveraged buyout-style tech roll-ups or firms with high FCF conversion. Interest expense is manageable given 47% operating</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1200. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse CPAY</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#3</span>
+      <span class="tk">ANET</span>
+      <span class="co-name">Arista Networks, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>27.9/40</b></span>
+  <span class="chip">Fund <b>34.2/40</b></span>
+  <span class='chip'>Score <b>62.1/80</b></span>
+</div>
+    <div class="setup-line">📐 reclaimed EMA20 1 session(s) ago, holding above</div><div class="setup-line" style="color:#00c853">🧲 VCP 3/3 · 10d range 12.8% · ATR 72% of 50d · vol 64% of 50d</div>
+    <div class="rationale">Solid total score (72.1) and strong technicals (reclaimed EMA20). As a core AI infrastructure play, it benefits from the tech sector&#x27;s long-term growth, but the &#x27;uptrend under pressure&#x27; regime adds volatility risk to high-beta tech names.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$193.78</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">85.2</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">39.7%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">37.7%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-9.8%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Technology</div></div>
+</div>
+    <div class="risk-line">⚠ Sector-wide correction in high-multiple tech stocks if macro pressure intensifies.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1500. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1200. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse ANET</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="WATCH"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#4</span>
+      <span class="tk">MU</span>
+      <span class="co-name">Micron Technology, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-watch">WATCH</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>21.9/40</b></span>
+  <span class="chip">Fund <b>39.9/40</b></span>
+  <span class='chip'>Score <b>61.8/80</b></span>
+</div>
+    <div class="setup-line">📐 $1,016.59 is 18.98% below pivot $1,254.81 — no trigger yet</div><div class="setup-line" style="color:#00c853">🧲 VCP 3/3 · 10d range 12.8% · ATR 65% of 50d · vol 64% of 50d</div>
+    <div class="rationale">Excellent RS rank (99.0) and high fundamental score, but the stock is significantly below its pivot (18.98%), indicating it is not in a valid Minervini setup. The bear case flagged a &#x27;RED (AVOID)&#x27; risk rating, suggesting fundamental concerns that outweigh the technical strength.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$1016.59</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">99.0</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">1214.7%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">345.7%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-19.0%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Technology</div></div>
+</div>
+    <div class="risk-line">⚠ Fundamental deterioration or cyclical downturn in memory chips, as indicated by the bearish review.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1500. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">**PORTFOLIO MANAGER REVIEW: MICRON TECHNOLOGY (MU)**<br>**Date:** September 2026 (Contextual)<br>**Risk Rating:** **RED (AVOID)**<br><br>**DISCLAIMER:** The &quot;research note&quot; provided is missing. In its place, there is an API error message. Therefore, this &quot;Challenge Report&quot; is structured as a standalone risk assessment based on the **raw data provided** and the **recent news flow**. I am challenging the implicit bullish thesis suggested by the recent &quot;Buy Signals&quot; and &quot;Skyrocket Predictions&quot; found in the news snippets, as the lack of a specific note forces me to attack the prevailing narrative.<br><br>### 1. ACCOUNTING RED FLAGS: The Leverage Trap<br>*   **Debt/Equity Ratio of 6.33 is Unacceptable for a Cyclicals Play.** In a typical semiconductor upcycle, companies like MU utilize debt opportunistically, but a D/E ratio of 6.33 suggests either massive equity buybacks that have shrunk the equity base to near-zero/negative, or an unsustainable hedging strategy.<br>*   **Interest Expense Mismatch:** With a Gross Margin of 72.6% (excellent), the net margin is likely being crushed by interest payments. If rates remain high (see Macro Sensitivity), the interest coverage ratio becomes a single point of failure.<br>*   **Current Ratio of 3.425 is a Curse, Not a Blessing.** In a cyclical bottom, a low current ratio is dangerous. A high current ratio often indicates *inefficient capital deployment*. MU is holding massive cash equivalents or short-term investments. Why? Are they preparing for a capex freeze, or are they sitting on money they can’t deploy because their utilization rates are already maxed out? This suggests cash flow generation is just barely matching operational needs, leaving no buffer for the inevitable downturn.<br>*   **Insider Ownership at 0.2% is a Red Flag.** This is effectively zero. No one who builds the product owns a meaningful stake. Combined with the 6.33 D/E, this screams &quot;financial engineering over operational discipline.&quot;<br><br>### 2. THESIS KILLERS: The &quot;Taiwan Strike&quot; and Capacity Mismatch<br>*   **Single Event Killer: Prolonged Labor Dispute in Taiwan.** The news snippet from Barchart explicitly states: *&quot;a prolonged labor dispute could disrupt production.&quot;* Micron’s main DRAM and NAND production is tied to TSMC and other foundry partners in Taiwan. If labor actions disrupt TSMC or other third-party fabs where MU outsources advanced packaging or specific memory processes, their 72.6% gross margin evaporates overnight.<br>*   **The &quot;Skyrocket&quot; Delusion:** The Motley Fool article predicting a post-Sept 30 rocket ride is a classic retail trap. The stock is already &gt;100% higher YoY (&quot;More Than Tripled in 2026&quot; per Barchart, which is an extreme claim but we&#x27;ll accept the bullish momentum). Chasing a stock that has tripled in a year, with a D/E of 6.33, and 24 days to earnings is akin to catching a falling knife in reverse.<br><br>### 3. ASSUMPTION STRESS TEST: What is the Bull Case Ignoring?<br>*   **Assumption 1: AI Spending is Sustainable and Inelastic.** The bull case (implied by the &quot;Buy&quot; signals from Nvidia/Micron) assumes that AI capex by hyperscalers is immune to economic cycles. **Reality:** Hyperscalers are capex-sensitive. If 2027 revenue projections slip, MU’s fixed costs (from their massive fabrication plants) will crater margins.<br>*   **Assumption 2: Capacity Expansion Will Match Demand.** The news notes &quot;Nvidia, Micron, Sandisk Flash Buy Signals.&quot; This implies the market is front-running the 2026-2027 supply shortage. **However,** Samsung and SK Hynix are not standing still. If they bring new HBM3E/HBM4 capacity online in Q4 2026, the pricing power MU currently enjoys (justifying 72.6% GM) will collapse. Memory is a commodity. Margins &gt;70% are historically unsustainable for long periods.<br>*   **Assumption 3: The 6.33 D/E is Stable.** This is the weakest link. A rising interest rate environment (see next section) makes this debt structure fragile. One credit rating downgrade could trigger margin calls or forced deleveraging, putting pressure on the stock.<br><br>### 4. VALUATION RISK: Priced for Perfection<br>*   **Multiple Compression Risk:** At a 19% discount to 52-week high, the stock is *not* cheap. It is correcting. The &quot;Buy&quot; signal from IBD is a retail indicator, not an institutional one.<br>*   **Uninvestable Multiple:** If MU trades on 25x+ forward P/E (typical in euphoric cycles), and EPS growth slows from 50%+ to 15% as the cycle matures, the multiple will de-rate to 12-15x. This is a 40-50% drawdown scenario. The &quot;tripling&quot; in 2026 leaves no room for error.<br>*   **Days to Earnings: 24 Days.** This puts MU in a &quot;pre-catalyst&quot; window. Volatility will spike. If they warn on 2027 guidance, the 6.33 D/E ratio makes the stock</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse MU</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="WATCH"
+  data-conviction="LOW">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#5</span>
+      <span class="tk">INCY</span>
+      <span class="co-name">Incyte Corporation</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-watch">WATCH</span>
+      <span class="badge b-low">LOW</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>23.8/40</b></span>
+  <span class="chip">Fund <b>32.6/40</b></span>
+  <span class='chip'>Score <b>56.4/80</b></span>
+</div>
+    <div class="setup-line">📐 $126.75 is 4.41% below pivot $132.60 — no trigger yet</div><div class="setup-line" style="color:#00c853">🧲 VCP 3/3 · 10d range 7.3% · ATR 82% of 50d · vol 70% of 50d</div>
+    <div class="rationale">Decent total score (66.3) and close to its pivot (4.41% below), but healthcare is less aligned with the current tech-led uptrend. The lack of a clear technical trigger and lower RS rank compared to top picks makes it a secondary option.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$126.75</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">88.4</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">96.8%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">37.7%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-4.4%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Healthcare</div></div>
+</div>
+    <div class="risk-line">⚠ Clinical trial failures or regulatory setbacks specific to the biotech/pharma sector.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1500. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1200. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse INCY</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="AVOID"
+  data-conviction="LOW">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#6</span>
+      <span class="tk">NTAP</span>
+      <span class="co-name">NetApp, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-avoid">AVOID</span>
+      <span class="badge b-low">LOW</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>16.6/40</b></span>
+  <span class="chip">Fund <b>28.9/40</b></span>
+  <span class='chip'>Score <b>45.5/80</b></span>
+</div>
+    <div class="setup-line">📐 $185.59 is 11.23% below pivot $209.06 — no trigger yet</div><div class="setup-line" style="color:#666">🧲 VCP 0/3 · 10d range 18.3% · ATR 119% of 50d · vol 103% of 50d</div>
+    <div class="rationale">Lowest total score (55.5) and weakest technical setup among the group. It is 11.23% below its pivot, indicating a lack of immediate momentum. In a concentrated portfolio, this stock offers the least attractive risk-reward profile.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$185.59</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">90.0</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">25.9%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">29.9%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-11.2%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Technology</div></div>
+</div>
+    <div class="risk-line">⚠ Continued underperformance relative to the market and failure to establish a new uptrend.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1500. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1200. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse NTAP</div>
+  </div>
+</details>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 Upcoming Earnings</div>
+  <div class="earnings-box"><div class="no-items">No earnings in the next 14 days</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📈 Pick Track Record</div>
+  <div class="track-card">
+    <div class="track-grid">
+<div class="track-cell"><div class="track-h">1 Week Fwd · 120 picks</div>
+<div class="track-v tr-neg">-1.73% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 39.2% · avg -1.32%</div></div>
+<div class="track-cell"><div class="track-h">1 Month Fwd · 50 picks</div>
+<div class="track-v tr-pos">+1.28% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 54.0% · avg +3.69%</div></div></div>
+    <div class="track-note">Top 5 daily picks tracked forward vs SPY ·
+    36 day(s) of history · builds daily</div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="collapseAll()">▲ Collapse</button>
+
+<div class="footer">
+  HZ Capital Trading Intelligence &nbsp;·&nbsp;
+  2026-09-07 09:55 &nbsp;·&nbsp;
+  Market analysis only — positions &amp; instructions are delivered privately via Telegram. Not financial advice.
+</div>
+
+<script>
+function filterCards(f, btn) {
+  document.querySelectorAll('.filt').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('details.stock-card').forEach(function(c) {
+    var show = true;
+    if      (f === 'buy')   show = c.dataset.action === 'BUY NOW';
+    else if (f === 'wait')  show = c.dataset.action.indexOf('WAIT') === 0;
+    else if (f === 'watch') show = c.dataset.action === 'WATCH';
+    else if (f === 'avoid') show = c.dataset.action === 'AVOID';
+    else if (f === 'high')  show = c.dataset.conviction === 'HIGH';
+    c.classList.toggle('hidden', !show);
+  });
+  var v = document.querySelectorAll('details.stock-card:not(.hidden)').length;
+  document.getElementById('stock-count').textContent = v + ' stocks';
+}
+
+/* Close the section this control belongs to and bring its header back into
+   view, so you never lose your place after reading a long note. */
+function closeCard(el) {
+  var d = el.closest('details');
+  if (!d) return;
+  d.open = false;
+  var y = d.getBoundingClientRect().top + window.scrollY - 108;
+  window.scrollTo({ top: y < 0 ? 0 : y, behavior: 'smooth' });
+  updateFab();
+}
+
+function collapseAll() {
+  document.querySelectorAll('details[open]').forEach(function (d) { d.open = false; });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateFab();
+}
+
+function updateFab() {
+  var f = document.getElementById('fab');
+  if (!f) return;
+  var n = document.querySelectorAll('details[open]').length;
+  f.classList.toggle('show', n > 0);
+  f.textContent = n > 1 ? '▲ Collapse all (' + n + ')' : '▲ Collapse';
+}
+
+/* toggle doesn't bubble — capture phase catches every <details> */
+document.addEventListener('toggle', updateFab, true);
+document.addEventListener('DOMContentLoaded', updateFab);
+</script>
+</body>
+</html>
