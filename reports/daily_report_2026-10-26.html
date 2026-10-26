@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>HZ Capital — October 26, 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     background:#0d0d0d;color:#e0e0e0;line-height:1.5;font-size:14px}
+
+/* STICKY HEADER */
+.sticky-header{position:sticky;top:0;z-index:100;background:#111;
+  border-bottom:1px solid #222;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+.site-title{font-size:13px;font-weight:700;color:#fff}
+.site-sub{font-size:11px;color:#666;margin-top:1px}
+.regime-pill{font-size:11px;font-weight:700;padding:4px 10px;
+  border-radius:20px;color:#000;white-space:nowrap}
+
+/* SECTIONS */
+.section{padding:12px 12px 4px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;
+  text-transform:uppercase;color:#555;margin-bottom:8px}
+
+/* ALERTS */
+.alert-card{background:#1a0800;border:1px solid #ff6d00;border-radius:10px;
+  padding:12px 14px;margin-bottom:8px}
+.alert-type{font-size:10px;font-weight:700;color:#ff6d00;letter-spacing:0.5px;text-transform:uppercase}
+.alert-ticker{font-size:15px;font-weight:800;color:#ff9d4a;margin:2px 0}
+.alert-msg{font-size:12px;color:#ccc;line-height:1.5}
+
+/* MACRO */
+details.macro-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;
+  overflow:clip;margin-bottom:8px}   /* clip, NOT hidden — hidden breaks sticky */
+details.macro-card > summary{list-style:none;cursor:pointer;padding:13px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+details.macro-card > summary::-webkit-details-marker{display:none}
+details.macro-card > summary::marker{display:none}
+details.macro-card[open] .chevron{transform:rotate(180deg)}
+.macro-title{font-size:14px;font-weight:700;color:#fff}
+.macro-body{padding:12px 14px 14px;font-size:13px;color:#bbb;
+  line-height:1.75;border-top:1px solid #222}
+
+/* SECTOR OVERVIEW */
+.sector-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;overflow:hidden}
+.sector-row{display:flex;align-items:flex-start;gap:10px;
+  padding:9px 14px;border-bottom:1px solid #1e1e1e}
+.sector-row:last-child{border-bottom:none}
+.sector-name{font-size:11px;font-weight:700;color:#777;
+  text-transform:uppercase;letter-spacing:0.3px;
+  min-width:110px;flex-shrink:0;padding-top:2px}
+.sector-chips{display:flex;gap:5px;flex-wrap:wrap}
+.stk-chip{background:#252525;border-radius:4px;padding:2px 8px;
+  font-size:11px;color:#82b1ff;font-weight:700}
+.stk-chip.buy{color:#00c853}
+.stk-chip.watch{color:#ffd600}
+.stk-chip.avoid{color:#ff6d6d}
+
+/* FILTER BAR */
+.filter-bar{position:sticky;top:53px;z-index:99;background:#111;
+  border-bottom:1px solid #1e1e1e;padding:8px 12px;
+  display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  margin-top:12px}
+.filter-bar::-webkit-scrollbar{display:none}
+.filt{background:#1e1e1e;border:1px solid #2a2a2a;color:#888;
+  padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  white-space:nowrap;cursor:pointer;transition:all 0.15s;user-select:none}
+.filt.active{background:#82b1ff;color:#000;border-color:#82b1ff}
+
+/* STOCK CARDS */
+details.stock-card{background:#1a1a1a;border-radius:12px;margin-bottom:9px;
+  overflow:clip;border:1px solid #222}   /* clip, NOT hidden — hidden breaks sticky */
+details.stock-card[open]{border-color:#333}
+details.stock-card > summary{list-style:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;padding:13px 14px}
+details.stock-card > summary::-webkit-details-marker{display:none}
+details.stock-card > summary::marker{display:none}
+details.stock-card[open] .chevron{transform:rotate(180deg)}
+
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rank-num{font-size:15px;font-weight:800;color:#444;min-width:22px}
+.tk{font-size:17px;font-weight:800;color:#82b1ff}
+.co-name{font-size:12px;color:#888;flex:1;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.chevron{font-size:10px;color:#555;transition:transform 0.2s;flex-shrink:0}
+
+.badge-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.b-buy{background:#00c853;color:#000}
+.b-watch{background:#ffd600;color:#000}
+.b-wait{background:#ff9d4a;color:#000}
+.b-avoid{background:#d50000;color:#fff}
+.b-dash{background:#2a2a2a;color:#666}
+
+/* TODAY AT A GLANCE */
+.glance-card{background:linear-gradient(135deg,#141a26,#101418);border:1px solid #2a3550;
+  border-radius:12px;padding:14px;margin-bottom:8px}
+.glance-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.glance-stat{background:#1a2230;border-radius:8px;padding:7px 12px;flex:1;min-width:90px}
+.glance-label{font-size:9px;color:#5a6a8a;text-transform:uppercase;letter-spacing:0.5px}
+.glance-val{font-size:14px;font-weight:800;color:#e8eeff;margin-top:2px}
+.glance-line{font-size:12px;color:#9ab;line-height:1.6}
+.glance-line b{color:#82b1ff}
+.delta-chip{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;
+  padding:1px 7px;margin:1px 3px 1px 0}
+.d-new{background:rgba(0,200,83,0.15);color:#00c853;border:1px solid rgba(0,200,83,0.35)}
+.d-drop{background:rgba(213,0,0,0.12);color:#ff6d6d;border:1px solid rgba(213,0,0,0.3)}
+.setup-line{font-size:11px;color:#4dd0a5;padding-top:4px}
+
+/* TRACK RECORD */
+.track-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:12px 14px}
+.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:4px}
+.track-cell{background:#1e1e1e;border-radius:8px;padding:8px 10px}
+.track-h{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.track-v{font-size:15px;font-weight:800;margin-top:2px}
+.tr-pos{color:#00c853}.tr-neg{color:#ff6d6d}.tr-neu{color:#bbb}
+.track-note{font-size:11px;color:#555;margin-top:8px;line-height:1.5}
+.b-high{background:rgba(130,177,255,0.15);color:#82b1ff;border:1px solid rgba(130,177,255,0.3)}
+.b-medium{background:rgba(255,214,0,0.1);color:#ffd600;border:1px solid rgba(255,214,0,0.25)}
+.b-low{background:rgba(255,109,0,0.1);color:#ff6d00;border:1px solid rgba(255,109,0,0.25)}
+
+.score-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.chip{background:#252525;border-radius:4px;padding:2px 7px;font-size:11px;color:#666}
+.chip b{color:#bbb}
+.rationale{font-size:12px;color:#666;line-height:1.5;padding-top:6px;border-top:1px solid #222}
+
+/* CARD BODY */
+.card-body{border-top:1px solid #222}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+  padding:10px 12px;background:#141414}
+.meta-item{background:#1e1e1e;border-radius:6px;padding:6px 8px}
+.meta-label{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.meta-val{font-size:13px;font-weight:700;color:#ddd;margin-top:1px}
+.case-section{padding:12px 14px}
+.case-section+.case-section{border-top:1px solid #1e1e1e}
+.case-label{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
+.case-bull .case-label{color:#00c853}
+.case-bear .case-label{color:#ff6d6d}
+.case-text{font-size:13px;line-height:1.75;color:#bbb}
+.risk-line{font-size:12px;color:#ff9d4a;padding:6px 14px 0}
+
+/* EARNINGS */
+.earnings-box{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:10px 14px}
+.earnings-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid #1e1e1e;font-size:13px}
+.earnings-row:last-child{border-bottom:none}
+.no-items{color:#555;font-size:13px;padding:8px 0}
+
+/* FOOTER */
+.footer{text-align:center;font-size:11px;color:#333;padding:20px 14px 40px}
+
+/* ── EXPAND / COLLAPSE ERGONOMICS ──────────────────────────────────────
+   Long research notes used to be collapsible only from the very top, so
+   you had to scroll back up to close one. Three fixes:
+   1. the card's own header sticks below the toolbars while it is open,
+      so the collapse control is always one tap away while reading;
+   2. a matching collapse bar sits at the END of every long section;
+   3. a floating "collapse all" appears whenever anything is open.        */
+details.stock-card[open] > summary{position:sticky;top:98px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55);padding:9px 14px}
+/* While open the pinned header must stay SMALL — the teaser rows (scores,
+   setup, rationale) are redundant once the full body is on screen. */
+details.stock-card[open] > summary .score-chips,
+details.stock-card[open] > summary .setup-line,
+details.stock-card[open] > summary .rationale{display:none}
+details.stock-card[open] > summary .card-top{margin-bottom:4px}
+details.stock-card[open] > summary .badge-row{margin-bottom:0}
+details.macro-card[open] > summary{position:sticky;top:53px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55)}
+.collapse-bar{display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:12px 14px;background:#151515;border-top:1px solid #262626;
+  color:#82b1ff;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent}
+.collapse-bar:active{background:#202020}
+.fab{position:fixed;right:14px;bottom:18px;z-index:300;background:#82b1ff;color:#000;
+  border:none;border-radius:24px;padding:14px 18px;font-size:12px;font-weight:800;
+  box-shadow:0 4px 16px rgba(0,0,0,0.6);cursor:pointer;display:none}   /* >=44px tap target */
+.fab.show{display:block}
+
+/* DESKTOP */
+@media(min-width:700px){
+  body{max-width:900px;margin:0 auto}
+  .filter-bar{top:57px}
+  .meta-grid{grid-template-columns:repeat(6,1fr)}
+  details.stock-card[open] > summary{top:102px}   /* clears the taller desktop toolbars */
+}
+@media(min-width:1100px){body{max-width:1100px}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div>
+    <div class="site-title">HZ Capital</div>
+    <div class="site-sub">October 26, 2026</div>
+  </div>
+  <div class="regime-pill" style="background:#ffd600">UPTREND UNDER PRESSURE</div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">⚡ Today in 30 Seconds</div>
+  <div class="glance-card">
+    <div class="glance-row">
+      <div class="glance-stat"><div class="glance-label">Regime</div><div class="glance-val" style="color:#ffd600">UPTREND UNDER PRESSURE</div></div>
+      <div class="glance-stat"><div class="glance-label">Buy Setups</div><div class="glance-val">2</div></div>
+      <div class="glance-stat"><div class="glance-label">Wait</div><div class="glance-val">0</div></div>
+      <div class="glance-stat"><div class="glance-label">Watch</div><div class="glance-val">0</div></div>
+    </div>
+    <div class="glance-line">🏆 #1 pick: <b>EOG</b> <span class="badge b-buy">BUY NOW</span> $163.03 just broke 1.7% above pivot $160.31 — in buy zone</div><div class="glance-line">🟢 Buy setups triggered: <b>EOG</b> ($163.03 just broke 1.7% above pivot $160.31 — in buy zone) <b>NTAP</b> (reclaimed EMA20 today, holding above)</div><div class="glance-line">Δ vs 2026-10-23: <span class="delta-chip d-drop">− TXN</span></div><div class="glance-line">📅 Event radar: <b>FOMC rate decision</b> in 2d · <b>Jobs report (NFP)</b> in 11d · <b>CPI release</b> in 15d</div><div class="glance-line" style="color:#667">🕐 Prices as of last US close: <b>2026-10-23</b></div>
+  </div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">📊 Macro Analysis</div>
+  <details class="macro-card" open>
+    <summary>
+      <span class="macro-title">🌍 UPTREND UNDER PRESSURE</span>
+      <span class="chevron">▼</span>
+    </summary>
+    <div class="macro-body">**Date:** 2026-10-26<br>**Market Regime:** UPTREND UNDER PRESSURE<br><br>### 1. WHAT CHANGED SINCE YESTERDAY<br>The most significant development is the dramatic stabilization of the market tape following the semiconductor crash, driven by a narrative pivot in the AI hardware complex. Specifically, **CNBC reported that SpaceX closed a $40 billion debt deal explicitly for AI chips**, with Elon Musk forecasting &quot;doom&quot; for some AI rivals. This headline, coupled with **CNBC’s live updates noting &quot;Stock futures climb as traders try to recover from the S&amp;P 500&#x27;s losing week,&quot;** signals a sharp reversal from yesterday&#x27;s sentiment. While SOXX remains down -4.73% on the week, it bucked the broader market weakness today with a **+0.53%** gain, decoupling from the sector-wide decline seen in XLC (-1.78%) and XLY (-1.66%).<br><br>### 2. MARKET REGIME ASSESSMENT<br>The tape is telling us that the &quot;Uptrend Under Pressure&quot; narrative is testing for a potential bottom in Growth/Technology, but the confirmation is fragile. SPY is losing territory (-0.52%) and has dropped below its 50DMA, a critical technical breach, while QQQ is flat (-0.01%) thanks to semi resilience. VIX is low at 19.45 (+2.21%), indicating complacency despite the 10Y yield creeping up to 4.99%. This combination—stalling majors, rising yields, and low volatility—suggests a lack of conviction from institutional buyers prior to the FOMC, creating a high-risk, low-reward environment for aggressive entries.<br><br>### 3. SECTOR LEADERSHIP<br>*   **Leading:** **Energy (XLE)** is the clear defensive/offensive hybrid leader, up **+2.6%** today and +21.14% over 3 months. **Healthcare (XLV)** continues its steady glide path (+2.07% 1W), acting as a capex-neutral refuge. **Real Estate (XLRE)** and **Utilities (XLU)** are quietly gaining on the week, suggesting money is rotating into duration-heavy, defensive assets ahead of the rate decision.<br>*   **Lagging:** **Consumer Discretionary (XLY, -1.66%)** and **Communication Services (XLC, -1.78%)** are taking direct heat, indicating that consumer confidence and ad-spend dependent tech are the weakest links. **Semiconductors (SOXX)** are stabilizing on the day but remain the epicenter of the recent drawdown (-16.5% 1M).<br><br>### 4. NEWS-DRIVEN RISKS &amp; CATALYSTS<br>1.  **FOMC Rate Decision (2026-10-28):** With the 10Y yield at 4.99% and rising, the market is bracing for a hawkish hold or higher-for-longer signal. If the Fed signals no cuts by year-end, the high-beta growth stocks currently weak relative to 50DMAs (SPY is &lt;50DMA) could see further air pocket formation.<br>2.  **SpaceX $40B AI Debt Deal &amp; &quot;Rival Doom&quot; Forecast:** This headline is a double-edged sword. It Validates the AI capex cycle (good for suppliers), but Musk’s comment on the &quot;doom for some AI rivals&quot; (CNBC, 0.1h ago) introduces idiosyncratic risk in the AI application layer. Expect a shakeout in lower-tier AI software names if the market interprets this as a consolidation of the AI oligarchy.<br>3.  **Geopolitical/Political Instability (France/Serbia):** Headlines regarding **violent protests in France** and **Vucic’s concession in Serbia** (CNBC, 2.0h/4.2h ago) are less direct market movers but signal widening Eurozone political risk. Combined with **Trump’s contentious Michigan rhetoric** (CNBC, 4.0h ago), this adds a noise floor that can irritate foreign capital flows during a low-volume week like this one.<br><br>### 5. GROWTH STOCK ENVIRONMENT<br>**Poor time to be fully invested.**<br>The environment is toxic for new growth exposure. SPY is below its 50DMA, QQQ is down -7.27% off highs, and the 10Y yield is pressuring multiples before the FOMC. The recent stabilization in SOXX is positive, but it is based on a single large-cap narrative</div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse macro analysis</div>
+  </details>
+</div>
+
+<div class="section">
+  <div class="section-title">🏭 Industry Overview</div>
+  <div class="sector-card">
+<div class="sector-row">
+  <div class="sector-name">Energy <span style="font-size:10px;color:#666">· <span style="color:#00c853">1D +2.6%</span> · <span style="color:#00c853">1W +2.3%</span> · <span style="color:#00c853">▲10</span></span></div>
+  <div class="sector-chips"><span class="stk-chip buy">EOG</span></div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology <span style="font-size:10px;color:#666">· <span style="color:#00c853">1D +0.5%</span> · <span style="color:#ff6d6d">1W -1.5%</span> · <span style="color:#ff6d6d">▼1</span></span></div>
+  <div class="sector-chips"><span class="stk-chip buy">NTAP</span></div>
+</div></div>
+  
+  <details class="macro-card" style="margin-top:8px">
+    <summary><span class="macro-title" style="font-size:13px">📊 Sector rotation leaderboard (1-week momentum)</span><span class="chevron">▼</span></summary>
+    <div style="border-top:1px solid #222">
+<div class="sector-row">
+  <div class="sector-name">Utilities<span style="color:#00c853"> ▲5</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.7%</span> · <span style="color:#00c853">1W +2.9%</span> ·
+    1M 7.72%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Energy<span style="color:#00c853"> ▲10</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +2.6%</span> · <span style="color:#00c853">1W +2.3%</span> ·
+    1M 11.75%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Real Estate<span style="color:#00c853"> ▲5</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.1%</span> · <span style="color:#00c853">1W +2.2%</span> ·
+    1M 2.43%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare<span style="color:#ff6d6d"> ▼2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.1%</span> · <span style="color:#00c853">1W +2.1%</span> ·
+    1M 5.03%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Financials</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.3%</span> · <span style="color:#00c853">1W +1.5%</span> ·
+    1M 1.93%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Staples<span style="color:#ff6d6d"> ▼5</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.9%</span> · <span style="color:#00c853">1W +1.2%</span> ·
+    1M 7.56%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Small Cap Growth<span style="color:#ff6d6d"> ▼4</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.5%</span> · <span style="color:#00c853">1W +0.9%</span> ·
+    1M -4.09%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Materials<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.7%</span> · <span style="color:#00c853">1W +0.7%</span> ·
+    1M 3.03%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">ARK Innovation</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.2%</span> · <span style="color:#ff6d6d">1W -0.4%</span> ·
+    1M -9.67%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Disc<span style="color:#ff6d6d"> ▼6</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.7%</span> · <span style="color:#ff6d6d">1W -1.2%</span> ·
+    1M 2.3%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Industrials<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.3%</span> · <span style="color:#ff6d6d">1W -1.2%</span> ·
+    1M -3.41%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology<span style="color:#ff6d6d"> ▼1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.5%</span> · <span style="color:#ff6d6d">1W -1.5%</span> ·
+    1M -6.64%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Communication Svcs</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.8%</span> · <span style="color:#ff6d6d">1W -4.2%</span> ·
+    1M -6.6%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Semiconductors</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.5%</span> · <span style="color:#ff6d6d">1W -4.7%</span> ·
+    1M -16.5%</div>
+</div></div>
+  </details>
+</div>
+
+
+<div class="filter-bar">
+  <button class="filt active" onclick="filterCards('all',this)">All (2)</button>
+  <button class="filt" onclick="filterCards('buy',this)">🟢 Buy Now (2)</button>
+  <button class="filt" onclick="filterCards('wait',this)">⏳ Wait (0)</button>
+  <button class="filt" onclick="filterCards('watch',this)">🟡 Watch (0)</button>
+  <button class="filt" onclick="filterCards('avoid',this)">🔴 Avoid (0)</button>
+  <button class="filt" onclick="filterCards('high',this)">⭐ High Conv. (0)</button>
+</div>
+<div class="section" style="padding-top:10px">
+  <div class="section-title"><span id="stock-count">2 stocks</span> — tap to expand</div>
+  
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#1</span>
+      <span class="tk">EOG</span>
+      <span class="co-name">EOG Resources, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>36.0/40</b></span>
+  <span class="chip">Fund <b>35.3/40</b></span>
+  <span class='chip'>Score <b>71.3/80</b></span>
+</div>
+    <div class="setup-line">📐 $163.03 just broke 1.7% above pivot $160.31 — in buy zone</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 10.0% · ATR 117% of 50d · vol 94% of 50d</div>
+    <div class="rationale">EOG exhibits superior technical strength with a confirmed breakout above its pivot point, placing it in an active buy zone, and holds a higher total score (81.3 vs 67.9). However, the conviction is capped at MEDIUM due to the critical data failure in the bull case and the explicit &#x27;RED&#x27; flag from the PM challenge memo, which introduces significant uncertainty regarding the fundamental thesis.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$163.03</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">90.0</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">118.5%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">58.7%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-1.3%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Energy</div></div>
+</div>
+    <div class="risk-line">⚠ Unverified fundamental thesis due to data processing failure and explicit PM rejection of the bullish narrative.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1500. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">**PM CHALLENGE MEMO: EOG Resources (EOG)**<br><br>**To:** Investment Committee<br>**From:** Senior Portfolio Manager<br>**Re:** Rejection of Bullish Thesis / Data Failure Review<br><br>I am issuing a **RED** flag on this submission immediately. This is not merely a caution; it is a rejection of the research material. The provided &quot;Research Note&quot; is broken code (API error 429), meaning I have zero thesis to defend. However, I have the raw financials, and applying my 25 years of scrutiny to these numbers reveals a stock that is currently trading at a premium for perfection, with significant structural risks that a standard &quot;EPS Acceleration&quot; AI summary would likely gloss over.<br><br>Here is the dissection of why this position is high-risk, anchored in the provided data.<br><br>### 1. ACCOUNTING RED FLAGS: The &quot;Perfect&quot; Numbers Are the Problem<br>The data shows **EPS Accelerating: True** and **Gross Margin: 62.6%**. In the integrated oil &amp; gas sector, a 62.3% gross margin is exceptionally high (industry average for majors often hovers between 50-60% depending on the crude price mix).<br>*   **The Discount Question:** High gross margins in EOG are primarily driven by the high proportion of low-cost, high-quality assets in the Anadarko Basin. However, we must ask: Is this margin peak-out? If natural gas prices normalize downward or if hydraulic fracturing fluid costs rise due to inflationary pressures in the supply chain, that margin compression hits the bottom line hard.<br>*   **Receivables/Inventory Check:** The data doesn&#x27;t explicitly flag receivables, but with EPS accelerating while the stock is only **1.3% off its 52-week high**, the market is pricing in *sustained* perfection. Any deviation in inventory buildup (often hidden in the lag of oil sales) or an increase in operating expenses to maintain production growth will cause a multiple de-rating.<br><br>### 2. THESIS KILLERS: The Single Event That Breaks It<br>*   **The &quot;NIR&quot; (Net Income Rate) Shock:** EOG’s model relies on constant per-bbl costs decreasing or staying flat. If two major drilling contractors raise their day rates by 5-10% due to labor shortages in the Permian or Mid-Continent, EOG’s cost advantage erodes faster than peers.<br>*   **Regulatory/Carbon Tax Scenario:** While currently US-focused, any expansion of ESG-linked lending restrictions on high-emission assets could increase EOG’s cost of capital. EOG is debt-light, but its valuation is sensitive to the &quot;safe haven&quot; premium it commands. If that premium is stripped away by a sector-wide re-rating on climate risks, EOG trades like a regular oil major, not a premium compounder.<br><br>### 3. ASSUMPTION STRESS TEST: What Is the Market Assuming?<br>The market is assuming:<br>1.  **Crude Oil stays above $75-80/bbl indefinitely.**<br>2.  **EOG maintains its #1 cost-of-producted-barrel position** despite rising labor and rig costs.<br>3.  **No major execution failure** in their drilling program (e.g., stuck pipes, sand control issues in shale).<br><br>**Is this realistic?**<br>*   **No.** We are entering a period of potential demand softness from China and a structural increase in non-OPEC supply. Assuming flat-to-up crude oil prices while maintaining 62%+ gross margins is a &quot;perfect storm&quot; assumption. If oil drops to $70/bbl, EOG’s EPS acceleration immediately reverses, and the stock, currently near all-time highs, will face a double hit: earnings downgrade + multiple compression.<br><br>### 4. VALUATION RISK: Priced for Perfection<br>*   **% Off 52-Week High: -1.3%**<br>This is the most alarming number in the packet. You are not buying EOG on value; you are buying it at the absolute top of its realized trading range.<br>*   **The Multiple Trap:** EOG typically trades at a premium to Chevron or ExxonMobil due to its cleaner balance sheet and shale focus. If the market decides that &quot;shale is cyclical, not secular,&quot; EOG will see its multiple compress to the sector average.<br>*   **Uninvestable Point:** If EOG’s P/E exceeds 15x forward earnings based on $75-80 oil assumptions, it becomes uninvestable relative to ex-dividend yields of 3-3.5%. At current prices near the high, the risk/reward is asymmetric: you have limited upside (stock is near highs) and significant downside if crude slips.<br><br>### 5. COMPETITIVE THREATS: Who Is Chasing EOG?<br>*   **Core &amp; Power (CRBP) and Diamondback (FANG):** Both are aggressively increasing production in the DJ Basin. If EOG’s cost advantage narrows because these competitors achieve similar scale efficiencies while having more &quot;clean&quot; water management (a regulatory hedge), EOG loses its narrative edge.<br>*   **International Majors:** Chevron’s Gulf of Mexico deepwater projects and Exxon’s Latin America growth are less exposed to North American service inflation. If EOG’s costs rise faster than these international assets, its relative advantage diminishes.<br><br>### 6. MACRO SENSITIVITY: The Hidden Beta<br>*   **Oil &amp; Gas is a Proxy for Inflation/Rates.** EOG is priced as a defensive growth stock. If the Fed keeps rates higher for longer, betting on a US recession to force a rate cut,</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse EOG</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="LOW">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#2</span>
+      <span class="tk">NTAP</span>
+      <span class="co-name">NetApp, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-low">LOW</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>29.3/40</b></span>
+  <span class="chip">Fund <b>28.6/40</b></span>
+  <span class='chip'>Score <b>57.9/80</b></span>
+</div>
+    <div class="setup-line">📐 reclaimed EMA20 today, holding above</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 17.8% · ATR 113% of 50d · vol 88% of 50d</div>
+    <div class="rationale">NTAP has a strong RS rank (95) and a valid technical setup (reclaimed EMA20), but its total score is significantly lower than EOG. The bear case raises serious concerns about the sustainability of the &#x27;turnaround&#x27; narrative, and the technical score is weaker, suggesting less momentum conviction.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$215.48</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">95.0</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">25.9%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">29.9%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-10.5%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Technology</div></div>
+</div>
+    <div class="risk-line">⚠ Fundamental skepticism regarding the durability of the business transition and earnings momentum.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**RESEARCH NOTE: NetApp, Inc. (NTAP)**<br>**Date:** Current Cycle<br>**Framework:** Minervini SEPA / Growth Equity<br>**Price:** $215.48<br><br>### 1. BUSINESS QUALITY<br>*   **Core Competency:** NetApp has successfully transitioned from a traditional hardware-centric storage provider to a **data management and infrastructure software** leader.<br>*   **Hybrid Cloud Strategy:** The business model is anchored in a two-segment structure (Hybrid Cloud and Public Cloud) that effectively monetizes data across on-premise and hyperscaler environments (Azure, AWS, GCP).<br>*   **Product Stickiness:** The ONTAP operating system is the &quot;glue&quot; of the ecosystem. Customers rarely migrate away due to the deep integration of SnapCenter, SnapMirror, and SnapLock into their operational workflows.<br>*   **Assumption Flag:** The high revenue growth (29.9%) suggests a mix shift toward higher-margin software/services or significant strategic acquisitions not fully reflected in historical organic baselines.<br><br>### 2. EARNINGS QUALITY<br>*   **EPS Acceleration:** YoY EPS growth of **25.9%** aligns with the revenue growth trajectory, indicating no significant dilution or margin compression.<br>*   **Margin Profile:**<br>    *   **Gross Margin (70.6%):** Demonstrates strong software-like economics despite legacy hardware lines.<br>    *   **Operating Margin (26.7%):** Excellent operating leverage. For a company of this scale (~$42B market cap), this is elite.<br>    *   **Profit Margin (19.2%):** Solid bottom-line conversion.<br>*   **Quality Check:** ROE of **114.8%** is exceptionally high. This is likely driven by share buybacks reducing the equity base or asset-light software growth, rather than aggressive financial leverage (though see Risks regarding Debt/Equity).<br>*   **FCF:** Free Cash Flow of ~$1.17B supports dividend/buyback capacity, validating the quality of earnings.<br><br>### 3. REVENUE ACCELERATION<br>*   **Growth Rate:** **29.9% YoY** is exceptional for a $42B market cap infrastructure play. This is not &quot;hypergrowth&quot; (50%+), but it is &quot;acceleration&quot; territory for a mature tech giant.<br>*   **Drivers:**<br>    *   **Public Cloud Volume:** Rapid adoption of Azure NetApp Files (ANF) and Amazon FSx for NetApp ONTAP.<br>    *   **Modern Data Platform (MDP):** Subscription-based software deals (ONTAP Select) are replacing perpetual licenses, improving revenue predictability and visibility.<br>*   **Trend:** The consistency of ~30% growth suggests this is not a one-quarter anomaly but a sustained trend. This is the key catalyst for the stock&#x27;s RS Rank of 95.<br><br>### 4. COMPETITIVE MOAT<br>*   **Switching Costs (High):** Data migration is expensive and risky. Once data is replicated or managed via NetApp’s SNAP technologies, moving to Pure Storage or Veeam is operationally painful.<br>*   **Ecosystem Lock-in:** NetApp is no longer just a competitor to Pure Storage in hardware; it is a partner to AWS/Azure/GCP. Cloud providers *require* NetApp’s intelligence to manage complex storage tiers, creating a &quot;partnership moat&quot; that pure-play hardware competitors cannot replicate.<br>*   **Intangibles:** The ONTAP license base provides a recurring revenue stream that hardware peers lack.<br><br>### 5. INDUSTRY TAILWINDS<br>*   **Data Explosion:** The industry is in a structural growth phase driven by AI, real-time analytics, and cloud migration. Data volume is growing faster than storage capacity, forcing infrastructure upgrades.<br>*   **AI Infrastructure Needs:** AI workloads require high-performance, latency-sensitive storage low to the GPU. NetApp’s AFX (storage-attached servers) and all-flash platforms are positioned to capture this demand.<br>*   **Relevance to Recent News:** *No specific recent news items were provided in the input.* However, in the absence of breaking news, we must rely on **structural tailwinds**. The lack of negative sentiment in the &quot;Recent News&quot; section is a neutral-positive factor, implying no imminent black swan events.<br>*   **Catalyst:** The transition from &quot;CapEx&quot; (buying hardware) to &quot;OpEx&quot; (consuming cloud storage) favors NetApp’s dual-platform strategy.<br><br>### 6. MANAGEMENT EXECUTION<br>*   **Capital Allocation:** The high ROE (114.8%) and market cap vs. free cash flow suggests a disciplined approach to buybacks and reinvestment.<br>*   **Strategic Pivot:** Management has correctly pivoted away from competing on raw hardware price/performance (where they lost to Pure Storage) to competing on data management, cloud integration, and software licensing.<br>*   **Guidance Track Record:** The ability to sustain ~30% growth in a recently acquired or restructured segment implies strong execution on integration and cross-selling.<br><br>### 7. VALUATION<br>*   **Forward P/E:** **19.3x** is remarkably cheap for a company growing EPS ~30%. Typically, growth stocks with this profile trade at 25x–35x.<br>*   **PEG Ratio:** **2.39** (Price/Earnings-to-Growth). A PEG under 2.0 is often considered &quot;cheap&quot; for growth, but under 1.0 is a bargain. At 2.39, it is fairly valued to slightly rich, *but* this ratio relies on the *current* growth rate. If growth accelerates to 35-40% (common in cloud turnarounds), the effective PEG drops significantly.<br>*   **Price/Sales (5.7x):** Premium multiple, reflecting the software mix and high margins.<br>*   **Minervini Context:** The stock is **10.5% off its 52-week high**. In SEPA, this is a typical &quot;buying zone&quot; (pullback to value area). The price is well above all major moving averages (MA50: $203, MA150: $162, MA200: $146), confirming a powerful uptrend.<br><br>### 8. KEY RISKS<br>*   **Leverage &amp; Debt:** **Debt/Equity of 169.5%** is elevated. While NetApp has strong FCF, this level of leverage increases financial risk if interest rates remain high or revenue growth stalls. *Fact Check:* This high D/E ratio might be an artifact of aggressive buybacks reducing equity or recent acquisition debt. It warrants monitoring.<br>*   **Institutional Saturation:** **102.1% Institutional Ownership** (statistically impossible, likely due to short borrow or data errors, implying near-total insider/institutional control) means the stock has few marginal</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">Listen, I’ve been in this game for 25 years. I’ve seen too many &quot;turnaround stories&quot; that turned into write-offs. This note on NetApp reads like it was written by a junior analyst who found a glowing press release and confused an accounting artifact with fundamental superiority. You are trying to buy a mature, hardware-heavy infrastructure company at a premium valuation based on a growth rate that is mathematically unsustainable or qualitatively unverified.<br><br>Here is why I am passing on this thesis.<br><br>### 1. ACCOUNTING RED FLAGS: The &quot;114% ROE&quot; Fantasy<br>The highlight of this note is an ROE of **114.8%**. Let’s be clear: **No fundamental business generates a 115% Return on Equity consistently without either printing money or blowing up its balance sheet.**<br>*   **The Buyback Trap:** NetApp has been aggressively buying back stock. This shrinks the equity base (the denominator), artificially inflating ROE. If the stock price rises, buybacks slow down or stop. If the stock price falls, buybacks accelerate, but only if they believe the stock is undervalued.<br>*   **Debt/Equity at 169.5%:** The analyst dismisses this as an &quot;artifact.&quot; It is not an artifact. It is a massive red flag. A D/E ratio of 1.7x is high for an infrastructure company with cyclical hardware sales. Combined with a **Current Ratio of 1.242** (tight), they are relying heavily on short-term liquidity. If credit markets tighten or interest costs spike on that floating rate debt, your &quot;elite operating leverage&quot; evaporates into interest expense.<br>*   **The Modest FCF:** The note cites **$1.17B FCF** as &quot;supporting capacity.&quot; Against a **$42B market cap**, that is a **36x P/FCF** multiple. The market is pricing this as a high-growth software company, but the cash conversion is barely covering the debt service of a leveraged hardware peer.<br><br>### 2. THESIS KILLERS: The &quot;30% Growth&quot; Mirage<br>The entire bull case rests on **29.9% YoY revenue growth**. Here is the killer:<br>*   **Base Effect Fallacy:** NetApp went through a period of stagnation and restructuring. If the prior year base was artificially depressed by temporary lulls, divestitures, or accounting shifts, &quot;growth&quot; of 30% is an illusion. If organic growth is actually 8-10% (typical for data storage), this stock is **overvalued** by 2x, not undervalued.<br>*   **One-time Events:** The note admits &quot;significant strategic acquisitions&quot; might be driving growth. If 30% of that growth comes from inorganic acquisitions (like the recent moves in cloud data services), you are paying a premium for M&amp;A integration risk, not operational excellence.<br>*   **Sustainability:** Can a company with a 70% gross margin and 19% net margin sustain 30% growth? Usually, companies grow *into* lower margins as they scale. If EPS growth (25.9%) is lagging revenue growth (29.9%), it suggests **margin compression is already starting**. Why? Higher sales force costs, cloud discounting to win deals, or R&amp;D spend. The bull case ignores that growth is coming in at a *lower* margin profile than revenue growth implies it should.<br><br>### 3. ASSUMPTION STRESS TEST: The &quot;Software&quot; Label<br>*   **Assumption:** NetApp is a &quot;data management software leader.&quot;<br>*   **Reality Check:** NetApp still sells a lot of flash arrays. Software is a growing part, but until software revenue exceeds 50-60% of total revenue, the multiple should not be pure software multiple.<br>*   **The PEG Lie:** The PEG ratio is **2.39**. The analyst says this is &quot;fairly valued.&quot; In the current rate environment, a PEG above 1.0 for a hardware-infrastructure hybrid is **rich**. A PEG of 2.39 implies you are paying $2.39 for every $1 of growth. If growth slows to 15% (more realistic for hardware), the PEG jumps to **4.7x**. You are buying the stock at a price that assumes *accelerating* growth, not just sustaining current growth.<br>*   **Cloud Dependency:** They are a partner to AWS/Azure. Partners to hyperscalers have **zero pricing power**. Hyperscalers squeeze partners on margins. NetApp is a tollbooth on AWS/Azure bandwidth. They are not the platform; they are the utility.<br><br>### 4. VALUATION RISK: Priced for Perfection<br>*   **Price to Sales 5.7x:** This is a premium multiple. Compare this to Pure Storage (trading at a discount often due to hardware concerns) or even the S&amp;P 500 average P/S of ~3x. You are paying a 2x premium over the market for a company with high debt and cyclical revenue.<br>*   **Minervini’s &quot;Pullback&quot;:** The stock is 10.5% off its high. Minervini’s Stage 2 theory says this is a buy. I say: **Why is it down 10.5%?** In a risk-on environment, quality stocks don’t lag 10% unless the market is questioning the earnings quality or the growth rate. This is likely a **distribution phase** initiated</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse NTAP</div>
+  </div>
+</details>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 Upcoming Earnings</div>
+  <div class="earnings-box">
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• GOOGL</span>
+  <span style="color:#aaa">2026-10-29</span>
+  <span style="color:#ff6d6d;font-size:12px">3d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• KLAC</span>
+  <span style="color:#aaa">2026-10-29</span>
+  <span style="color:#ff6d6d;font-size:12px">3d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• MSFT</span>
+  <span style="color:#aaa">2026-10-29</span>
+  <span style="color:#ff6d6d;font-size:12px">3d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• AMZN</span>
+  <span style="color:#aaa">2026-10-30</span>
+  <span style="color:#ff6d6d;font-size:12px">4d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• DDOG</span>
+  <span style="color:#aaa">2026-11-04</span>
+  <span style="color:#ffd600;font-size:12px">9d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• ELF</span>
+  <span style="color:#aaa">2026-11-05</span>
+  <span style="color:#ffd600;font-size:12px">10d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• CELH</span>
+  <span style="color:#aaa">2026-11-09</span>
+  <span style="color:#ffd600;font-size:12px">14d</span>
+</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📈 Pick Track Record</div>
+  <div class="track-card">
+    <div class="track-grid">
+<div class="track-cell"><div class="track-h">1 Week Fwd · 261 picks</div>
+<div class="track-v tr-neg">-1.73% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 42.1% · avg -1.54%</div></div>
+<div class="track-cell"><div class="track-h">1 Month Fwd · 184 picks</div>
+<div class="track-v tr-neg">-1.75% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 40.8% · avg -0.97%</div></div></div>
+    <div class="track-note">Top 5 daily picks tracked forward vs SPY ·
+    68 day(s) of history · builds daily</div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="collapseAll()">▲ Collapse</button>
+
+<div class="footer">
+  HZ Capital Trading Intelligence &nbsp;·&nbsp;
+  2026-10-26 09:56 &nbsp;·&nbsp;
+  Market analysis only — positions &amp; instructions are delivered privately via Telegram. Not financial advice.
+</div>
+
+<script>
+function filterCards(f, btn) {
+  document.querySelectorAll('.filt').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('details.stock-card').forEach(function(c) {
+    var show = true;
+    if      (f === 'buy')   show = c.dataset.action === 'BUY NOW';
+    else if (f === 'wait')  show = c.dataset.action.indexOf('WAIT') === 0;
+    else if (f === 'watch') show = c.dataset.action === 'WATCH';
+    else if (f === 'avoid') show = c.dataset.action === 'AVOID';
+    else if (f === 'high')  show = c.dataset.conviction === 'HIGH';
+    c.classList.toggle('hidden', !show);
+  });
+  var v = document.querySelectorAll('details.stock-card:not(.hidden)').length;
+  document.getElementById('stock-count').textContent = v + ' stocks';
+}
+
+/* Close the section this control belongs to and bring its header back into
+   view, so you never lose your place after reading a long note. */
+function closeCard(el) {
+  var d = el.closest('details');
+  if (!d) return;
+  d.open = false;
+  var y = d.getBoundingClientRect().top + window.scrollY - 108;
+  window.scrollTo({ top: y < 0 ? 0 : y, behavior: 'smooth' });
+  updateFab();
+}
+
+function collapseAll() {
+  document.querySelectorAll('details[open]').forEach(function (d) { d.open = false; });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateFab();
+}
+
+function updateFab() {
+  var f = document.getElementById('fab');
+  if (!f) return;
+  var n = document.querySelectorAll('details[open]').length;
+  f.classList.toggle('show', n > 0);
+  f.textContent = n > 1 ? '▲ Collapse all (' + n + ')' : '▲ Collapse';
+}
+
+/* toggle doesn't bubble — capture phase catches every <details> */
+document.addEventListener('toggle', updateFab, true);
+document.addEventListener('DOMContentLoaded', updateFab);
+</script>
+</body>
+</html>
