@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>HZ Capital — November 02, 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     background:#0d0d0d;color:#e0e0e0;line-height:1.5;font-size:14px}
+
+/* STICKY HEADER */
+.sticky-header{position:sticky;top:0;z-index:100;background:#111;
+  border-bottom:1px solid #222;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+.site-title{font-size:13px;font-weight:700;color:#fff}
+.site-sub{font-size:11px;color:#666;margin-top:1px}
+.regime-pill{font-size:11px;font-weight:700;padding:4px 10px;
+  border-radius:20px;color:#000;white-space:nowrap}
+
+/* SECTIONS */
+.section{padding:12px 12px 4px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;
+  text-transform:uppercase;color:#555;margin-bottom:8px}
+
+/* ALERTS */
+.alert-card{background:#1a0800;border:1px solid #ff6d00;border-radius:10px;
+  padding:12px 14px;margin-bottom:8px}
+.alert-type{font-size:10px;font-weight:700;color:#ff6d00;letter-spacing:0.5px;text-transform:uppercase}
+.alert-ticker{font-size:15px;font-weight:800;color:#ff9d4a;margin:2px 0}
+.alert-msg{font-size:12px;color:#ccc;line-height:1.5}
+
+/* MACRO */
+details.macro-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;
+  overflow:clip;margin-bottom:8px}   /* clip, NOT hidden — hidden breaks sticky */
+details.macro-card > summary{list-style:none;cursor:pointer;padding:13px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+details.macro-card > summary::-webkit-details-marker{display:none}
+details.macro-card > summary::marker{display:none}
+details.macro-card[open] .chevron{transform:rotate(180deg)}
+.macro-title{font-size:14px;font-weight:700;color:#fff}
+.macro-body{padding:12px 14px 14px;font-size:13px;color:#bbb;
+  line-height:1.75;border-top:1px solid #222}
+
+/* SECTOR OVERVIEW */
+.sector-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;overflow:hidden}
+.sector-row{display:flex;align-items:flex-start;gap:10px;
+  padding:9px 14px;border-bottom:1px solid #1e1e1e}
+.sector-row:last-child{border-bottom:none}
+.sector-name{font-size:11px;font-weight:700;color:#777;
+  text-transform:uppercase;letter-spacing:0.3px;
+  min-width:110px;flex-shrink:0;padding-top:2px}
+.sector-chips{display:flex;gap:5px;flex-wrap:wrap}
+.stk-chip{background:#252525;border-radius:4px;padding:2px 8px;
+  font-size:11px;color:#82b1ff;font-weight:700}
+.stk-chip.buy{color:#00c853}
+.stk-chip.watch{color:#ffd600}
+.stk-chip.avoid{color:#ff6d6d}
+
+/* FILTER BAR */
+.filter-bar{position:sticky;top:53px;z-index:99;background:#111;
+  border-bottom:1px solid #1e1e1e;padding:8px 12px;
+  display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  margin-top:12px}
+.filter-bar::-webkit-scrollbar{display:none}
+.filt{background:#1e1e1e;border:1px solid #2a2a2a;color:#888;
+  padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  white-space:nowrap;cursor:pointer;transition:all 0.15s;user-select:none}
+.filt.active{background:#82b1ff;color:#000;border-color:#82b1ff}
+
+/* STOCK CARDS */
+details.stock-card{background:#1a1a1a;border-radius:12px;margin-bottom:9px;
+  overflow:clip;border:1px solid #222}   /* clip, NOT hidden — hidden breaks sticky */
+details.stock-card[open]{border-color:#333}
+details.stock-card > summary{list-style:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;padding:13px 14px}
+details.stock-card > summary::-webkit-details-marker{display:none}
+details.stock-card > summary::marker{display:none}
+details.stock-card[open] .chevron{transform:rotate(180deg)}
+
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rank-num{font-size:15px;font-weight:800;color:#444;min-width:22px}
+.tk{font-size:17px;font-weight:800;color:#82b1ff}
+.co-name{font-size:12px;color:#888;flex:1;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.chevron{font-size:10px;color:#555;transition:transform 0.2s;flex-shrink:0}
+
+.badge-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.b-buy{background:#00c853;color:#000}
+.b-watch{background:#ffd600;color:#000}
+.b-wait{background:#ff9d4a;color:#000}
+.b-avoid{background:#d50000;color:#fff}
+.b-dash{background:#2a2a2a;color:#666}
+
+/* TODAY AT A GLANCE */
+.glance-card{background:linear-gradient(135deg,#141a26,#101418);border:1px solid #2a3550;
+  border-radius:12px;padding:14px;margin-bottom:8px}
+.glance-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.glance-stat{background:#1a2230;border-radius:8px;padding:7px 12px;flex:1;min-width:90px}
+.glance-label{font-size:9px;color:#5a6a8a;text-transform:uppercase;letter-spacing:0.5px}
+.glance-val{font-size:14px;font-weight:800;color:#e8eeff;margin-top:2px}
+.glance-line{font-size:12px;color:#9ab;line-height:1.6}
+.glance-line b{color:#82b1ff}
+.delta-chip{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;
+  padding:1px 7px;margin:1px 3px 1px 0}
+.d-new{background:rgba(0,200,83,0.15);color:#00c853;border:1px solid rgba(0,200,83,0.35)}
+.d-drop{background:rgba(213,0,0,0.12);color:#ff6d6d;border:1px solid rgba(213,0,0,0.3)}
+.setup-line{font-size:11px;color:#4dd0a5;padding-top:4px}
+
+/* TRACK RECORD */
+.track-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:12px 14px}
+.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:4px}
+.track-cell{background:#1e1e1e;border-radius:8px;padding:8px 10px}
+.track-h{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.track-v{font-size:15px;font-weight:800;margin-top:2px}
+.tr-pos{color:#00c853}.tr-neg{color:#ff6d6d}.tr-neu{color:#bbb}
+.track-note{font-size:11px;color:#555;margin-top:8px;line-height:1.5}
+.b-high{background:rgba(130,177,255,0.15);color:#82b1ff;border:1px solid rgba(130,177,255,0.3)}
+.b-medium{background:rgba(255,214,0,0.1);color:#ffd600;border:1px solid rgba(255,214,0,0.25)}
+.b-low{background:rgba(255,109,0,0.1);color:#ff6d00;border:1px solid rgba(255,109,0,0.25)}
+
+.score-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.chip{background:#252525;border-radius:4px;padding:2px 7px;font-size:11px;color:#666}
+.chip b{color:#bbb}
+.rationale{font-size:12px;color:#666;line-height:1.5;padding-top:6px;border-top:1px solid #222}
+
+/* CARD BODY */
+.card-body{border-top:1px solid #222}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+  padding:10px 12px;background:#141414}
+.meta-item{background:#1e1e1e;border-radius:6px;padding:6px 8px}
+.meta-label{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.meta-val{font-size:13px;font-weight:700;color:#ddd;margin-top:1px}
+.case-section{padding:12px 14px}
+.case-section+.case-section{border-top:1px solid #1e1e1e}
+.case-label{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
+.case-bull .case-label{color:#00c853}
+.case-bear .case-label{color:#ff6d6d}
+.case-text{font-size:13px;line-height:1.75;color:#bbb}
+.risk-line{font-size:12px;color:#ff9d4a;padding:6px 14px 0}
+
+/* EARNINGS */
+.earnings-box{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:10px 14px}
+.earnings-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid #1e1e1e;font-size:13px}
+.earnings-row:last-child{border-bottom:none}
+.no-items{color:#555;font-size:13px;padding:8px 0}
+
+/* FOOTER */
+.footer{text-align:center;font-size:11px;color:#333;padding:20px 14px 40px}
+
+/* ── EXPAND / COLLAPSE ERGONOMICS ──────────────────────────────────────
+   Long research notes used to be collapsible only from the very top, so
+   you had to scroll back up to close one. Three fixes:
+   1. the card's own header sticks below the toolbars while it is open,
+      so the collapse control is always one tap away while reading;
+   2. a matching collapse bar sits at the END of every long section;
+   3. a floating "collapse all" appears whenever anything is open.        */
+details.stock-card[open] > summary{position:sticky;top:98px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55);padding:9px 14px}
+/* While open the pinned header must stay SMALL — the teaser rows (scores,
+   setup, rationale) are redundant once the full body is on screen. */
+details.stock-card[open] > summary .score-chips,
+details.stock-card[open] > summary .setup-line,
+details.stock-card[open] > summary .rationale{display:none}
+details.stock-card[open] > summary .card-top{margin-bottom:4px}
+details.stock-card[open] > summary .badge-row{margin-bottom:0}
+details.macro-card[open] > summary{position:sticky;top:53px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55)}
+.collapse-bar{display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:12px 14px;background:#151515;border-top:1px solid #262626;
+  color:#82b1ff;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent}
+.collapse-bar:active{background:#202020}
+.fab{position:fixed;right:14px;bottom:18px;z-index:300;background:#82b1ff;color:#000;
+  border:none;border-radius:24px;padding:14px 18px;font-size:12px;font-weight:800;
+  box-shadow:0 4px 16px rgba(0,0,0,0.6);cursor:pointer;display:none}   /* >=44px tap target */
+.fab.show{display:block}
+
+/* DESKTOP */
+@media(min-width:700px){
+  body{max-width:900px;margin:0 auto}
+  .filter-bar{top:57px}
+  .meta-grid{grid-template-columns:repeat(6,1fr)}
+  details.stock-card[open] > summary{top:102px}   /* clears the taller desktop toolbars */
+}
+@media(min-width:1100px){body{max-width:1100px}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div>
+    <div class="site-title">HZ Capital</div>
+    <div class="site-sub">November 02, 2026</div>
+  </div>
+  <div class="regime-pill" style="background:#ffd600">UPTREND UNDER PRESSURE</div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">⚡ Today in 30 Seconds</div>
+  <div class="glance-card">
+    <div class="glance-row">
+      <div class="glance-stat"><div class="glance-label">Regime</div><div class="glance-val" style="color:#ffd600">UPTREND UNDER PRESSURE</div></div>
+      <div class="glance-stat"><div class="glance-label">Buy Setups</div><div class="glance-val">2</div></div>
+      <div class="glance-stat"><div class="glance-label">Wait</div><div class="glance-val">3</div></div>
+      <div class="glance-stat"><div class="glance-label">Watch</div><div class="glance-val">0</div></div>
+    </div>
+    <div class="glance-line">🏆 #1 pick: <b>EOG</b> <span class="badge b-wait">WAIT — EARNINGS</span> $165.54 just broke 0.26% above pivot $165.11 — in buy zone</div><div class="glance-line">🟢 Buy setups triggered: <b>VLO</b> (reclaimed EMA50 today, holding above) <b>PBF</b> (reclaimed EMA50 today, holding above)</div><div class="glance-line">Δ vs 2026-10-30: <span class="delta-chip d-new">+ PBF</span><span class="delta-chip d-new">+ VLO</span><span class="delta-chip d-drop">− NTAP</span><span class="delta-chip d-drop">− PLTR</span></div><div class="glance-line">📅 Event radar: <b>Jobs report (NFP)</b> in 4d · <b>CPI release</b> in 8d</div><div class="glance-line" style="color:#667">🕐 Prices as of last US close: <b>2026-10-30</b></div>
+  </div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">📊 Macro Analysis</div>
+  <details class="macro-card" open>
+    <summary>
+      <span class="macro-title">🌍 UPTREND UNDER PRESSURE</span>
+      <span class="chevron">▼</span>
+    </summary>
+    <div class="macro-body">1. WHAT CHANGED SINCE YESTERDAY<br>The &quot;high-volatility rotation&quot; noted yesterday has calcified into a **structural de-rating of the AI-driven growth complex**. While the S&amp;P 500 (SPY) fell -1.77%, the Tech (XLK) sector collapsed -4.89% and Semiconductors (SOXX) crashed -8.24 in a single session. This is no longer noise; it is a decisive trend break. QQQ has now fallen below its 50-day moving average and is down -9.11% off its all-time high, signaling that the market regime has formally shifted from &quot;Confirmed Uptrend&quot; to &quot;Uptrend Under Pressure.&quot; The narrative has been overtaken by the specific headlines warning that the AI trade is facing its first significant fundamental headwind, with &quot;biggest threat to the AI-powered bull market&quot; dominating the morning feed.<br><br>2. MARKET REGIME ASSESSMENT<br>The tape is screaming that capital is rapidly rotating out of high-beta, long-duration assets into defensive havens. With VIX spiking 12.91% to 19.42 and the 10Y yield dropping to 4.93% (–1.2%), this is a classic risk-off flight to quality and safety. The fact that SPY remains above its 200DMA while breaching the 50DMA suggests this is an early-stage correction within a broader bull market, but the velocity of the tech sell-off (1M: –10.16% for XLK) indicates that momentum is firmly against the growth side of the house. You are no longer in a &quot;buy every dip&quot; environment; you are in a &quot;wait for a base&quot; environment.<br><br>3. SECTOR LEADERSHIP<br>*   **Leaders (The Refuge Sector):** Healthcare (XLV, +0.45% 1D, +11.25% 1M) and Consumer Staples (XLP, +1.41% 1D, +11.04% 1M) are absorbing the outflows from tech with strong relative strength. Energy (XLE, +1.91% 1D, +20.36% 3M) remains a surprising leader, likely bolstered by the Goldman Sachs oil price forecast hike mentioned in this morning&#x27;s news.<br>*   **Laggards (The Suckers):** Technology (XLK, -4.89%) and Communication Services (XLC, -1.29% 1D, -9.45% 1M) are the primary sources of market drag. Small Cap Growth (IWO) is also under pressure (-2.23% 1D), indicating that liquidity is tightening across the board, not just in mega-caps.<br>*   **Rotation Note:** This is a sharp 1-day rotation. Yesterday&#x27;s &quot;high-volatility&quot; theme is now a distinct &quot;flight to stability,&quot; with Staples and Healthcare outperforming Tech by ~5% on the day.<br><br>4. NEWS-DRIVEN RISKS &amp; CATALYSTS<br>1.  **The &quot;AI Threat&quot; Narrative:** *MarketWatch (1.5h ago): &quot;This is the biggest threat to the AI-powered bull market.&quot;* This headline, circulating alongside the -8.24% semi plunge, suggests a crack in the consensus that AI capex will yield near-term EPS growth. Investors are pricing in diminishing returns or valuation fatigue ahead of the next wave of tech earnings.<br>2.  **Earnings Cliff (Apple):** *MarketWatch (1.5h ago): &quot;Apple’s new earnings era begins at a critical time for Big Tech.&quot;* With Apple reporting this week, the market is positioning as if this report will be the litmus test for the entire consumer electronics and platform ecosystem. Given QQQ&#x27;s -9.11% drawdown, a &quot;low bar&quot; for AAAPL may already be embedded in the price, but any miss on services or iPhone unit growth could trigger a capitulation low in Nasdaq 100.<br>3.  **Macro Double Whammy (Nov 6/10):** *CNBC (0.2h ago) &amp; Calendar:* &quot;Busy week of earnings, jobs data and the midterm elections.&quot; We face the **NFP report on Nov 6** and **CPI on Nov 10**. With the 10Y yield dropping to 4.93% in a risk-off context, a better-than-expected jobs report (reinforcing higher-for-longer rates) or a sticky CPI print could break the SPY’s 200DMA. The market is fragile into</div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse macro analysis</div>
+  </details>
+</div>
+
+<div class="section">
+  <div class="section-title">🏭 Industry Overview</div>
+  <div class="sector-card">
+<div class="sector-row">
+  <div class="sector-name">Energy <span style="font-size:10px;color:#666">· <span style="color:#00c853">1D +1.9%</span> · <span style="color:#00c853">1W +0.6%</span> · <span style="color:#00c853">▲4</span></span></div>
+  <div class="sector-chips"><span class="stk-chip ">EOG</span><span class="stk-chip buy">VLO</span><span class="stk-chip buy">PBF</span></div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare <span style="font-size:10px;color:#666">· <span style="color:#00c853">1D +0.5%</span> · <span style="color:#00c853">1W +3.1%</span> · <span style="color:#00c853">▲6</span></span></div>
+  <div class="sector-chips"><span class="stk-chip ">HALO</span></div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology <span style="font-size:10px;color:#666">· <span style="color:#ff6d6d">1D -4.9%</span> · <span style="color:#ff6d6d">1W -3.7%</span> · <span style="color:#ff6d6d">▼7</span></span></div>
+  <div class="sector-chips"><span class="stk-chip ">AAPL</span></div>
+</div></div>
+  
+  <details class="macro-card" style="margin-top:8px">
+    <summary><span class="macro-title" style="font-size:13px">📊 Sector rotation leaderboard (1-week momentum)</span><span class="chevron">▼</span></summary>
+    <div style="border-top:1px solid #222">
+<div class="sector-row">
+  <div class="sector-name">Healthcare<span style="color:#00c853"> ▲6</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.5%</span> · <span style="color:#00c853">1W +3.1%</span> ·
+    1M 11.25%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Materials<span style="color:#00c853"> ▲6</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.4%</span> · <span style="color:#00c853">1W +2.6%</span> ·
+    1M 7.94%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Utilities<span style="color:#00c853"> ▲7</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.7%</span> · <span style="color:#00c853">1W +2.1%</span> ·
+    1M 9.04%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Staples<span style="color:#00c853"> ▲8</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.4%</span> · <span style="color:#00c853">1W +1.7%</span> ·
+    1M 11.04%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Small Cap Growth<span style="color:#ff6d6d"> ▼2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -2.2%</span> · <span style="color:#00c853">1W +1.1%</span> ·
+    1M -2.52%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Disc</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.7%</span> · <span style="color:#00c853">1W +1.0%</span> ·
+    1M 4.85%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Financials<span style="color:#00c853"> ▲2</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.8%</span> · <span style="color:#00c853">1W +0.9%</span> ·
+    1M 5.65%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Real Estate<span style="color:#00c853"> ▲3</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.3%</span> · <span style="color:#00c853">1W +0.9%</span> ·
+    1M 5.78%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Energy<span style="color:#00c853"> ▲4</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.9%</span> · <span style="color:#00c853">1W +0.6%</span> ·
+    1M 11.46%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Industrials<span style="color:#ff6d6d"> ▼6</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.6%</span> · <span style="color:#00c853">1W +0.3%</span> ·
+    1M -1.5%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">ARK Innovation<span style="color:#ff6d6d"> ▼9</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -6.1%</span> · <span style="color:#ff6d6d">1W -1.3%</span> ·
+    1M -10.11%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology<span style="color:#ff6d6d"> ▼7</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -4.9%</span> · <span style="color:#ff6d6d">1W -3.7%</span> ·
+    1M -10.16%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Communication Svcs<span style="color:#00c853"> ▲1</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.3%</span> · <span style="color:#ff6d6d">1W -3.8%</span> ·
+    1M -9.45%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Semiconductors<span style="color:#ff6d6d"> ▼13</span></div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -8.2%</span> · <span style="color:#ff6d6d">1W -4.1%</span> ·
+    1M -19.93%</div>
+</div></div>
+  </details>
+</div>
+
+
+<div class="filter-bar">
+  <button class="filt active" onclick="filterCards('all',this)">All (5)</button>
+  <button class="filt" onclick="filterCards('buy',this)">🟢 Buy Now (2)</button>
+  <button class="filt" onclick="filterCards('wait',this)">⏳ Wait (3)</button>
+  <button class="filt" onclick="filterCards('watch',this)">🟡 Watch (0)</button>
+  <button class="filt" onclick="filterCards('avoid',this)">🔴 Avoid (0)</button>
+  <button class="filt" onclick="filterCards('high',this)">⭐ High Conv. (2)</button>
+</div>
+<div class="section" style="padding-top:10px">
+  <div class="section-title"><span id="stock-count">5 stocks</span> — tap to expand</div>
+  
+<details class="stock-card"
+  data-action="WAIT — EARNINGS"
+  data-conviction="HIGH">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#1</span>
+      <span class="tk">EOG</span>
+      <span class="co-name">EOG Resources, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-wait">WAIT — EARNINGS</span>
+      <span class="badge b-high">HIGH</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>38.4/40</b></span>
+  <span class="chip">Fund <b>35.2/40</b></span>
+  <span class='chip'>Score <b>73.6/80</b></span>
+</div>
+    <div class="setup-line">📐 $165.54 just broke 0.26% above pivot $165.11 — in buy zone</div><div class="setup-line" style="color:#ffd600">🧲 VCP 2/3 · 10d range 7.0% · ATR 107% of 50d · vol 78% of 50d</div>
+    <div class="rationale">EOG offers the strongest combination of technical momentum (highest technical score at 38.4) and fundamental quality (35.2) among the group. It is currently in the &#x27;buy zone&#x27; having just broken its pivot, aligning perfectly with the Minervini SEPA framework for initiating a position in a high-quality E&amp;P leader.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$165.54</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">91.3</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">118.5%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">58.7%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-0.2%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Energy</div></div>
+</div>
+    <div class="risk-line">⚠ Commodity price volatility in oil and gas markets.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**RESEARCH NOTE: EOG RESOURCES, INC. (EOG)**<br>**Date:** May 24, 2024<br>**Analyst:** Senior Growth Analyst<br>**Framework:** Minervini SEPA (Specific Entry Point Analysis)<br><br>### 1. BUSINESS QUALITY<br>*   **Core Operations:** EOG is a premier domestic independent oil and gas E&amp;P (Exploration and Production) company with a highly concentrated footprint in the Eagle Ford Shale (Texas) and the Haynesville Shale (Texas/Louisiana). These are tier-1, low-decline basins that provide exceptional reserve replacement ratios and operational leverage.<br>*   **Competitive Advantage:** Unlike diversified energy majors, EOG is a &quot;pure play&quot; on high-margin US shale. Its advantage lies in operational efficiency (lowest cost quartile in the US shale) and aggressive capital discipline, which protects return on capital employed (ROCE) even when commodity prices are moderate.<br>*   **Scale:** With ~650,000 net acres in core developmental areas, EOG has decades of organic growth runway without needing to expand geographically, reducing execution risk.<br><br>### 2. EARNINGS QUALITY<br>*   **EPS Explosion:** The screener data indicates **118.5% YoY EPS growth**. This is an exceptional figure for a maturing E&amp;P. It suggests either a significant bottom-line lever (e.g., lower commodity costs, operational synergies) or a low base year for comparison (likely Q1 2023 or prior affected by lower prices or impairments).<br>*   **Margin Profile:** Operating margin of **40.7%** and Net Profit Margin of **25.7%** indicate high operating leverage. For every $1 of revenue, EOG retains nearly $0.26, demonstrating robust pricing power relative to its cost structure.<br>*   **Cash Conversion:** Free Cash Flow (FCF) of **$4.47 billion** is substantial. High FCF relative to market cap suggests the earnings are backed by cash, not just accounting accruals.<br>*   **Quality Flag:** Verify if the 118.5% EPS growth is driven by non-recurring items (e.g., derivatives gains, tax benefits, or one-time legal settlements). The absence of recent specific news flags this as a potential data artifact or a massive operational breakout. *Assumption:* If driven by WTI prices rising from ~$70 to ~$85, this growth is fundamental. If driven by one-offs, quality drops.<br><br>### 3. REVENUE ACCELERATION<br>*   **Revenue Growth:** **58.7% YoY revenue growth** is remarkably high for a mid-cap E&amp;P. This likely reflects a combination of:<br>    1.  Higher realized prices for crude oil and NGLs.<br>    2.  Potential acquisitions (EOG closed acquisitions in 2023/2024, e.g., assets in the Eagle Ford).<br>    3.  Increased production volumes.<br>*   **Driver Analysis:** In E&amp;P, volume growth is typically low single digits. Therefore, **price realization** is the primary driver of this acceleration. This implies the revenue model is heavily cyclical and tied to the energy complex&#x27;s price action.<br>*   **Trend:** With the stock at **-0.2% off its 52-week high** and well above all moving averages (MA50/150/200), the market is pricing in continued price strength or volume upside.<br><br>### 4. COMPETITIVE MOAT<br>*   **Cost Curve Moat:** EOG operates at the bottom of the cost curve in the Eagle Ford. Breakeven costs are significantly below peers, providing a wide margin of safety during commodity drawdowns.<br>*   **Low Decline Rates:** The geology of the Eagle Ford offers lower early-decline rates compared to other shales, extending production life per well and improving NPV (Net Present Value).<br>*   **No Switching Costs:** As a commodity producer, there are no direct switching costs for customers. The moat is purely **scale, cost efficiency, and asset quality**.<br>*   **Barriers to Entry:** Acquiring tier-1 shale assets at attractive valuations has become difficult, but EOG’s existing core positions act as a barrier for new entrants due to the capital intensity and permitting hurdles.<br><br>### 5. INDUSTRY TAILWINDS<br>*   **Sector Cycle:** The energy sector is currently in a **recovery/expansion phase** if WTI is trading above $80. Institutional sponsorship (98.4%) is heavy, indicating retail and institutional consensus on the sector&#x27;s resurgence.<br>*   **Geopolitical Premium:** Ongoing geopolitical tensions (Middle East, Russia-Ukraine) provide a structural floor under oil prices, reducing the probability of a sharp bear market.<br>*   **OPEC+ Strategy:** Discipline among OPEC+ producers has supported prices by limiting supply glut, favoring high-quality E&amp;Ps like EOG.<br>*   **Recent News:** *None available in the last 48 hours.* This is a **neutral to slightly positive** signal. In the absence of negative news (e.g., accidental spills, regulatory crackdowns, unexpected OPEC cuts), the stock price action (near 52-week high) suggests a steady accumulation phase by large institutions. The lack of &quot;hype&quot; news allows for a cleaner technical entry.<br><br>### 6. MANAGEMENT EXECUTION<br>*   **Capital Allocation:** EOG is historically known for its conservative capital expenditure (CapEx) and high shareholder returns (dividends + buybacks). With a Debt/Equity ratio of **2.59x** (standard for the sector, not excessive) and a Current Ratio of **1.85**, balance sheet health is strong.<br>*   **Track Record:** EOG has consistently delivered superior ROE compared to peers (current ROE **22.5%** is excellent for energy). Management has a history of buying assets at the bottom of cycles and selling at the top.<br>*   **Guidance:** Previous guidance has been conservative, often beating estimates. The upcoming earnings (4 days out) will be critical to confirm if the 118.5% EPS growth is sustainable.<br><br>### 7. VALUATION<br>*   **Forward P/E:** **10.2x**. This is deeply discounted relative to the S&amp;P 500 (~20x) and even relative to high-growth tech sectors.<br>*   **PEG Ratio:** **1.25**. A PEG ratio of 1.25 is considered fair value for a high-growth stock. Given the 118.5% EPS growth (if sustained), 10.2x is an attractive entry.<br>*   **Price/Sales:** **3.3x**. High for a commodity business, but justified by the extraordinary profit margins (25.7% net).<br>*   **Minervini View:** The stock is in **Stage 2 (</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1200. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse EOG</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="WAIT — EARNINGS"
+  data-conviction="HIGH">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#2</span>
+      <span class="tk">HALO</span>
+      <span class="co-name">Halozyme Therapeutics, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-wait">WAIT — EARNINGS</span>
+      <span class="badge b-high">HIGH</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>38.0/40</b></span>
+  <span class="chip">Fund <b>34.6/40</b></span>
+  <span class='chip'>Score <b>72.6/80</b></span>
+</div>
+    <div class="setup-line">📐 $130.91 is 1.24% below pivot $132.55 — breakout imminent</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 9.5% · ATR 93% of 50d · vol 94% of 50d</div>
+    <div class="rationale">HALO possesses the highest RS rank (98.9) and a strong technical score (38.0), indicating exceptional relative strength. The setup is &#x27;breakout imminent&#x27; just 1.24% below the pivot, offering a high-probability entry point for a healthcare platform play with strong earnings momentum.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$130.91</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">98.9</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">48.1%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">47.7%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-2.3%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Healthcare</div></div>
+</div>
+    <div class="risk-line">⚠ Valuation compression if the healthcare sector rotates out of favor.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**RESEARCH NOTE: HALOZyme THERAPEUTICS (HALO)**<br>**Date:** Current<br>**Analyst:** Senior Fundamental Growth Research<br>**Framework:** Minervini SEPA<br><br>### 1. BUSINESS QUALITY<br>*   **Core Asset:** Propriety recombinant human hyaluronidase (rHuPH20). This is not a single drug but a platform technology that enables the subcutaneous (SC) delivery of large-molecule biologics that traditionally require intravenous (IV) infusion.<br>*   **Competitive Advantage:** Halozyme acts as a &quot;trojan horse&quot; or enabling partner for major pharma. By partnering with giants (e.g., Amgen, Sanofi, Takeda, Gilead, Merck), Halozyme leverages their sales forces to distribute its IP. This creates a recurring, royalty-based revenue stream tied to blockbuster partners&#x27; success rather than relying on building its own go-to-market infrastructure.<br>*   **Product Suite:**<br>    *   **XYOSTED:** Testosterone replacement therapy (TRT) via SC injection. A mature, high-volume cash cow.<br>    *   **Hylenex:** Diagnostic and therapeutic clearance fluid.<br>    *   **Pipeline:** Enabling partners like *Omalizumab* (Xolair) switching from IV to SC, and other biosimilars moving to SC formulation.<br><br>### 2. EARNINGS QUALITY<br>*   **EPS Growth:** 48.1% YoY growth is robust and indicates genuine operational acceleration, not just margin compression.<br>*   **Profitability:** Operating margins of ~60% and Net Profit Margins of ~25% are exceptional for the biotech sector, moving HALO closer to a profitable software/biopharma hybrid.<br>*   **Quality of Earnings:** Earnings are driven by high-margin royalty streams. We must monitor if growth is diluted by one-time milestone payments from partners. However, the consistent revenue growth suggests a steady ramp-up of SC admin volume rather than sporadic one-offs.<br>*   **ROE:** 173.7% ROE is abnormally high, likely inflated by low equity base (deleveraging) or asset-light structure. It signals high capital efficiency.<br><br>### 3. REVENUE ACCELERATION<br>*   **Trend:** Revenue growth of 47.7% is strong. The question is acceleration.<br>*   **Drivers:**<br>    *   **XYOSTED Market Share:** Continued expansion in the TRT market.<br>    *   **New SC Launches:** Recent or upcoming launches of partner biologics (e.g., Humira, Xolair) in SC format are key drivers. If a major partner launches a new SC product in the last 2-3 quarters that is now ramping, this explains the acceleration.<br>*   **Verdict:** The 47.7% growth rate is well above the market. If this is sustained or increasing QoQ, it fits the SEPA &quot;Stage 2&quot; requirement of earnings and revenue acceleration.<br><br>### 4. COMPETITIVE MOAT<br>*   **Proprietary Enzyme:** rHuPH20 is patented and faces no direct equivalent in the SC large-molecule delivery space. It is the only FDA-approved recombinant hyaluronidase for this purpose.<br>*   **Switching Costs:** For partners, switching to a different delivery method (back to IV) is logistically difficult once they have invested in the SC formulation development and training.<br>*   **Barriers to Entry:** Developing a new enzyme with similar efficiency and safety profile is a multi-year, high-risk endeavor. Halozyme’s head start and regulatory approval create a significant wide moat.<br>*   **Scale:** As the volume of SC biologics grows, Halozyme’s royalty base scales almost indefinitely without proportional CapEx increases.<br><br>### 5. INDUSTRY TAILWINDS<br>*   **Global Trend to SC Administration:** The medical community is aggressively moving injectable biologics from IV to SC for cost savings (hospital utilization down), patient convenience, and self-administration. This is a secular, structural tailwind.<br>*   **Market Size:** The biopharma market is growing, but the *SC segment* is growing faster. Halozyme benefits from the entire tide of biologics, not just its own internal R&amp;D.<br>*   **Catalysts:** Upcoming launches from partners (Sanofi, Amgen, Takeda) are the primary near-term catalysts. *Note: No specific news from the last 48 hours is available in the provided data, so we rely on the strategic trend.*<br>*   **Institutional Sponsorship:** 113.6% institutional ownership indicates strong conviction from large funds. The high RS Rank (98.9) confirms the market is recognizing this trend now.<br><br>### 6. MANAGEMENT EXECUTION<br>*   **Track Record:** Management has successfully pivoted from a self-funded biotech to a royalty/enablement model. This strategic shift has dramatically improved cash flow predictability.<br>*   **Capital Allocation:** With Debt/Equity at 1517% (extremely high leverage), management must prioritize debt reduction or maintain high FCF to service debt. Current FCF of $337M is strong, but the debt load is a critical point of scrutiny.<br>*   **Guidance:** Management has historically met or exceeded guidance during the on-boarding of new partners. Consistency is key.<br><br>### 7. VALUATION<br>*   **Forward P/E:** 12.26. This is *extremely* low for a company growing EPS at 48% and revenue at 47%.<br>*   **PEG Ratio:** Calculated PEG = 12.26 / 48.1 ≈ 0.25. A PEG &lt; 1.0 is undervalued; &lt; 0.5 is deeply undervalued. This suggests the market is severely discounting the quality of growth, possibly due to the high debt load or past accounting concerns.<br>*   **Price/Sales:** 8.93x is reasonable for a high-margin, high-growth pharma enablement platform.<br>*   **Technical Setup:** Stock is -2.3% from 52-week high, trading above all key moving averages (50/150/200). RS Rank 98.9. This is a classic Stage 2 uptrend. The low P/E combined with high RS Rank suggests a &quot;value&quot; growth entry point.<br><br>### 8. KEY RISKS<br>*   **Debt Load:** Debt/Equity of 1517% is a massive red flag for a growth stock. While FCF covers interest, any stumble in partner sales or revenue growth could trigger credit concerns or forced deleveraging (asset sales). **This is the primary thesis-killer.**<br>*   **Partner Dependency:** Revenue is tied to a few large partners. If Amgen or Sanofi cuts back on SC</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1200. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse HALO</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#3</span>
+      <span class="tk">VLO</span>
+      <span class="co-name">Valero Energy Corporation</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>25.8/40</b></span>
+  <span class="chip">Fund <b>35.6/40</b></span>
+  <span class='chip'>Score <b>61.4/80</b></span>
+</div>
+    <div class="setup-line">📐 reclaimed EMA50 today, holding above</div><div class="setup-line" style="color:#666">🧲 VCP 0/3 · 10d range 19.7% · ATR 123% of 50d · vol 96% of 50d</div>
+    <div class="rationale">VLO has solid fundamentals (35.6) and high RS rank (98.4), but its technical score (25.8) is significantly lower than EOG and HALO. The setup is a reclamation of the EMA50 rather than a fresh pivot breakout, suggesting it is a secondary candidate or a pullback buy rather than a primary momentum entry.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$399.66</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">98.4</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">553.0%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">46.5%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-13.4%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Energy</div></div>
+</div>
+    <div class="risk-line">⚠ Refining margin compression and lack of fresh breakout confirmation.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">**RESEARCH NOTE: VALERO ENERGY CORP (VLO)**<br>**Date:** October 26, 2023 (Simulated Current Date based on context)<br>**Analyst:** Fundamental Growth Desk<br>**Strategy:** SEPA / Minervini Trend Template Review<br><br>**PRELIMINARY ASSESSMENT:**<br>*Critical Data Discrepancy Alert:* The provided screener data indicates a share price of **$399.66**, an EPS growth of **553%**, and a Market Cap of **$111.4B**. In reality, Valero Energy (VLO) typically trades in the $120–$160 range with a market cap of ~$50–$60B. A price of ~$400 implies a massive fundamental restructuring (e.g., 1-for-4 reverse split) or a data feed error. Furthermore, Valero is a cyclical integrated refiner; it does not exhibit the &quot;compounding growth&quot; profile (high PEG, consistent revenue acceleration) typically sought in Minervini-style portfolios. It is a *cyclical value* play.<br><br>**Proceeding with analysis based strictly on the provided screener inputs, while flagging the extreme deviation from historical cyclical patterns as a primary risk factor.**<br><br>---<br><br>### 1. BUSINESS QUALITY<br>*   **Core Business:** Integrated oil refiner and marketer operating 15 refineries in the US, Canada, and Europe. Segments: Refining, Renewable Diesel, Ethanol.<br>*   **Competitive Advantage:** Scale and geographic diversification. Valero benefits from lower-cost Gulf Coast crude processing balanced by premium downstream arbitrage in the northern US and Europe.<br>*   **Quality Assessment:** Moderate. The business is commodity-based with limited pricing power. Margins are dictated by crack spreads (difference between crude price and refined product prices), which are highly volatile and mean-reverting. Not a high-quality compounding asset; a cyclical cash-generating machine.<br><br>### 2. EARNINGS QUALITY<br>*   **EPS Growth (YoY):** 553.0% (Screener Input).<br>    *   *Analysis:* This figure is extraordinary for a refiner. It likely reflects a combination of:<br>        1.  Extremely low crude prices in the comparative prior-year quarter.<br>        2.  Widening crack spreads due to regional supply/demand imbalances.<br>        3.  Potential one-time gains (e.g., hedging gains, asset sales).<br>*   **Quality of Earnings:** Low to Moderate. Operating margins at 20.5% are at the upper end of historical cycles. Revenue growth of 46.5% is almost entirely price-driven, not volume-driven (crude oil volumes are relatively constant).<br>*   **Red Flag:** High YoY growth in a low-base cyclical commodity business often signals the top of the margin cycle, not the start of a long-term growth phase.<br><br>### 3. REVENUE ACCELERATION<br>*   **Trend:** Revenue growth of 46.5% is accelerating sequentially, but this is a function of oil prices, not unit sales.<br>*   **Key Drivers:**<br>    *   **Crack Spread Expansion:** Premiums for gasoline and diesel in specific regions (e.g., Northeast, California).<br>    *   **Renewable Diesel:** Rising volumes in the Renewable Diesel segment provide some stickiness, but it’s a small part of the total mix.<br>    *   **Volume:** Flat to slightly positive. No structural volume growth.<br>*   **Acceleration Verdict:** False Acceleration. The company has not gained significant market share. Revenue growth will decelerate rapidly if crude prices stabilize or crack spreads normalize.<br><br>### 4. COMPETITIVE MOAT<br>*   **Weak Moat:** Refining is a capital-intensive, low-differentiation industry.<br>*   **Barriers to Entry:** High capital cost prevents new entrants, but existing players are evenly matched.<br>*   **Switching Costs:** Low. Oil products are commodities. Buyers switch based on price.<br>*   **Scale Advantage:** Valero benefits from scale in logistics and hedging, but this is an operational efficiency moat, not a pricing power moat.<br>*   **Conclusion:** No durable moat. The business is prone to overcapacity and cyclical margin compression.<br><br>### 5. INDUSTRY TAILWINDS<br>*   **Market Cycle:** We are in a late-stage energy upcycle or mid-cycle peak.<br>*   **Key Catalysts:**<br>    *   **Refinery Maintenance Seasonality:** Post-summer maintenance can tighten supply in autumn, supporting diesel/jet fuel margins.<br>    *   **Oil Demand:** Strong global demand for jet fuel and transportation fuels.<br>    *   **No Recent News (48h):** The lack of fresh news suggests the stock&#x27;s recent strength (RS Rank 98.4) is driven by momentum and technicals rather than a specific new catalyst. This is a &quot;quiet strength&quot; setup, typical of institutional accumulation in large caps.<br>*   **Tailwind Assessment:** Neutral to Slightly Positive in the short term, but secular tailwinds are absent. The industry faces long-term headwinds from EV adoption and energy efficiency.<br><br>### 6. MANAGEMENT EXECUTION<br>*   **Capital Allocation:** Consistently returns capital via buybacks and dividends. Valero has aggressively burned debt and bought back stock during high-margin periods.<br>*   **Track Record:** Management has successfully navigated several refinancing cycles and expanded renewable diesel capacity.<br>*   **Guidance History:** Typically cautious. Valero does not provide meaningful revenue growth guidance, only range-based margin expectations.<br>*   **Institutional Sponsorship:** 89.9% Institutional Ownership. Highly sponsored by long-only funds interested in energy exposure.<br><br>### 7. VALUATION<br>*   **Forward P/E:** 7.46x.<br>*   **PEG Ratio:** 1.5 (Based on 553% EPS growth? This PEG ratio is nonsensical for a cyclical stock. A PEG of 1.5 with 553% growth implies a P/E of ~8.3x, which is close to the forward P/E. This suggests the market is pricing in the *peak* earnings, not growth).<br>*   **Price/Sales:** 0.76x.<br>*   **Assessment:** The stock is cheap on a multiple basis *if* you believe current earnings are sustainable. However, cyclical stocks are most expensive just before earnings peak and cheapest after the recession. A P/E of 7.5x is not cheap for VLO if earnings are at the cycle peak; it is a fair value multiple for average earnings.<br>*   **Minervini Filter:** VLO passes the price/technical filters (RS 98, above MAs). However, the *fundamental* valuation case relies on mean-reversion, not compounding. This is a &quot;trend follower&quot; buy</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">**PORTFOLIO MANAGER CHALLENGE MEMO**<br>**To:** Fundamental Growth Desk / Strategy Review Team<br>**From:** Senior Portfolio Manager<br>**Re:** VLO (Valero Energy) – SEPA/Minervini Submission<br>**Risk Rating:** **RED (AVOID)**<br><br>I have reviewed the &quot;research note&quot; submitted for Valero Energy. I am rejecting this thesis in its entirety. You are attempting to force a cyclical cash-cow into a &quot;Minervini Growth&quot; mold, ignoring the fundamental reality that we are currently trading at peak cycle margins with deteriorating structural volumes.<br><br>The note tries to pass off a **data error** as a &quot;restructuring&quot; and interprets a **value/cyclical setup** as a &quot;growth compounding&quot; play. This is the exact kind of cognitive dissonance that blows up portfolios.<br><br>Here is the breakdown of why this idea is dangerous.<br><br>### 1. ACCOUNTING RED FLAGS: The &quot;553% EPS&quot; Illusion<br>You flagged the $399.66 price as a discrepancy, which is correct—VLO trades near $140–$160. However, your analysis of the *underlying* numbers is dangerously optimistic.<br><br>*   **The Low-Base Trap:** You cite 553% EPS growth. In refining, this is not &quot;growth&quot;; it is **mean reversion from the bottom**. A 550% jump implies prior-year earnings were near zero (e.g., $0.10 actual, now $0.60 implied annualized, or similar low-base distortion). Buying a stock because EPS grew 500% off a near-zero base is the classic value trap. It signals the *start* of the recovery, not the *sustainability* of the top.<br>*   **Operating Leverage is a Double-Edged Sword:** You note operating margins at 20.5%. For VLO, the historical normalized operating margin is closer to 5–8%. A 20% operating margin on a commodity business suggests we are in the **absolute peak of the crack spread cycle**. When cracks normalize (which they will), earnings don&#x27;t drop 10%; they collapse 50–70%.<br>*   **Debt/Equity Misleading:** You list D/E at 35%. While manageable, refineries are capex-heavy. You haven’t adjusted for CapEx vs. FCF. In a high-margin year, refineries rarely increase CapEx dramatically, so cash flow looks great. But in the next down-cycle, you maintain the same maintenance CapEx while revenues crater.<br><br>### 2. THESIS KILLERS<br>What one single event kills this &quot;growth&quot; thesis immediately?<br><br>*   **Crack Spread Normalization:** If the WL (West Line) or HC (High Coast) crack spreads compress by just 20–30% due to increased refining throughput globally (especially Asia-R1 running higher) or demand destruction from high prices, the &quot;553% EPS&quot; narrative evaporates overnight.<br>*   **Crude Price Spike:** Refiners *hate* rising crude prices (cash flow gets stuck in inventory). If Brent spikes to $95–$100+ on geopolitical risk, VLO’s inventory position suffers immediate mark-to-market losses, and crack spreads often compress. The bull case relies on &quot;high spreads, stable/low crude.&quot; One geopolitical shock breaks this.<br>*   **Regulatory Shift:** Any acceleration in EV mandates or renewed push for sustainable aviation fuel (SAF) subsidies that price in the cost of renewable diesel faster than the volume ramps, squeezing margins.<br><br>### 3. ASSUMPTION STRESS TEST<br>The note assumes **&quot;Quiet Strength = Institutional Accumulation.&quot;**<br>*   **Reality Check:** In a large-cap cyclical like VLO, high RS (Relative Strength) without news usually means **short covering** or **sector rotation**, not fundamental discovery. There is no &quot;smart money&quot; finding a hidden growth engine in a refiner. They are buying the *yield* and the *cycle timing*.<br>*   **The &quot;Growth&quot; Assumption:** The note assumes revenue growth of 46.5% is sustainable. **It is not.** Refining volumes in North America are structurally flat to declining. The 46.5% growth is 100% price-driven. Price growth is the first thing to reverse. Volumes are the floor; prices are the variable. You are betting entirely on the variable.<br>*   **Minervini Filter Abuse:** Minervini’s method is for *growth* stocks with expanding EPS. Applying it to a cyclical at peak earnings is like using a speedometer to measure a stopped car. The &quot;trend template&quot; passes because the price is high, but the *fundamental* trend (margin expansion) has already peaked.<br><br>### 4. VALUATION RISK<br>You state: *&quot;A P/E of 7.5x is not cheap for VLO if earnings are at the cycle peak; it is a fair value multiple for average earnings.&quot;*<br>*   **Agreed, and it’s a trap.** The market is pricing VLO at 7.5x forward EPS. If the &quot;growth&quot; narrative (553%) is false, and earnings normalize to historical averages (~$6–$8 EPS normalized), the stock is **fully valued or expensive**.<br>*   **The Uninvestable Threshold:** VLO becomes uninvestable when it trades above 8–9x normalized EPS. At 7.5x *current* (peak) earnings, if current earnings are 2x normalized, you are paying 15x</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse VLO</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="WAIT — EARNINGS"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#4</span>
+      <span class="tk">AAPL</span>
+      <span class="co-name">Apple Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-wait">WAIT — EARNINGS</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>33.6/40</b></span>
+  <span class="chip">Fund <b>26.6/40</b></span>
+  <span class='chip'>Score <b>60.2/80</b></span>
+</div>
+    <div class="setup-line">📐 $344.63 is 2.02% below pivot $351.73 — breakout imminent</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 5.0% · ATR 98% of 50d · vol 104% of 50d</div>
+    <div class="rationale">While AAPL is a high-quality business, its RS rank (75.8) is the lowest in the group, indicating it is lagging the broader market leaders. The fundamental score (26.6) is also the weakest, suggesting slower earnings momentum compared to the energy and healthcare peers. It is 2% below pivot, requiring a breakout to confirm strength.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$344.63</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">75.8</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">28.7%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">16.4%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-2.0%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Technology</div></div>
+</div>
+    <div class="risk-line">⚠ Relative underperformance and potential for extended consolidation.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1500. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1200. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse AAPL</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="LOW">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#5</span>
+      <span class="tk">PBF</span>
+      <span class="co-name">PBF Energy Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-low">LOW</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>25.7/40</b></span>
+  <span class="chip">Fund <b>31.4/40</b></span>
+  <span class='chip'>Score <b>57.1/80</b></span>
+</div>
+    <div class="setup-line">📐 reclaimed EMA50 today, holding above</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 19.9% · ATR 110% of 50d · vol 86% of 50d</div>
+    <div class="rationale">PBF has the lowest total score (67.1) and the weakest fundamental score (31.4) among the energy names. While it has a high RS rank, the technical score (25.7) is weak, and the setup is merely an EMA50 reclamation. The risk-reward profile is inferior to VLO and EOG due to lower earnings quality and higher volatility.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$78.0</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">97.7</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">2557.7%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">58.6%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">-15.6%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">Energy</div></div>
+</div>
+    <div class="risk-line">⚠ Higher operational leverage and volatility compared to larger peers.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1500. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1200. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse PBF</div>
+  </div>
+</details>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 Upcoming Earnings</div>
+  <div class="earnings-box">
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• DDOG</span>
+  <span style="color:#aaa">2026-11-04</span>
+  <span style="color:#ff6d6d;font-size:12px">2d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• CELH</span>
+  <span style="color:#aaa">2026-11-05</span>
+  <span style="color:#ff6d6d;font-size:12px">3d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• ELF</span>
+  <span style="color:#aaa">2026-11-05</span>
+  <span style="color:#ff6d6d;font-size:12px">3d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• ONON</span>
+  <span style="color:#aaa">2026-11-10</span>
+  <span style="color:#ffd600;font-size:12px">8d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• AMAT</span>
+  <span style="color:#aaa">2026-11-13</span>
+  <span style="color:#ffd600;font-size:12px">11d</span>
+</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📈 Pick Track Record</div>
+  <div class="track-card">
+    <div class="track-grid">
+<div class="track-cell"><div class="track-h">1 Week Fwd · 276 picks</div>
+<div class="track-v tr-neg">-1.37% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 44.9% · avg -1.19%</div></div>
+<div class="track-cell"><div class="track-h">1 Month Fwd · 209 picks</div>
+<div class="track-v tr-neg">-3.37% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 36.8% · avg -2.67%</div></div></div>
+    <div class="track-note">Top 5 daily picks tracked forward vs SPY ·
+    73 day(s) of history · builds daily</div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="collapseAll()">▲ Collapse</button>
+
+<div class="footer">
+  HZ Capital Trading Intelligence &nbsp;·&nbsp;
+  2026-11-02 09:57 &nbsp;·&nbsp;
+  Market analysis only — positions &amp; instructions are delivered privately via Telegram. Not financial advice.
+</div>
+
+<script>
+function filterCards(f, btn) {
+  document.querySelectorAll('.filt').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('details.stock-card').forEach(function(c) {
+    var show = true;
+    if      (f === 'buy')   show = c.dataset.action === 'BUY NOW';
+    else if (f === 'wait')  show = c.dataset.action.indexOf('WAIT') === 0;
+    else if (f === 'watch') show = c.dataset.action === 'WATCH';
+    else if (f === 'avoid') show = c.dataset.action === 'AVOID';
+    else if (f === 'high')  show = c.dataset.conviction === 'HIGH';
+    c.classList.toggle('hidden', !show);
+  });
+  var v = document.querySelectorAll('details.stock-card:not(.hidden)').length;
+  document.getElementById('stock-count').textContent = v + ' stocks';
+}
+
+/* Close the section this control belongs to and bring its header back into
+   view, so you never lose your place after reading a long note. */
+function closeCard(el) {
+  var d = el.closest('details');
+  if (!d) return;
+  d.open = false;
+  var y = d.getBoundingClientRect().top + window.scrollY - 108;
+  window.scrollTo({ top: y < 0 ? 0 : y, behavior: 'smooth' });
+  updateFab();
+}
+
+function collapseAll() {
+  document.querySelectorAll('details[open]').forEach(function (d) { d.open = false; });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateFab();
+}
+
+function updateFab() {
+  var f = document.getElementById('fab');
+  if (!f) return;
+  var n = document.querySelectorAll('details[open]').length;
+  f.classList.toggle('show', n > 0);
+  f.textContent = n > 1 ? '▲ Collapse all (' + n + ')' : '▲ Collapse';
+}
+
+/* toggle doesn't bubble — capture phase catches every <details> */
+document.addEventListener('toggle', updateFab, true);
+document.addEventListener('DOMContentLoaded', updateFab);
+</script>
+</body>
+</html>
