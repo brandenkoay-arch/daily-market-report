@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>HZ Capital — November 17, 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     background:#0d0d0d;color:#e0e0e0;line-height:1.5;font-size:14px}
+
+/* STICKY HEADER */
+.sticky-header{position:sticky;top:0;z-index:100;background:#111;
+  border-bottom:1px solid #222;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+.site-title{font-size:13px;font-weight:700;color:#fff}
+.site-sub{font-size:11px;color:#666;margin-top:1px}
+.regime-pill{font-size:11px;font-weight:700;padding:4px 10px;
+  border-radius:20px;color:#000;white-space:nowrap}
+
+/* SECTIONS */
+.section{padding:12px 12px 4px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;
+  text-transform:uppercase;color:#555;margin-bottom:8px}
+
+/* ALERTS */
+.alert-card{background:#1a0800;border:1px solid #ff6d00;border-radius:10px;
+  padding:12px 14px;margin-bottom:8px}
+.alert-type{font-size:10px;font-weight:700;color:#ff6d00;letter-spacing:0.5px;text-transform:uppercase}
+.alert-ticker{font-size:15px;font-weight:800;color:#ff9d4a;margin:2px 0}
+.alert-msg{font-size:12px;color:#ccc;line-height:1.5}
+
+/* MACRO */
+details.macro-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;
+  overflow:clip;margin-bottom:8px}   /* clip, NOT hidden — hidden breaks sticky */
+details.macro-card > summary{list-style:none;cursor:pointer;padding:13px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+details.macro-card > summary::-webkit-details-marker{display:none}
+details.macro-card > summary::marker{display:none}
+details.macro-card[open] .chevron{transform:rotate(180deg)}
+.macro-title{font-size:14px;font-weight:700;color:#fff}
+.macro-body{padding:12px 14px 14px;font-size:13px;color:#bbb;
+  line-height:1.75;border-top:1px solid #222}
+
+/* SECTOR OVERVIEW */
+.sector-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;overflow:hidden}
+.sector-row{display:flex;align-items:flex-start;gap:10px;
+  padding:9px 14px;border-bottom:1px solid #1e1e1e}
+.sector-row:last-child{border-bottom:none}
+.sector-name{font-size:11px;font-weight:700;color:#777;
+  text-transform:uppercase;letter-spacing:0.3px;
+  min-width:110px;flex-shrink:0;padding-top:2px}
+.sector-chips{display:flex;gap:5px;flex-wrap:wrap}
+.stk-chip{background:#252525;border-radius:4px;padding:2px 8px;
+  font-size:11px;color:#82b1ff;font-weight:700}
+.stk-chip.buy{color:#00c853}
+.stk-chip.watch{color:#ffd600}
+.stk-chip.avoid{color:#ff6d6d}
+
+/* FILTER BAR */
+.filter-bar{position:sticky;top:53px;z-index:99;background:#111;
+  border-bottom:1px solid #1e1e1e;padding:8px 12px;
+  display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  margin-top:12px}
+.filter-bar::-webkit-scrollbar{display:none}
+.filt{background:#1e1e1e;border:1px solid #2a2a2a;color:#888;
+  padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  white-space:nowrap;cursor:pointer;transition:all 0.15s;user-select:none}
+.filt.active{background:#82b1ff;color:#000;border-color:#82b1ff}
+
+/* STOCK CARDS */
+details.stock-card{background:#1a1a1a;border-radius:12px;margin-bottom:9px;
+  overflow:clip;border:1px solid #222}   /* clip, NOT hidden — hidden breaks sticky */
+details.stock-card[open]{border-color:#333}
+details.stock-card > summary{list-style:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;padding:13px 14px}
+details.stock-card > summary::-webkit-details-marker{display:none}
+details.stock-card > summary::marker{display:none}
+details.stock-card[open] .chevron{transform:rotate(180deg)}
+
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rank-num{font-size:15px;font-weight:800;color:#444;min-width:22px}
+.tk{font-size:17px;font-weight:800;color:#82b1ff}
+.co-name{font-size:12px;color:#888;flex:1;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.chevron{font-size:10px;color:#555;transition:transform 0.2s;flex-shrink:0}
+
+.badge-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.b-buy{background:#00c853;color:#000}
+.b-watch{background:#ffd600;color:#000}
+.b-wait{background:#ff9d4a;color:#000}
+.b-avoid{background:#d50000;color:#fff}
+.b-dash{background:#2a2a2a;color:#666}
+
+/* TODAY AT A GLANCE */
+.glance-card{background:linear-gradient(135deg,#141a26,#101418);border:1px solid #2a3550;
+  border-radius:12px;padding:14px;margin-bottom:8px}
+.glance-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.glance-stat{background:#1a2230;border-radius:8px;padding:7px 12px;flex:1;min-width:90px}
+.glance-label{font-size:9px;color:#5a6a8a;text-transform:uppercase;letter-spacing:0.5px}
+.glance-val{font-size:14px;font-weight:800;color:#e8eeff;margin-top:2px}
+.glance-line{font-size:12px;color:#9ab;line-height:1.6}
+.glance-line b{color:#82b1ff}
+.delta-chip{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;
+  padding:1px 7px;margin:1px 3px 1px 0}
+.d-new{background:rgba(0,200,83,0.15);color:#00c853;border:1px solid rgba(0,200,83,0.35)}
+.d-drop{background:rgba(213,0,0,0.12);color:#ff6d6d;border:1px solid rgba(213,0,0,0.3)}
+.setup-line{font-size:11px;color:#4dd0a5;padding-top:4px}
+
+/* TRACK RECORD */
+.track-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:12px 14px}
+.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:4px}
+.track-cell{background:#1e1e1e;border-radius:8px;padding:8px 10px}
+.track-h{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.track-v{font-size:15px;font-weight:800;margin-top:2px}
+.tr-pos{color:#00c853}.tr-neg{color:#ff6d6d}.tr-neu{color:#bbb}
+.track-note{font-size:11px;color:#555;margin-top:8px;line-height:1.5}
+.b-high{background:rgba(130,177,255,0.15);color:#82b1ff;border:1px solid rgba(130,177,255,0.3)}
+.b-medium{background:rgba(255,214,0,0.1);color:#ffd600;border:1px solid rgba(255,214,0,0.25)}
+.b-low{background:rgba(255,109,0,0.1);color:#ff6d00;border:1px solid rgba(255,109,0,0.25)}
+
+.score-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.chip{background:#252525;border-radius:4px;padding:2px 7px;font-size:11px;color:#666}
+.chip b{color:#bbb}
+.rationale{font-size:12px;color:#666;line-height:1.5;padding-top:6px;border-top:1px solid #222}
+
+/* CARD BODY */
+.card-body{border-top:1px solid #222}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+  padding:10px 12px;background:#141414}
+.meta-item{background:#1e1e1e;border-radius:6px;padding:6px 8px}
+.meta-label{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.meta-val{font-size:13px;font-weight:700;color:#ddd;margin-top:1px}
+.case-section{padding:12px 14px}
+.case-section+.case-section{border-top:1px solid #1e1e1e}
+.case-label{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
+.case-bull .case-label{color:#00c853}
+.case-bear .case-label{color:#ff6d6d}
+.case-text{font-size:13px;line-height:1.75;color:#bbb}
+.risk-line{font-size:12px;color:#ff9d4a;padding:6px 14px 0}
+
+/* EARNINGS */
+.earnings-box{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:10px 14px}
+.earnings-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid #1e1e1e;font-size:13px}
+.earnings-row:last-child{border-bottom:none}
+.no-items{color:#555;font-size:13px;padding:8px 0}
+
+/* FOOTER */
+.footer{text-align:center;font-size:11px;color:#333;padding:20px 14px 40px}
+
+/* ── EXPAND / COLLAPSE ERGONOMICS ──────────────────────────────────────
+   Long research notes used to be collapsible only from the very top, so
+   you had to scroll back up to close one. Three fixes:
+   1. the card's own header sticks below the toolbars while it is open,
+      so the collapse control is always one tap away while reading;
+   2. a matching collapse bar sits at the END of every long section;
+   3. a floating "collapse all" appears whenever anything is open.        */
+details.stock-card[open] > summary{position:sticky;top:98px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55);padding:9px 14px}
+/* While open the pinned header must stay SMALL — the teaser rows (scores,
+   setup, rationale) are redundant once the full body is on screen. */
+details.stock-card[open] > summary .score-chips,
+details.stock-card[open] > summary .setup-line,
+details.stock-card[open] > summary .rationale{display:none}
+details.stock-card[open] > summary .card-top{margin-bottom:4px}
+details.stock-card[open] > summary .badge-row{margin-bottom:0}
+details.macro-card[open] > summary{position:sticky;top:53px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55)}
+.collapse-bar{display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:12px 14px;background:#151515;border-top:1px solid #262626;
+  color:#82b1ff;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent}
+.collapse-bar:active{background:#202020}
+.fab{position:fixed;right:14px;bottom:18px;z-index:300;background:#82b1ff;color:#000;
+  border:none;border-radius:24px;padding:14px 18px;font-size:12px;font-weight:800;
+  box-shadow:0 4px 16px rgba(0,0,0,0.6);cursor:pointer;display:none}   /* >=44px tap target */
+.fab.show{display:block}
+
+/* DESKTOP */
+@media(min-width:700px){
+  body{max-width:900px;margin:0 auto}
+  .filter-bar{top:57px}
+  .meta-grid{grid-template-columns:repeat(6,1fr)}
+  details.stock-card[open] > summary{top:102px}   /* clears the taller desktop toolbars */
+}
+@media(min-width:1100px){body{max-width:1100px}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div>
+    <div class="site-title">HZ Capital</div>
+    <div class="site-sub">November 17, 2026</div>
+  </div>
+  <div class="regime-pill" style="background:#d50000">MARKET IN DOWNTREND</div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">⚡ Today in 30 Seconds</div>
+  <div class="glance-card">
+    <div class="glance-row">
+      <div class="glance-stat"><div class="glance-label">Regime</div><div class="glance-val" style="color:#d50000">MARKET IN DOWNTREND</div></div>
+      <div class="glance-stat"><div class="glance-label">Buy Setups</div><div class="glance-val">2</div></div>
+      <div class="glance-stat"><div class="glance-label">Wait</div><div class="glance-val">0</div></div>
+      <div class="glance-stat"><div class="glance-label">Watch</div><div class="glance-val">1</div></div>
+    </div>
+    <div class="glance-line">🏆 #1 pick: <b>ANET</b> <span class="badge b-buy">BUY NOW</span> reclaimed EMA50 2 session(s) ago, holding above</div><div class="glance-line">🟢 Buy setups triggered: <b>ANET</b> (reclaimed EMA50 2 session(s) ago, holding above) <b>CRBG</b> ($36.35 is 0.98% below pivot $36.71 — breakout imminent)</div><div class="glance-line">Δ vs 2026-11-16: no list changes</div><div class="glance-line">📅 Event radar: <b>Jobs report (NFP)</b> in 17d · <b>FOMC rate decision</b> in 22d · <b>CPI release</b> in 23d</div><div class="glance-line" style="color:#667">🕐 Prices as of last US close: <b>2026-11-13</b></div>
+  </div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">📊 Macro Analysis</div>
+  <details class="macro-card" open>
+    <summary>
+      <span class="macro-title">🌍 MARKET IN DOWNTREND</span>
+      <span class="chevron">▼</span>
+    </summary>
+    <div class="macro-body">**Date:** 2026-11-17<br>**Regime:** MARKET IN DOWNTREND<br><br>### 1. WHAT CHANGED SINCE YESTERDAY<br>The &quot;Uptrend Under Pressure&quot; thesis from yesterday has officially collapsed into a **confirmed Downtrend**. The single most important development is the realization of the Nvidia crisis flagged in yesterday’s briefing: **SOXX (Semiconductors) dropped -3.67% in one day**, and **XLK (Technology) fell -2.01%**, dragging QQQ to its lowest close (-10.5% off highs) since the October rout. This was not a broad market sell-off; it was a targeted liquidation of the AI trade, triggered by the &quot;Nvidia leadership shake-up&quot; and confirmed by aggressive institutional exits, specifically **Stanley Druckenmiller dumping chip stocks** while rotating into SpaceX and Palantir. The regime shift is mechanical: QQQ is now below both its 50DMA and 200DMA, breaking the prior support structure.<br><br>### 2. MARKET REGIME ASSESSMENT<br>The tape is telling us that the AI-driven bull market has entered its correction phase, led entirely by a capitol-flight from semiconductor exposure. VIX, at 22.91 (up 18.7% on the day), is not in panic territory (&gt;35) but is clearly elevated, signaling that volatility is no longer suppressed by broad euphoria but is being driven by sector-specific de-risking. The 10Y yield drop to 5.12% suggests some flight to safety, but the lack of a broad rally in defensive staples (XLP only +1.42%) indicates this is not a full-blown risk-off event yet—it is a **selective unwind of extended valuations** in tech, with money rotating into value (XLF +0.81%, XLE +0.98%) and healthcare (XLV +0.54%).<br><br>### 3. SECTOR LEADERSHIP<br>*   **Leading:** **Healthcare (XLV)** and **Financials (XLF)** are the clear beneficiaries. Healthcare’s 3M gain of 11.69% shows it has been the primary rotation destination for months, and today’s +0.54% confirms continued stability as tech bleeds. Financials are also holding gains (+0.81% today, +1.19% 1W), supported by the yield environment and Berkshire’s increased stake in Delta (a proxy for resilient consumer credit/travel).<br>*   **Lagging:** **Semiconductors (SOXX)** is the clear laggard, down -3.67% today and -15.66% over 3M. **Technology (XLK)** is second-worst on the day (-2.01%). **AR1 Innovation (ARKK)** is down another -1.97%, compounding its 1W loss of -5.05%, signaling that the high-beta growth trade is fully de-rated.<br>*   **Rotation Note:** Money is not flowing into true defense (Staples/Utilities are modestly up), but into **relative value plays** (Energy, Financials, Healthcare). This is a &quot;barbell&quot; rotation, not a &quot;cash out&quot; rotation.<br><br>### 4. NEWS-DRIVEN RISKS &amp; CATALYSTS<br>1.  **Nvidia Earnings &amp; Leadership Uncertainty (Immediate Catalyst):** As flagged yesterday, Nintendo’s earnings call is imminent. Today’s news confirms the market is pricing in risk: **&quot;Jim Cramer says Nvidia’s leadership shake-up won’t derail the AI trade&quot;** is a contrarian signal, but the tape disagrees (SOXX -3.67%). The headline **&quot;Trump’s accounts traded up to $97.5 million in Nvidia as Huang gained White House access&quot;** adds political complexity. *Risk:* If earnings disappoint or clarity on Huang’s role isn’t clear, tech could face a secondary leg down.<br>2.  **Druckenmiller’s Chip Exit (Sentiment Overhang):** **Stanley Druckenmiller’s move to dump chip stocks** while buying SpaceX and Palantir is a significant smart-money signal. This suggests that even top-tier tech bulls see valuation ceilings in traditional semis. *Risk:* This rotation may push SOXX into technical breakdown territory, triggering stop-losses in long-only momentum portfolios.<br>3.  **Upcoming Macro Tightening (17-23 Days Out):** The **NFP report (Dec 4)** and **FOMC decision (Dec 9)** are approaching. With the 10Y at 5.12% and V</div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse macro analysis</div>
+  </details>
+</div>
+
+<div class="section">
+  <div class="section-title">🏭 Industry Overview</div>
+  <div class="sector-card">
+<div class="sector-row">
+  <div class="sector-name">Other</div>
+  <div class="sector-chips"><span class="stk-chip buy">ANET</span><span class="stk-chip watch">TXN</span><span class="stk-chip buy">CRBG</span><span class="stk-chip avoid">ABNB</span></div>
+</div></div>
+  
+  <details class="macro-card" style="margin-top:8px">
+    <summary><span class="macro-title" style="font-size:13px">📊 Sector rotation leaderboard (1-week momentum)</span><span class="chevron">▼</span></summary>
+    <div style="border-top:1px solid #222">
+<div class="sector-row">
+  <div class="sector-name">Energy</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.0%</span> · <span style="color:#00c853">1W +4.9%</span> ·
+    1M -4.81%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Semiconductors</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -3.7%</span> · <span style="color:#00c853">1W +1.7%</span> ·
+    1M -9.22%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Staples</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.4%</span> · <span style="color:#00c853">1W +1.6%</span> ·
+    1M 5.4%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Communication Svcs</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +1.1%</span> · <span style="color:#00c853">1W +1.2%</span> ·
+    1M -1.48%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Financials</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.8%</span> · <span style="color:#00c853">1W +1.2%</span> ·
+    1M 5.69%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Utilities</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.5%</span> · <span style="color:#00c853">1W +0.6%</span> ·
+    1M 4.34%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.5%</span> · <span style="color:#00c853">1W +0.3%</span> ·
+    1M 6.87%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Industrials</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.4%</span> · <span style="color:#ff6d6d">1W -0.1%</span> ·
+    1M 0.61%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -2.0%</span> · <span style="color:#ff6d6d">1W -0.3%</span> ·
+    1M -7.19%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Real Estate</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.0%</span> · <span style="color:#ff6d6d">1W -0.6%</span> ·
+    1M 5.24%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Disc</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.4%</span> · <span style="color:#ff6d6d">1W -0.8%</span> ·
+    1M 6.69%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Materials</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.2%</span> · <span style="color:#ff6d6d">1W -1.3%</span> ·
+    1M 2.57%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Small Cap Growth</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.5%</span> · <span style="color:#ff6d6d">1W -1.9%</span> ·
+    1M 3.41%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">ARK Innovation</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -2.0%</span> · <span style="color:#ff6d6d">1W -5.0%</span> ·
+    1M -8.16%</div>
+</div></div>
+  </details>
+</div>
+
+
+<div class="filter-bar">
+  <button class="filt active" onclick="filterCards('all',this)">All (4)</button>
+  <button class="filt" onclick="filterCards('buy',this)">🟢 Buy Now (2)</button>
+  <button class="filt" onclick="filterCards('wait',this)">⏳ Wait (0)</button>
+  <button class="filt" onclick="filterCards('watch',this)">🟡 Watch (1)</button>
+  <button class="filt" onclick="filterCards('avoid',this)">🔴 Avoid (1)</button>
+  <button class="filt" onclick="filterCards('high',this)">⭐ High Conv. (1)</button>
+</div>
+<div class="section" style="padding-top:10px">
+  <div class="section-title"><span id="stock-count">4 stocks</span> — tap to expand</div>
+  
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="HIGH">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#1</span>
+      <span class="tk">ANET</span>
+      <span class="co-name">Arista Networks, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-high">HIGH</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>23.7/40</b></span>
+  <span class="chip">Fund <b>37.3/40</b></span>
+  <span class='chip'>Score <b>61.0/80</b></span>
+</div>
+    <div class="setup-line">📐 reclaimed EMA50 2 session(s) ago, holding above</div><div class="setup-line" style="color:#666">🧲 VCP 0/3 · 10d range 27.3% · ATR 155% of 50d · vol 170% of 50d</div>
+    <div class="rationale">Arista Networks combines the strongest fundamental score (37.3) with active technical strength, having recently reclaimed its 50-day EMA. In an &#x27;Uptrend Under Pressure&#x27; regime, the AI-driven networking demand provides a robust macro tailwind that supports its high RS rank.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$—</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">—</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">—</div></div>
+</div>
+    <div class="risk-line">⚠ Valuation compression if AI capex growth slows or if the broader tech sector corrects sharply.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">No research note available.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1200. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse ANET</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="WATCH"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#2</span>
+      <span class="tk">TXN</span>
+      <span class="co-name">Texas Instruments Incorporated</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-watch">WATCH</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>25.2/40</b></span>
+  <span class="chip">Fund <b>35.9/40</b></span>
+  <span class='chip'>Score <b>61.1/80</b></span>
+</div>
+    <div class="setup-line">📐 $303.60 is 4.29% below pivot $317.20 — no trigger yet</div><div class="setup-line" style="color:#666">🧲 VCP 0/3 · 10d range 15.1% · ATR 160% of 50d · vol 135% of 50d</div>
+    <div class="rationale">Texas Instruments offers superior business quality and a high RS rank (97.2), but it is currently 4.3% below its pivot point, indicating it has not yet triggered a buy signal. The lack of a confirmed breakout makes it a secondary choice to ANET despite strong fundamentals.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$—</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">—</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">—</div></div>
+</div>
+    <div class="risk-line">⚠ Prolonged consolidation or failure to break the $317.20 pivot, leading to opportunity cost.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">No research note available.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &#x27;Rate limit reached for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Used 554, Requested 1000. Please try again in 33.24s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&#x27;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse TXN</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="BUY NOW"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#3</span>
+      <span class="tk">CRBG</span>
+      <span class="co-name">Corebridge Financial Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-buy">BUY NOW</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>35.0/40</b></span>
+  <span class="chip">Fund <b>22.8/40</b></span>
+  <span class='chip'>Score <b>57.8/80</b></span>
+</div>
+    <div class="setup-line">📐 $36.35 is 0.98% below pivot $36.71 — breakout imminent</div><div class="setup-line" style="color:#666">🧲 VCP 1/3 · 10d range 9.2% · ATR 126% of 50d · vol 95% of 50d</div>
+    <div class="rationale">Corebridge Financial is technically the closest to a breakout (0.98% below pivot) and has the highest technical score, but its fundamental score is the weakest of the group. The financial sector is less aligned with the current tech-led growth momentum, reducing its relative attractiveness.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$—</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">—</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">—</div></div>
+</div>
+    <div class="risk-line">⚠ Interest rate sensitivity and weaker earnings momentum compared to tech peers.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">No research note available.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1200. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse CRBG</div>
+  </div>
+</details>
+<details class="stock-card"
+  data-action="AVOID"
+  data-conviction="LOW">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#4</span>
+      <span class="tk">ABNB</span>
+      <span class="co-name">Airbnb, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-avoid">AVOID</span>
+      <span class="badge b-low">LOW</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>21.4/40</b></span>
+  <span class="chip">Fund <b>28.4/40</b></span>
+  <span class='chip'>Score <b>49.8/80</b></span>
+</div>
+    <div class="setup-line">📐 $186.78 is 5.6% below pivot $197.87 — no trigger yet</div><div class="setup-line" style="color:#666">🧲 VCP 0/3 · 10d range 16.8% · ATR 165% of 50d · vol 139% of 50d</div>
+    <div class="rationale">Airbnb has the lowest total score and is 5.6% below its pivot, indicating significant technical weakness relative to the other candidates. As a consumer cyclical, it is more exposed to macroeconomic headwinds in a pressured market regime.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$—</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">—</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">—</div></div>
+</div>
+    <div class="risk-line">⚠ Consumer spending slowdown and failure to establish a new uptrend from current levels.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">No research note available.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">ERROR: Groq API call failed — Error code: 429 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;Request too large for model `qwen/qwen3.8-27b` in organization `org_01kv8fr6hse5wajyrsa4dwad83` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000, Requested 1200. The request&#x27;s expected output tokens exceed the enforced limit; reduce max_tokens (or the request&#x27;s expected output) and try again. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing&quot;, &#x27;type&#x27;: &#x27;tokens&#x27;, &#x27;code&#x27;: &#x27;rate_limit_exceeded&#x27;}}</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse ABNB</div>
+  </div>
+</details>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 Upcoming Earnings</div>
+  <div class="earnings-box">
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• NVDA</span>
+  <span style="color:#aaa">2026-11-18</span>
+  <span style="color:#ff6d6d;font-size:12px">1d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• PANW</span>
+  <span style="color:#aaa">2026-11-19</span>
+  <span style="color:#ff6d6d;font-size:12px">2d</span>
+</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📈 Pick Track Record</div>
+  <div class="track-card">
+    <div class="track-grid">
+<div class="track-cell"><div class="track-h">1 Week Fwd · 299 picks</div>
+<div class="track-v tr-neu">nan% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 42.1% · avg nan%</div></div>
+<div class="track-cell"><div class="track-h">1 Month Fwd · 261 picks</div>
+<div class="track-v tr-neu">nan% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 34.1% · avg nan%</div></div></div>
+    <div class="track-note">Top 5 daily picks tracked forward vs SPY ·
+    75 day(s) of history · builds daily</div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="collapseAll()">▲ Collapse</button>
+
+<div class="footer">
+  HZ Capital Trading Intelligence &nbsp;·&nbsp;
+  2026-11-17 09:52 &nbsp;·&nbsp;
+  Market analysis only — positions &amp; instructions are delivered privately via Telegram. Not financial advice.
+</div>
+
+<script>
+function filterCards(f, btn) {
+  document.querySelectorAll('.filt').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('details.stock-card').forEach(function(c) {
+    var show = true;
+    if      (f === 'buy')   show = c.dataset.action === 'BUY NOW';
+    else if (f === 'wait')  show = c.dataset.action.indexOf('WAIT') === 0;
+    else if (f === 'watch') show = c.dataset.action === 'WATCH';
+    else if (f === 'avoid') show = c.dataset.action === 'AVOID';
+    else if (f === 'high')  show = c.dataset.conviction === 'HIGH';
+    c.classList.toggle('hidden', !show);
+  });
+  var v = document.querySelectorAll('details.stock-card:not(.hidden)').length;
+  document.getElementById('stock-count').textContent = v + ' stocks';
+}
+
+/* Close the section this control belongs to and bring its header back into
+   view, so you never lose your place after reading a long note. */
+function closeCard(el) {
+  var d = el.closest('details');
+  if (!d) return;
+  d.open = false;
+  var y = d.getBoundingClientRect().top + window.scrollY - 108;
+  window.scrollTo({ top: y < 0 ? 0 : y, behavior: 'smooth' });
+  updateFab();
+}
+
+function collapseAll() {
+  document.querySelectorAll('details[open]').forEach(function (d) { d.open = false; });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateFab();
+}
+
+function updateFab() {
+  var f = document.getElementById('fab');
+  if (!f) return;
+  var n = document.querySelectorAll('details[open]').length;
+  f.classList.toggle('show', n > 0);
+  f.textContent = n > 1 ? '▲ Collapse all (' + n + ')' : '▲ Collapse';
+}
+
+/* toggle doesn't bubble — capture phase catches every <details> */
+document.addEventListener('toggle', updateFab, true);
+document.addEventListener('DOMContentLoaded', updateFab);
+</script>
+</body>
+</html>
