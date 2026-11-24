@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>HZ Capital — November 24, 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+     background:#0d0d0d;color:#e0e0e0;line-height:1.5;font-size:14px}
+
+/* STICKY HEADER */
+.sticky-header{position:sticky;top:0;z-index:100;background:#111;
+  border-bottom:1px solid #222;padding:10px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+.site-title{font-size:13px;font-weight:700;color:#fff}
+.site-sub{font-size:11px;color:#666;margin-top:1px}
+.regime-pill{font-size:11px;font-weight:700;padding:4px 10px;
+  border-radius:20px;color:#000;white-space:nowrap}
+
+/* SECTIONS */
+.section{padding:12px 12px 4px}
+.section-title{font-size:11px;font-weight:700;letter-spacing:0.8px;
+  text-transform:uppercase;color:#555;margin-bottom:8px}
+
+/* ALERTS */
+.alert-card{background:#1a0800;border:1px solid #ff6d00;border-radius:10px;
+  padding:12px 14px;margin-bottom:8px}
+.alert-type{font-size:10px;font-weight:700;color:#ff6d00;letter-spacing:0.5px;text-transform:uppercase}
+.alert-ticker{font-size:15px;font-weight:800;color:#ff9d4a;margin:2px 0}
+.alert-msg{font-size:12px;color:#ccc;line-height:1.5}
+
+/* MACRO */
+details.macro-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;
+  overflow:clip;margin-bottom:8px}   /* clip, NOT hidden — hidden breaks sticky */
+details.macro-card > summary{list-style:none;cursor:pointer;padding:13px 14px;
+  display:flex;justify-content:space-between;align-items:center}
+details.macro-card > summary::-webkit-details-marker{display:none}
+details.macro-card > summary::marker{display:none}
+details.macro-card[open] .chevron{transform:rotate(180deg)}
+.macro-title{font-size:14px;font-weight:700;color:#fff}
+.macro-body{padding:12px 14px 14px;font-size:13px;color:#bbb;
+  line-height:1.75;border-top:1px solid #222}
+
+/* SECTOR OVERVIEW */
+.sector-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;overflow:hidden}
+.sector-row{display:flex;align-items:flex-start;gap:10px;
+  padding:9px 14px;border-bottom:1px solid #1e1e1e}
+.sector-row:last-child{border-bottom:none}
+.sector-name{font-size:11px;font-weight:700;color:#777;
+  text-transform:uppercase;letter-spacing:0.3px;
+  min-width:110px;flex-shrink:0;padding-top:2px}
+.sector-chips{display:flex;gap:5px;flex-wrap:wrap}
+.stk-chip{background:#252525;border-radius:4px;padding:2px 8px;
+  font-size:11px;color:#82b1ff;font-weight:700}
+.stk-chip.buy{color:#00c853}
+.stk-chip.watch{color:#ffd600}
+.stk-chip.avoid{color:#ff6d6d}
+
+/* FILTER BAR */
+.filter-bar{position:sticky;top:53px;z-index:99;background:#111;
+  border-bottom:1px solid #1e1e1e;padding:8px 12px;
+  display:flex;gap:7px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  margin-top:12px}
+.filter-bar::-webkit-scrollbar{display:none}
+.filt{background:#1e1e1e;border:1px solid #2a2a2a;color:#888;
+  padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  white-space:nowrap;cursor:pointer;transition:all 0.15s;user-select:none}
+.filt.active{background:#82b1ff;color:#000;border-color:#82b1ff}
+
+/* STOCK CARDS */
+details.stock-card{background:#1a1a1a;border-radius:12px;margin-bottom:9px;
+  overflow:clip;border:1px solid #222}   /* clip, NOT hidden — hidden breaks sticky */
+details.stock-card[open]{border-color:#333}
+details.stock-card > summary{list-style:none;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;padding:13px 14px}
+details.stock-card > summary::-webkit-details-marker{display:none}
+details.stock-card > summary::marker{display:none}
+details.stock-card[open] .chevron{transform:rotate(180deg)}
+
+.card-top{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rank-num{font-size:15px;font-weight:800;color:#444;min-width:22px}
+.tk{font-size:17px;font-weight:800;color:#82b1ff}
+.co-name{font-size:12px;color:#888;flex:1;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap}
+.chevron{font-size:10px;color:#555;transition:transform 0.2s;flex-shrink:0}
+
+.badge-row{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px}
+.b-buy{background:#00c853;color:#000}
+.b-watch{background:#ffd600;color:#000}
+.b-wait{background:#ff9d4a;color:#000}
+.b-avoid{background:#d50000;color:#fff}
+.b-dash{background:#2a2a2a;color:#666}
+
+/* TODAY AT A GLANCE */
+.glance-card{background:linear-gradient(135deg,#141a26,#101418);border:1px solid #2a3550;
+  border-radius:12px;padding:14px;margin-bottom:8px}
+.glance-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.glance-stat{background:#1a2230;border-radius:8px;padding:7px 12px;flex:1;min-width:90px}
+.glance-label{font-size:9px;color:#5a6a8a;text-transform:uppercase;letter-spacing:0.5px}
+.glance-val{font-size:14px;font-weight:800;color:#e8eeff;margin-top:2px}
+.glance-line{font-size:12px;color:#9ab;line-height:1.6}
+.glance-line b{color:#82b1ff}
+.delta-chip{display:inline-block;font-size:11px;font-weight:700;border-radius:4px;
+  padding:1px 7px;margin:1px 3px 1px 0}
+.d-new{background:rgba(0,200,83,0.15);color:#00c853;border:1px solid rgba(0,200,83,0.35)}
+.d-drop{background:rgba(213,0,0,0.12);color:#ff6d6d;border:1px solid rgba(213,0,0,0.3)}
+.setup-line{font-size:11px;color:#4dd0a5;padding-top:4px}
+
+/* TRACK RECORD */
+.track-card{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:12px 14px}
+.track-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:4px}
+.track-cell{background:#1e1e1e;border-radius:8px;padding:8px 10px}
+.track-h{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.track-v{font-size:15px;font-weight:800;margin-top:2px}
+.tr-pos{color:#00c853}.tr-neg{color:#ff6d6d}.tr-neu{color:#bbb}
+.track-note{font-size:11px;color:#555;margin-top:8px;line-height:1.5}
+.b-high{background:rgba(130,177,255,0.15);color:#82b1ff;border:1px solid rgba(130,177,255,0.3)}
+.b-medium{background:rgba(255,214,0,0.1);color:#ffd600;border:1px solid rgba(255,214,0,0.25)}
+.b-low{background:rgba(255,109,0,0.1);color:#ff6d00;border:1px solid rgba(255,109,0,0.25)}
+
+.score-chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.chip{background:#252525;border-radius:4px;padding:2px 7px;font-size:11px;color:#666}
+.chip b{color:#bbb}
+.rationale{font-size:12px;color:#666;line-height:1.5;padding-top:6px;border-top:1px solid #222}
+
+/* CARD BODY */
+.card-body{border-top:1px solid #222}
+.meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+  padding:10px 12px;background:#141414}
+.meta-item{background:#1e1e1e;border-radius:6px;padding:6px 8px}
+.meta-label{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.4px}
+.meta-val{font-size:13px;font-weight:700;color:#ddd;margin-top:1px}
+.case-section{padding:12px 14px}
+.case-section+.case-section{border-top:1px solid #1e1e1e}
+.case-label{font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px}
+.case-bull .case-label{color:#00c853}
+.case-bear .case-label{color:#ff6d6d}
+.case-text{font-size:13px;line-height:1.75;color:#bbb}
+.risk-line{font-size:12px;color:#ff9d4a;padding:6px 14px 0}
+
+/* EARNINGS */
+.earnings-box{background:#1a1a1a;border-radius:12px;border:1px solid #222;padding:10px 14px}
+.earnings-row{display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid #1e1e1e;font-size:13px}
+.earnings-row:last-child{border-bottom:none}
+.no-items{color:#555;font-size:13px;padding:8px 0}
+
+/* FOOTER */
+.footer{text-align:center;font-size:11px;color:#333;padding:20px 14px 40px}
+
+/* ── EXPAND / COLLAPSE ERGONOMICS ──────────────────────────────────────
+   Long research notes used to be collapsible only from the very top, so
+   you had to scroll back up to close one. Three fixes:
+   1. the card's own header sticks below the toolbars while it is open,
+      so the collapse control is always one tap away while reading;
+   2. a matching collapse bar sits at the END of every long section;
+   3. a floating "collapse all" appears whenever anything is open.        */
+details.stock-card[open] > summary{position:sticky;top:98px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55);padding:9px 14px}
+/* While open the pinned header must stay SMALL — the teaser rows (scores,
+   setup, rationale) are redundant once the full body is on screen. */
+details.stock-card[open] > summary .score-chips,
+details.stock-card[open] > summary .setup-line,
+details.stock-card[open] > summary .rationale{display:none}
+details.stock-card[open] > summary .card-top{margin-bottom:4px}
+details.stock-card[open] > summary .badge-row{margin-bottom:0}
+details.macro-card[open] > summary{position:sticky;top:53px;z-index:20;
+  background:#1a1a1a;box-shadow:0 3px 10px rgba(0,0,0,0.55)}
+.collapse-bar{display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:12px 14px;background:#151515;border-top:1px solid #262626;
+  color:#82b1ff;font-size:12px;font-weight:700;cursor:pointer;user-select:none;
+  -webkit-tap-highlight-color:transparent}
+.collapse-bar:active{background:#202020}
+.fab{position:fixed;right:14px;bottom:18px;z-index:300;background:#82b1ff;color:#000;
+  border:none;border-radius:24px;padding:14px 18px;font-size:12px;font-weight:800;
+  box-shadow:0 4px 16px rgba(0,0,0,0.6);cursor:pointer;display:none}   /* >=44px tap target */
+.fab.show{display:block}
+
+/* DESKTOP */
+@media(min-width:700px){
+  body{max-width:900px;margin:0 auto}
+  .filter-bar{top:57px}
+  .meta-grid{grid-template-columns:repeat(6,1fr)}
+  details.stock-card[open] > summary{top:102px}   /* clears the taller desktop toolbars */
+}
+@media(min-width:1100px){body{max-width:1100px}}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="sticky-header">
+  <div>
+    <div class="site-title">HZ Capital</div>
+    <div class="site-sub">November 24, 2026</div>
+  </div>
+  <div class="regime-pill" style="background:#d50000">MARKET IN DOWNTREND</div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">⚡ Today in 30 Seconds</div>
+  <div class="glance-card">
+    <div class="glance-row">
+      <div class="glance-stat"><div class="glance-label">Regime</div><div class="glance-val" style="color:#d50000">MARKET IN DOWNTREND</div></div>
+      <div class="glance-stat"><div class="glance-label">Buy Setups</div><div class="glance-val">0</div></div>
+      <div class="glance-stat"><div class="glance-label">Wait</div><div class="glance-val">0</div></div>
+      <div class="glance-stat"><div class="glance-label">Watch</div><div class="glance-val">1</div></div>
+    </div>
+    <div class="glance-line">🏆 #1 pick: <b>ABNB</b> <span class="badge b-watch">WATCH</span> $170.36 is 13.9% below pivot $197.87 — no trigger yet</div><div class="glance-line">Δ vs 2026-11-23: no list changes</div><div class="glance-line">📅 Event radar: <b>Jobs report (NFP)</b> in 10d · <b>FOMC rate decision</b> in 15d · <b>CPI release</b> in 16d</div><div class="glance-line" style="color:#667">🕐 Prices as of last US close: <b>2026-11-20</b></div>
+  </div>
+</div>
+
+
+
+<div class="section">
+  <div class="section-title">📊 Macro Analysis</div>
+  <details class="macro-card" open>
+    <summary>
+      <span class="macro-title">🌍 MARKET IN DOWNTREND</span>
+      <span class="chevron">▼</span>
+    </summary>
+    <div class="macro-body">**Date:** 2026-11-24 | **Regime:** MARKET IN DOWNTREND<br><br>### 1. WHAT CHANGED SINCE YESTERDAY<br>The definitive shift from yesterday’s &quot;exhaustion/rebound&quot; sentiment is the **violent, broad-based capitulation in equities despite pre-market tech optimism.** While headlines focused heavily on the &quot;Trump-sealed deal for Nvidia to rehire Jensen Huang&quot; (CNBC) and Asian Nvidia-related stocks jumping to price limits, the actual trading session delivered a catastrophic sell-off. The S&amp;P 500 (SPY) dropped **-3.64%** in a single day, and the Nasdaq-100 (QQQ) crashed **-5.67%**. This disconnect—where a massive corporate catalyst (Huang&#x27;s return) failed to hold back a deep macro-driven rout—signals that institutional investors are ignoring fundamental news in favor of forced liquidation or positioning de-risking. The VIX, while compressing 25.83% from its peak (now 26.62), remains in &quot;elevated risk&quot; territory, confirming the move was not a panic spike but a sustained structural breakdown.<br><br>### 2. MARKET REGIME ASSESSMENT<br>The tape confirms a hard **DOWNTREND acceleration**, not a correction. With SPY sitting -11.46% off its highs and failing to hold above the 50DMA, the market has broken down through all key technical support. The breadth is poor: only Consumer Staples and Utilities are printing positive 1-month returns, indicating investors are bifurcating into pure defensive yield. The 10-year yield rising to 4.92% (up 0.12% today) while equities sell off signals a &quot;risk-off with no liquidity support&quot; environment—bond markets are tightening, not providing a cushion, which exacerbates equity volatility. This is a low-beta, high-deference regime.<br><br>### 3. SECTOR LEADERSHIP<br>*   **Laggard (Capital outflow):** **Semiconductors (SOXX)** led the losses with a **-10.55%** 1-day drop. This is critical: even with Jensen Huang’s return, the semiconductor sector is being sold off indiscriminately. It is becoming a &quot;too-big-to-be-held&quot; position for risk-averse capital.<br>*   **Laggard (Growth):** **Technology (XLK)** fell **-7.27%** in one day, extending its 1-month drop to -18.68%. The growth trade is dead in the water.<br>*   **Leader (Defensive):** **Consumer Staples (XLP)** is the only sector up on the day (**+0.67%**) and up +5.24% over the 3-month period. **Healthcare (XLV)** also showed relative resilience (-0.12% 1-day), serving as the primary flight-to-safety sector.<br>*   **Rotation Note:** There is no counter-trend rotation into financials or industrials; the market is strictly bifurcating into **Staples/Healthcare** (defensive) vs. **Tech/Semis** (liquidation).<br><br>### 4. NEWS-DRIVEN RISKS &amp; CATALYSTS<br>1.  **The &quot;Nvidia Trap&quot; (Immediate Risk):** The headline *&quot;Trump sealed deal for Nvidia to rehire Jensen Huang as CEO&quot;* (CNBC) created a false signal of stabilization. Asian markets jumped, but US futures &quot;inched higher&quot; only to be met with a **-5.67% QQQ discount** at the open. This creates a high-risk **gap-down fill scenario** for any tech positions held from yesterday. The failure of this catalyst to support price confirms that technical momentum overrides fundamental news in this regime.<br>2.  **FOMC &amp; Yield Compression (Dated Event - 15 Days Out):** The **FOMC rate decision on 2026-12-09** is approaching as the 10-year yield rises to **4.92%**. If the Fed signals &quot;higher for longer&quot; or a hawkish hold, the cost of carrying growth stocks (like ARKK, down -25.65% 3M) becomes punitive. Any delay in rate cuts threatens to deepen the downtrend beyond the current -11.46% SPX drawdown.<br>3.  **Operational/Regulatory Noise (Immediate Distraction):** *&quot;Amazon faces FAA probe after delivery drone strikes Michigan fiber cable&quot;* (CNBC). While minor in the grand scheme, in a high-VIX environment (26.62), any operational headline involving</div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse macro analysis</div>
+  </details>
+</div>
+
+<div class="section">
+  <div class="section-title">🏭 Industry Overview</div>
+  <div class="sector-card">
+<div class="sector-row">
+  <div class="sector-name">Other</div>
+  <div class="sector-chips"><span class="stk-chip watch">ABNB</span></div>
+</div></div>
+  
+  <details class="macro-card" style="margin-top:8px">
+    <summary><span class="macro-title" style="font-size:13px">📊 Sector rotation leaderboard (1-week momentum)</span><span class="chevron">▼</span></summary>
+    <div style="border-top:1px solid #222">
+<div class="sector-row">
+  <div class="sector-name">Consumer Staples</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#00c853">1D +0.7%</span> · <span style="color:#ff6d6d">1W -2.3%</span> ·
+    1M 2.49%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Utilities</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.7%</span> · <span style="color:#ff6d6d">1W -3.2%</span> ·
+    1M 0.31%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Real Estate</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.0%</span> · <span style="color:#ff6d6d">1W -4.0%</span> ·
+    1M -0.26%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Consumer Disc</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -3.0%</span> · <span style="color:#ff6d6d">1W -4.8%</span> ·
+    1M -0.57%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Energy</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.6%</span> · <span style="color:#ff6d6d">1W -5.0%</span> ·
+    1M -12.72%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Industrials</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -3.1%</span> · <span style="color:#ff6d6d">1W -5.6%</span> ·
+    1M -5.01%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Healthcare</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -0.1%</span> · <span style="color:#ff6d6d">1W -5.7%</span> ·
+    1M -1.14%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Materials</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -2.2%</span> · <span style="color:#ff6d6d">1W -6.1%</span> ·
+    1M -5.79%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Financials</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -1.8%</span> · <span style="color:#ff6d6d">1W -6.2%</span> ·
+    1M -2.38%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Communication Svcs</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -2.7%</span> · <span style="color:#ff6d6d">1W -6.4%</span> ·
+    1M -5.19%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Small Cap Growth</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -3.6%</span> · <span style="color:#ff6d6d">1W -6.6%</span> ·
+    1M -7.23%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Technology</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -7.3%</span> · <span style="color:#ff6d6d">1W -9.6%</span> ·
+    1M -18.68%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">ARK Innovation</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -6.8%</span> · <span style="color:#ff6d6d">1W -10.2%</span> ·
+    1M -21.67%</div>
+</div>
+<div class="sector-row">
+  <div class="sector-name">Semiconductors</div>
+  <div style="font-size:11px;color:#888">
+    <span style="color:#ff6d6d">1D -10.6%</span> · <span style="color:#ff6d6d">1W -12.6%</span> ·
+    1M -22.58%</div>
+</div></div>
+  </details>
+</div>
+
+
+<div class="filter-bar">
+  <button class="filt active" onclick="filterCards('all',this)">All (1)</button>
+  <button class="filt" onclick="filterCards('buy',this)">🟢 Buy Now (0)</button>
+  <button class="filt" onclick="filterCards('wait',this)">⏳ Wait (0)</button>
+  <button class="filt" onclick="filterCards('watch',this)">🟡 Watch (1)</button>
+  <button class="filt" onclick="filterCards('avoid',this)">🔴 Avoid (0)</button>
+  <button class="filt" onclick="filterCards('high',this)">⭐ High Conv. (0)</button>
+</div>
+<div class="section" style="padding-top:10px">
+  <div class="section-title"><span id="stock-count">1 stocks</span> — tap to expand</div>
+  
+<details class="stock-card"
+  data-action="WATCH"
+  data-conviction="MEDIUM">
+  <summary>
+    <div class="card-top">
+      <span class="rank-num">#1</span>
+      <span class="tk">ABNB</span>
+      <span class="co-name">Airbnb, Inc.</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="badge-row">
+      <span class="badge b-watch">WATCH</span>
+      <span class="badge b-medium">MEDIUM</span>
+    </div>
+    
+<div class="score-chips">
+  <span class="chip">Tech <b>11.6/40</b></span>
+  <span class="chip">Fund <b>28.6/40</b></span>
+  <span class='chip'>Score <b>40.2/80</b></span>
+</div>
+    <div class="setup-line">📐 $170.36 is 13.9% below pivot $197.87 — no trigger yet</div><div class="setup-line" style="color:#666">🧲 VCP 0/3 · 10d range 16.9% · ATR 119% of 50d · vol 110% of 50d</div>
+    <div class="rationale">Airbnb exhibits strong fundamental momentum (score 28.6) and decent relative strength (RS 83.1), but it is currently 13.9% below its pivot point, indicating a lack of immediate technical trigger. The market is in a downtrend, which negatively impacts Consumer Cyclical stocks, and the absence of a valid bull case due to data errors reduces confidence in the upside thesis.</div>
+  </summary>
+  <div class="card-body">
+    
+<div class="meta-grid">
+  <div class="meta-item"><div class="meta-label">Price</div><div class="meta-val">$—</div></div>
+  <div class="meta-item"><div class="meta-label">RS Rank</div><div class="meta-val">—</div></div>
+  <div class="meta-item"><div class="meta-label">EPS Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Rev Gr.</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">% off Hi</div><div class="meta-val">—%</div></div>
+  <div class="meta-item"><div class="meta-label">Sector</div><div class="meta-val" style="font-size:10px">—</div></div>
+</div>
+    <div class="risk-line">⚠ Technical weakness in a bearish market regime combined with incomplete fundamental analysis data.</div>
+    <div class="case-section case-bull">
+      <div class="case-label">📋 Bull Case</div>
+      <div class="case-text">No research note available.</div>
+    </div>
+    <div class="case-section case-bear">
+      <div class="case-label">🔴 Bear Case</div>
+      <div class="case-text">Listen closely. There is no &quot;research note&quot; to review here because the analyst’s output failed to generate—it just hit a server rate limit. That is a massive red flag in itself. In my 25 years, when the data fails to load, I don&#x27;t guess; I hedge. But let’s pretend the &quot;thesis&quot; is the standard bull case implied by the raw data you provided: *High growth, asset-light, strong FCF, and potential undervaluation.*<br><br>I am going to tear this apart. The numbers you provided look superficially healthy, but they are screaming danger signals to anyone who knows how to read the fine print.<br><br>### 1. ACCOUNTING RED FLAGS: The &quot;Asset-Light&quot; Illusion &amp; Debt Mask<br>*   **Debt/Equity: 27.008.** Let’s talk about this number. A D/E ratio of 27:1 means Airbnah has $27 in debt for every $1 in equity. For an &quot;asset-light&quot; company, this is absurd. Airbnb does not need $27 debt per equity dollar to run a marketplace. This indicates either massive aggressive financial engineering, lease liabilities capitalized in a way that distorts the balance sheet, or—more likely—that the &quot;equity&quot; base is thin relative to their aggressive capital allocation.<br>*   **The &quot;Gross Margin&quot; Trap (83.1%):** High gross margins are common in software, but Airbnb is a marketplace. This margin is calculated on *net* revenue (fees), not gross bookings. It hides the true cost of customer acquisition and service.<br>*   **Receivables vs. Revenue:** While you didn&#x27;t provide receivables data, a D/E of 27 combined with a &quot;current ratio&quot; of only 1.73 suggests liquidity is tighter than it appears. If they are booking revenue faster than they are collecting cash from hosts (who often get paid out via their own bank accounts, not ABNB), the &quot;accelerating EPS&quot; might be an accounting artifact of how they recognize deferred revenue and commission timing. I need to see the Cash Conversion Cycle before I believe a single cent of this EPS acceleration.<br><br>### 2. THESIS KILLERS: The Chinese AI &amp; Regulatory Bomb<br>*   **The &quot;Fresh&quot; News is a Direct Threat:** &quot;Airbnb (ABNB) Pulls Back On A Richer Valuation Narrative&quot; and &quot;What Could Airbnb (ABNB) Need To Disclose About Its Chinese AI Use?&quot; This is not a footnote. The US government is scrutinizing the use of Chinese AI models in critical infrastructure. If Airbnb is violating emerging CFIUS or export control rules by relying on Chinese LLMs for core services (ranking, pricing, recommendations), they face:<br>    1.  **Mandatory disclosure** that scares off institutional money.<br>    2.  **Potential bans** or forced migration to US-based AI, causing a massive one-time OpEx spike that destroys the &quot;35% FCF Margin&quot; narrative overnight.<br>    3.  **Reputational damage** in a post-TikTok, post-HiSilicon world.<br>*   **Single Event to Invalidate:** If the US imposes a ban on Airbnb’s use of Chinese AI tools, their cost structure changes. If they have to re-architect their core algorithm, they lose their competitive edge in dynamic pricing. The &quot;Asset-Light&quot; model relies on *efficiency*. If efficiency requires restricted tech, the model is fragile.<br><br>### 3. ASSUMPTION STRESS TEST: The &quot;Undervalued&quot; Fantasy<br>*   **Simply Wall St says &quot;47% Undervalued.&quot;** I laugh. Why? Because most DCF models blow up when you discount a company with a D/E of 27. The cost of capital (WACC) for a company with this leverage profile is *high*. If you assume a 8-10% discount rate but the real risk is 15%+ due to regulatory/compliance risk, the intrinsic value drops below current price.<br>*   **&quot;EPS Accelerating: True.&quot;** Is it? Or is it due to one-time tax benefits, stock buybacks shrinking the share count artificially, or accounting adjustments? With only 1% insider ownership, management is not skin-in-the-game. They can manufacture EPS growth through non-cash charges.<br>*   **The &quot;Hotel Growth Push&quot;:** Simply Wall St mentions &quot;Hotel Growth Push.&quot; This is dangerous. Airbnb’s moat is *unique* experiences. Pushing into hotels pits them directly against Booking.com and Expedia, who have 30-year relationships with hotel chains. Airbnb has no direct relationship with Marriott or Hilton. If their &quot;hotel push&quot; means paying higher commissions to gain access, their 35% FCF margin erodes instantly.<br><br>### 4. VALUATION RISK: Pricing in Perfection<br>*   **Up 33% in 2026.** This stock has already moved 33% based on &quot;crushing the market.&quot; You are buying at the top of the swell.<br>*   **% Off 52-Week High: -13.9%.** This is not a &quot;buy the dip.&quot; This is a post-hype correction. The market is already reassessing the &quot;richer valuation narrative.&quot;<br>*   **Multiple Risk:** If they are trading at, say, 30x-40x forward EPS (typical for high-growth tech), they are pricing in *zero* regulatory shocks. A 20% writedown in perceived growth due to AI compliance costs would cut the multiple to 20x. At that point, the stock is overvalued</div>
+    </div>
+    <div class="collapse-bar" onclick="closeCard(this)">▲ Collapse ABNB</div>
+  </div>
+</details>
+</div>
+
+<div class="section">
+  <div class="section-title">📅 Upcoming Earnings</div>
+  <div class="earnings-box">
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• MDB</span>
+  <span style="color:#aaa">2026-12-02</span>
+  <span style="color:#ffd600;font-size:12px">8d</span>
+</div>
+<div class="earnings-row">
+  <span style="color:#82b1ff;font-weight:700">• SNOW</span>
+  <span style="color:#aaa">2026-12-03</span>
+  <span style="color:#ffd600;font-size:12px">9d</span>
+</div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">📈 Pick Track Record</div>
+  <div class="track-card">
+    <div class="track-grid">
+<div class="track-cell"><div class="track-h">1 Week Fwd · 303 picks</div>
+<div class="track-v tr-neu">nan% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 41.6% · avg nan%</div></div>
+<div class="track-cell"><div class="track-h">1 Month Fwd · 276 picks</div>
+<div class="track-v tr-neu">nan% vs SPY</div>
+<div class="track-h" style="margin-top:3px">beat SPY 35.5% · avg nan%</div></div></div>
+    <div class="track-note">Top 5 daily picks tracked forward vs SPY ·
+    76 day(s) of history · builds daily</div>
+  </div>
+</div>
+
+<button class="fab" id="fab" onclick="collapseAll()">▲ Collapse</button>
+
+<div class="footer">
+  HZ Capital Trading Intelligence &nbsp;·&nbsp;
+  2026-11-24 09:52 &nbsp;·&nbsp;
+  Market analysis only — positions &amp; instructions are delivered privately via Telegram. Not financial advice.
+</div>
+
+<script>
+function filterCards(f, btn) {
+  document.querySelectorAll('.filt').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('details.stock-card').forEach(function(c) {
+    var show = true;
+    if      (f === 'buy')   show = c.dataset.action === 'BUY NOW';
+    else if (f === 'wait')  show = c.dataset.action.indexOf('WAIT') === 0;
+    else if (f === 'watch') show = c.dataset.action === 'WATCH';
+    else if (f === 'avoid') show = c.dataset.action === 'AVOID';
+    else if (f === 'high')  show = c.dataset.conviction === 'HIGH';
+    c.classList.toggle('hidden', !show);
+  });
+  var v = document.querySelectorAll('details.stock-card:not(.hidden)').length;
+  document.getElementById('stock-count').textContent = v + ' stocks';
+}
+
+/* Close the section this control belongs to and bring its header back into
+   view, so you never lose your place after reading a long note. */
+function closeCard(el) {
+  var d = el.closest('details');
+  if (!d) return;
+  d.open = false;
+  var y = d.getBoundingClientRect().top + window.scrollY - 108;
+  window.scrollTo({ top: y < 0 ? 0 : y, behavior: 'smooth' });
+  updateFab();
+}
+
+function collapseAll() {
+  document.querySelectorAll('details[open]').forEach(function (d) { d.open = false; });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  updateFab();
+}
+
+function updateFab() {
+  var f = document.getElementById('fab');
+  if (!f) return;
+  var n = document.querySelectorAll('details[open]').length;
+  f.classList.toggle('show', n > 0);
+  f.textContent = n > 1 ? '▲ Collapse all (' + n + ')' : '▲ Collapse';
+}
+
+/* toggle doesn't bubble — capture phase catches every <details> */
+document.addEventListener('toggle', updateFab, true);
+document.addEventListener('DOMContentLoaded', updateFab);
+</script>
+</body>
+</html>
